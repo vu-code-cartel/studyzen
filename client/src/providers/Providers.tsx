@@ -1,12 +1,13 @@
 import ChakraProvider from './ChakraProvider';
-import RouterProvider from './RouterProvider';
+import { QueryProvider } from './QueryProvider';
+import { RouterProvider } from './RouterProvider';
 
-const Providers = () => {
+export const Providers = () => {
   return (
-    <ChakraProvider>
-      <RouterProvider />
-    </ChakraProvider>
+    <QueryProvider>
+      <ChakraProvider>
+        <RouterProvider />
+      </ChakraProvider>
+    </QueryProvider>
   );
 };
-
-export default Providers;
