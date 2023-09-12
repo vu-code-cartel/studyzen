@@ -15,3 +15,14 @@ All of the following diagrams can be modified using [draw.io](https://app.diagra
 - Some type of points system
 	- Leaderboard
 	- Rewards (?)
+- Review and Reflection, what to improve tracking , notes.	
+- Relax mode, with videos or nature sounds (?)
+
+
+## Authors
+- Vesta Cicenaite
+- Evelina Temnolonskyte
+- Akvile Ruginyte
+- Arminas Brazenas
+
+## Support
