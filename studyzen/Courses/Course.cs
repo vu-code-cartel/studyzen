@@ -1,14 +1,14 @@
-﻿namespace Studyzen.Courses;
+﻿using StudyZen.Common;
 
-public sealed class Course
+namespace StudyZen.Courses;
+
+public sealed class Course : BaseEntity
 {
-    public int Id { get; }
     public string Name { get; set; }
     public string Description { get; set; }
 
-    public Course(int id, string name, string description)
+    public Course(string name, string description) : base(default)
     {
-        Id = id;
         Name = name;
         Description = description;
     }

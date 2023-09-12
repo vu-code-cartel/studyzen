@@ -1,8 +1,8 @@
-﻿using Studyzen.Common;
+﻿using StudyZen.Common;
 
-namespace Studyzen.Courses.Requests;
+namespace StudyZen.Courses.Requests;
 
-public sealed record CreateCourseRequest
+public sealed class CreateCourseRequest
 {
     public string Name { get; }
     public string Description { get; }
