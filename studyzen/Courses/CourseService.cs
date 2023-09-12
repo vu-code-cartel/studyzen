@@ -19,8 +19,6 @@ public sealed class CourseService : ICourseService
 
     public int AddCourse(CreateCourseRequest request)
     {
-        _unitOfWork.Courses.Update(new Course("", ""));
-
         throw new NotImplementedException();
     }
 }
