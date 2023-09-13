@@ -1,4 +1,4 @@
-﻿namespace Studyzen.Common.Errors;
+﻿namespace StudyZen.Common.Exceptions;
 
 public sealed class RequestArgumentNullException : ArgumentNullException
 {

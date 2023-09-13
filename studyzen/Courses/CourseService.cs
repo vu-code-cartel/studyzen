@@ -1,18 +1,24 @@
-﻿using Studyzen.Courses.Requests;
+﻿using StudyZen.Courses.Requests;
+using StudyZen.Persistence;
 
-namespace Studyzen.Courses;
+namespace StudyZen.Courses;
 
 public interface ICourseService
 {
-    Task<int> AddCourseAsync(CreateCourseRequest request);
+    int AddCourse(CreateCourseRequest request);
 }
 
 public sealed class CourseService : ICourseService
 {
-    public async Task<int> AddCourseAsync(CreateCourseRequest request)
-    {
-        var course = new Course(default, request.Name, request.Description);
+    private readonly IUnitOfWork _unitOfWork;
 
-        return course.Id;
+    public CourseService(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public int AddCourse(CreateCourseRequest request)
+    {
+        throw new NotImplementedException();
     }
 }

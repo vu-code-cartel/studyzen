@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Studyzen.Common;
-using Studyzen.Courses.Requests;
+using StudyZen.Common;
+using StudyZen.Courses.Requests;
 
-namespace Studyzen.Courses;
+namespace StudyZen.Courses;
 
+[ApiController]
 [Route("[controller]")]
 public sealed class CoursesController : ControllerBase
 {
@@ -15,11 +16,11 @@ public sealed class CoursesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCourse([FromBody] CreateCourseRequest? request)
+    public IActionResult CreateCourse([FromBody] CreateCourseRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
 
-        var courseId = _courseService.AddCourseAsync(request);
+        var courseId = _courseService.AddCourse(request);
 
         return CreatedAtAction(nameof(GetCourse), new { courseId = courseId }, null);
     }
