@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Common;
-using StudyZen.FlashCards;
 using StudyZen.FlashCards.Requests;
 
 
-namespace StudyZen.FlashCards
-{
+
+namespace StudyZen.FlashCards;
+
     [ApiController]
     [Route("[controller]")]
     public sealed class FlashcardsController : ControllerBase
@@ -40,4 +40,3 @@ namespace StudyZen.FlashCards
         return Ok(flashcard);
     }
    }
-}

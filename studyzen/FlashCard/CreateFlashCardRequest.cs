@@ -1,7 +1,7 @@
 using StudyZen.Common;
 
-namespace StudyZen.FlashCards.Requests
-{
+namespace StudyZen.FlashCards.Requests;
+
     public sealed class CreateFlashCardRequest
     {
         public string Question { get; }
@@ -13,4 +13,3 @@ namespace StudyZen.FlashCards.Requests
             Answer = answer.ThrowIfRequestArgumentNull(nameof(answer));
         }
     }
-} 

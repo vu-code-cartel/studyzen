@@ -1,13 +1,15 @@
 using StudyZen.FlashCard.Requests;
+using StudyZen.FlashCards.Requests;
 using StudyZen.Persistence;
 
 
 namespace StudyZen.FlashCards
-{
+
     
     public interface IFlashcardService
     {
         int AddFlashcard(CreateFlashCardRequest request);
+    
         FlashCard GetFlashcard(int flashcardId);
     }
 
@@ -19,7 +21,7 @@ namespace StudyZen.FlashCards
         
         public int AddFlashcard(CreateFlashCardRequest request)
         {
-            var flashcard = new FlashCard(1, request.Question, request.Answer);
+            var flashcard = new FlashCard(_Id, request.Question, request.Answer);
             _flashcards.Add(flashcard);
             _Id ++;
             return flashcard.Id;
@@ -33,4 +35,3 @@ namespace StudyZen.FlashCards
         }
     }
     
-} 
