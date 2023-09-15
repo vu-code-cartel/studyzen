@@ -19,7 +19,7 @@ namespace StudyZen.FlashCards
         
         public int AddFlashcard(CreateFlashCardRequest request)
         {
-            var flashcard = new FlashCard(1, request.Question, request.Answer);
+            var flashcard = new FlashCard(_Id, request.Question, request.Answer);
             _flashcards.Add(flashcard);
             _Id ++;
             return flashcard.Id;
