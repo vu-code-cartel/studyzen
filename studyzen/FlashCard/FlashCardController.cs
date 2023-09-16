@@ -39,4 +39,50 @@ namespace StudyZen.FlashCards;
 
         return Ok(flashcard);
     }
+
+    [HttpPost] 
+    [Route("CreateFlashcardSet")]
+   public IActionResult CreateFlashcardSet([FromBody] CreateFlashCardSetRequest request)
+{
+    request = request.ThrowIfRequestArgumentNull(nameof(request));
+
+   
+    var flashcards = new List<FlashCard>();
+    foreach (var flashCardRequest in request.FlashCards)
+    {
+        var flashcardId = _flashcardService.AddFlashcard(flashCardRequest);
+        var flashcard = _flashcardService.GetFlashcard(flashcardId);
+        if (flashcard != null)
+        {
+            flashcards.Add(flashcard);
+        }
+    }
+
+   
+    var setId = _flashcardService.CreateFlashcardSet(request.SetName, request.Color);
+
+   
+    foreach (var flashcard in flashcards)
+    {
+        _flashcardService.AddFlashcardToSet(setId, flashcard.Id);
+    }
+
+    return CreatedAtAction(nameof(GetFlashcardSet), new { setId = setId }, null);
+}
+
+    [HttpGet] 
+    [Route("GetFlashcardSet/{setId}")]
+    public IActionResult GetFlashcardSet(int setId)
+    {
+        var flashcardSet = _flashcardService.GetFlashcardSet(setId);
+        if (flashcardSet == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(flashcardSet);
+    }
+    
+
+    
    }

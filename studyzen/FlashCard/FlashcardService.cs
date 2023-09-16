@@ -14,6 +14,7 @@ namespace StudyZen.FlashCards
         int CreateFlashcardSet(string setName,  FlashCardSetColor color);
         void AddFlashcardToSet(int setId, int flashcardId);
         FlashCardSet GetFlashcardSet(int setId);
+        List<FlashCard> GetFlashcardsInSet(int setId);
     }
 
     public sealed class FlashcardService :IFlashcardService
@@ -59,6 +60,16 @@ namespace StudyZen.FlashCards
         public FlashCardSet GetFlashcardSet(int setId)
         {
             return _flashcardSets.FirstOrDefault(s => s.Id == setId);
+        }
+
+        public List<FlashCard> GetFlashcardsInSet(int setId)
+        {
+            var set = _flashcardSets.FirstOrDefault(s => s.Id == setId);
+            if (set != null)
+            {
+                return _flashcards.Where(f => set.FlashCardIds.Contains(f.Id)).ToList();
+            }
+            return new List<FlashCard>();
         }
 
     }
