@@ -82,6 +82,36 @@ namespace StudyZen.FlashCards;
 
         return Ok(flashcardSet);
     }
+
+    [HttpDelete]
+    [Route("DeleteFlashcardSet/{setId}")]
+    public IActionResult DeleteFlashcardSet(int setId)
+    {
+    
+        var deleted = _flashcardService.DeleteFlashcardSet(setId);
+
+        if (!deleted)
+        {
+            return NotFound(); 
+        }
+
+        return NoContent(); 
+    }
+
+    [HttpDelete]
+    [Route("DeleteFlashcard/{flashcardId}")]
+    public IActionResult DeleteFlashcard(int flashcardId)
+    {
+        var deleted = _flashcardService.DeleteFlashCard(flashcardId);
+        if (!deleted)
+        {
+            return NotFound(); 
+        }
+
+        return NoContent(); 
+    }
+
+
     
 
     

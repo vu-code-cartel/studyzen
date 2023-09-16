@@ -15,6 +15,8 @@ namespace StudyZen.FlashCards
         void AddFlashcardToSet(int setId, int flashcardId);
         FlashCardSet GetFlashcardSet(int setId);
         List<FlashCard> GetFlashcardsInSet(int setId);
+        bool DeleteFlashcardSet(int setId);
+        bool DeleteFlashCard(int flashcardId);
     }
 
     public sealed class FlashcardService :IFlashcardService
@@ -71,6 +73,29 @@ namespace StudyZen.FlashCards
             }
             return new List<FlashCard>();
         }
+
+        public bool DeleteFlashcardSet(int setId)
+        {
+            var flashCardSetToRemove = _flashcardSets.FirstOrDefault(s => s.Id == setId);
+            if (flashCardSetToRemove  != null)
+            {
+                _flashcardSets.Remove(flashCardSetToRemove );
+                return true;
+            }
+                return false;
+        }
+
+        public bool DeleteFlashCard(int flashcardId)
+        {
+            var flashcardToRemove = _flashcards.FirstOrDefault(f => f.Id == flashcardId);
+            if (flashcardToRemove != null )
+            {
+                _flashcards.Remove(flashcardToRemove);
+                return true;
+            }
+                return false;
+        }
+
 
     }
 
