@@ -7,11 +7,13 @@ public sealed class CreateFlashCardSetRequest
     public string SetName { get; }
     public FlashCardSetColor Color { get; }
     public List<CreateFlashCardRequest> FlashCards { get; }
+    public int? LectureId {get; }
 
-    public CreateFlashCardSetRequest(string setName, FlashCardSetColor color, List<CreateFlashCardRequest> flashCards)
+    public CreateFlashCardSetRequest(string setName, FlashCardSetColor color, List<CreateFlashCardRequest> flashCards, int? lectureId)
     {
         SetName = setName.ThrowIfRequestArgumentNull(nameof(setName));
         Color = color;
         FlashCards = flashCards;
+        LectureId = lectureId;
     }
 }

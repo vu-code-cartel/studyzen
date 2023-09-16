@@ -8,17 +8,17 @@ namespace StudyZen.FlashCardSetClass
    
     FlashCardSetColor Color { get; set; }
     public List<FlashCard> FlashCards { get; set; } 
-    //int? lectureId { get; set; }
+    int? LectureId { get; set; }
     public List<int> FlashCardIds { get; } = new List<int>(); 
 
 
-    public FlashCardSet( int id, string name, FlashCardSetColor color)  : base(default)
+    public FlashCardSet( int id, string name, FlashCardSetColor color, int? lectureId)  : base(default)
         {
             Name = name;
 
            Color = color;
            FlashCards = new List<FlashCard>();
-            //LectureId = lectureId;*/
+           LectureId = lectureId;
         }
 }
 }

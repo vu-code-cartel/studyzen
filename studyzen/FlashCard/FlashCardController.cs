@@ -59,7 +59,7 @@ namespace StudyZen.FlashCards;
     }
 
    
-    var setId = _flashcardService.CreateFlashcardSet(request.SetName, request.Color);
+    var setId = _flashcardService.CreateFlashcardSet(request.SetName, request.Color, request.LectureId);
 
    
     foreach (var flashcard in flashcards)

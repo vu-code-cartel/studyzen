@@ -11,7 +11,7 @@ namespace StudyZen.FlashCards
     {
         int AddFlashcard(CreateFlashCardRequest request);
         FlashCard GetFlashcard(int flashcardId);
-        int CreateFlashcardSet(string setName,  FlashCardSetColor color);
+        int CreateFlashcardSet(string setName,  FlashCardSetColor color, int? lectureId);
         void AddFlashcardToSet(int setId, int flashcardId);
         FlashCardSet GetFlashcardSet(int setId);
         List<FlashCard> GetFlashcardsInSet(int setId);
@@ -36,9 +36,9 @@ namespace StudyZen.FlashCards
             
         }
 
-        public int CreateFlashcardSet(string setName, FlashCardSetColor color)
+        public int CreateFlashcardSet(string setName, FlashCardSetColor color, int? lectureId)
         {
-            var set = new FlashCardSet(_setId, setName, color);
+            var set = new FlashCardSet(_setId, setName, color, lectureId);
             _flashcardSets.Add(set);
             _setId++;
             return set.Id;
