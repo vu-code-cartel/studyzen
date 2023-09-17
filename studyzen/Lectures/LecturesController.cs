@@ -63,7 +63,7 @@ public sealed class LecturesController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpDelete]
     [Route("{lectureId}")]
     public async Task<IActionResult> DeleteLecture(int lectureId)
     {
