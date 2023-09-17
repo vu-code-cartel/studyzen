@@ -34,10 +34,10 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateLecture(int courseId, [FromForm] CreateLectureForm form, [FromBody] CreateLectureRequest? request)
+    public async Task<IActionResult> CreateLecture([FromForm] CreateLectureForm form, [FromBody] CreateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        Lecture createdLecture = _lectureService.AddLecture(courseId, request);
+        Lecture createdLecture = _lectureService.AddLecture(request);
         return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
     }
 

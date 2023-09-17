@@ -7,7 +7,7 @@ namespace StudyZen.Lectures;
 
 public interface ILectureService
 {
-    Lecture AddLecture(int courseId, CreateLectureRequest request);
+    Lecture AddLecture(CreateLectureRequest request);
     Lecture? GetLectureById(int lectureId);
     IEnumerable<Lecture> GetLecturesByCourseId(int? courseId);
     Lecture? UpdateLectureById(int lectureId, string? name, string? content);
@@ -23,9 +23,9 @@ public sealed class LectureService : ILectureService
         _unitOfWork = unitOfWork;
     }
 
-    public Lecture AddLecture(int courseId, CreateLectureRequest request)
+    public Lecture AddLecture(CreateLectureRequest request)
     {
-        Lecture newLecture = new Lecture(courseId, request.Name, request.Content);
+        Lecture newLecture = new Lecture(request.CourseId, request.Name, request.Content);
         _unitOfWork.Lectures.Add(newLecture);
         return newLecture;
     }
