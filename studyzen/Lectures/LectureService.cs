@@ -1,6 +1,7 @@
 using Studyzen.Lectures;
 using StudyZen.Lectures.Requests;
 using StudyZen.Persistence;
+using StudyZen.Utils;
 
 namespace StudyZen.Lectures;
 
@@ -9,6 +10,8 @@ public interface ILectureService
     Lecture AddLecture(int courseId, CreateLectureRequest request);
     Lecture? GetLectureById(int lectureId);
     IEnumerable<Lecture> GetLecturesByCourseId(int? courseId);
+    Lecture? UpdateLectureById(int lectureId, string? name, string? content);
+    public void DeleteLectureById(int lectureId);
 }
 
 public sealed class LectureService : ILectureService
@@ -43,5 +46,27 @@ public sealed class LectureService : ILectureService
         {
             return allLectures;
         }
+    }
+    public Lecture? UpdateLectureById(int lectureId, string? name, string? content)
+    {
+        Lecture? toBeUpdatedLecture = _unitOfWork.Lectures.GetById(lectureId);
+        if (toBeUpdatedLecture != null)
+        {
+            if (name != null)
+            {
+                toBeUpdatedLecture.Name = name;
+            }
+            if (content != null)
+            {
+                toBeUpdatedLecture.Content = content;
+            }
+            toBeUpdatedLecture.UpdatedBy = new UserActionStamp();
+            _unitOfWork.Lectures.Update(toBeUpdatedLecture);
+        }
+        return toBeUpdatedLecture;
+    }
+    public void DeleteLectureById(int lectureId)
+    {
+        _unitOfWork.Lectures.Delete(lectureId);
     }
 }

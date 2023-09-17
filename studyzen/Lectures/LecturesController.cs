@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Studyzen.Lectures;
 using StudyZen.Common;
+using StudyZen.Courses;
+using StudyZen.Lectures.Forms;
 using StudyZen.Lectures.Requests;
 
 namespace StudyZen.Lectures;
@@ -32,16 +34,40 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateLecture(int courseId, [FromBody] CreateLectureRequest? request)
+    public async Task<IActionResult> CreateLecture(int courseId, [FromForm] CreateLectureForm form, [FromBody] CreateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        Lecture newLecture = _lectureService.AddLecture(courseId, request);
-        return CreatedAtAction(nameof(GetLecture), new { lectureId = newLecture.Id }, newLecture);
+        Lecture createdLecture = _lectureService.AddLecture(courseId, request);
+        return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
     }
 
     [HttpGet]
     public async Task<IActionResult> ListLecturesByCourseId(int? courseId)
     {
         return Ok(_lectureService.GetLecturesByCourseId(courseId));
+    }
+
+    [HttpPatch]
+    [Route("{lectureId}")]
+    public async Task<IActionResult> UpdateLecture(int lectureId, [FromBody] UpdateLectureRequest? request)
+    {
+        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        Lecture? updatedLecture = _lectureService.UpdateLectureById(lectureId, request.Name, request.Content);
+        if (updatedLecture != null)
+        {
+            return NoContent();
+        }
+        else
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    [Route("{lectureId}")]
+    public async Task<IActionResult> DeleteLecture(int lectureId)
+    {
+        _lectureService.DeleteLectureById(lectureId);
+        return NoContent();
     }
 }
