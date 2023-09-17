@@ -71,47 +71,27 @@ namespace StudyZen.FlashCards
             return new List<FlashCard>();
         }
 
-     /*   public bool DeleteFlashcardSet(int setId)
+     
+        public bool DeleteFlashcardSet(int setId)
         {
-            var flashCardSetToRemove = _flashcardSets.FirstOrDefault(s => s.Id == setId);
-            if (flashCardSetToRemove  != null)
-            {
-                _flashcardSets.Remove(flashCardSetToRemove );
-                return true;
-            }
-                return false;
+            return DeleteItem(setId, _flashcardSets, fs => fs.Id);
         }
 
         public bool DeleteFlashCard(int flashcardId)
         {
-            var flashcardToRemove = _flashcards.FirstOrDefault(f => f.Id == flashcardId);
-            if (flashcardToRemove != null )
-            {
-                _flashcards.Remove(flashcardToRemove);
-                return true;
-            }
-                return false;
-        }*/
-        public bool DeleteFlashcardSet(int setId)
-    {
-        return DeleteItem(setId, _flashcardSets, fs => fs.Id);
-    }
-
-    public bool DeleteFlashCard(int flashcardId)
-    {
-        return DeleteItem(flashcardId, _flashcards, fc => fc.Id);
-    }
+            return DeleteItem(flashcardId, _flashcards, fc => fc.Id);
+        }
 
        public bool DeleteItem<T>(int itemId, List<T> itemList, Func<T, int> getIdFunc)
-    {
-        var itemToRemove = itemList.FirstOrDefault(item => getIdFunc(item) == itemId);
-        if (itemToRemove != null)
         {
-            itemList.Remove(itemToRemove);
-            return true;
+            var itemToRemove = itemList.FirstOrDefault(item => getIdFunc(item) == itemId);
+            if (itemToRemove != null)
+            {
+                itemList.Remove(itemToRemove);
+                return true;
+            }
+            return false;
         }
-        return false;
-    }
 
 
 
