@@ -6,6 +6,7 @@ namespace StudyZen.Persistence;
 public interface IUnitOfWork
 {
     IGenericRepository<Course> Courses { get; }
+    IGenericRepository<FlashCard> FlashCards { get; }
 }
 
 public sealed class UnitOfWork : IUnitOfWork
