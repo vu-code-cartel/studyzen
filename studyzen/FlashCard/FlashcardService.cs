@@ -19,29 +19,25 @@ namespace StudyZen.FlashCards
         bool DeleteFlashCard(int flashcardId);
     }
 
+
     public sealed class FlashcardService :IFlashcardService
     {
         private static List<FlashCard> _flashcards = new List<FlashCard>();
        
         private static List<FlashCardSet> _flashcardSets = new List<FlashCardSet>();
-
-        private int _Id = 1;
-        private int _setId = 1;
         
         public int AddFlashcard(CreateFlashCardRequest request)
         {
-            var flashcard = new FlashCard(_Id, request.Question, request.Answer);
+            var flashcard = new FlashCard(_flashcards.Count + 1, request.Question, request.Answer);
             _flashcards.Add(flashcard);
-            _Id ++;
             return flashcard.Id;
             
         }
 
         public int CreateFlashcardSet(string setName, FlashCardSetColor color, int? lectureId)
         {
-            var set = new FlashCardSet(_setId, setName, color, lectureId);
+            var set = new FlashCardSet(_flashcardSets.Count + 1, setName, color, lectureId);
             _flashcardSets.Add(set);
-            _setId++;
             return set.Id;
         }
         
@@ -75,7 +71,7 @@ namespace StudyZen.FlashCards
             return new List<FlashCard>();
         }
 
-        public bool DeleteFlashcardSet(int setId)
+     /*   public bool DeleteFlashcardSet(int setId)
         {
             var flashCardSetToRemove = _flashcardSets.FirstOrDefault(s => s.Id == setId);
             if (flashCardSetToRemove  != null)
@@ -95,7 +91,28 @@ namespace StudyZen.FlashCards
                 return true;
             }
                 return false;
+        }*/
+        public bool DeleteFlashcardSet(int setId)
+    {
+        return DeleteItem(setId, _flashcardSets, fs => fs.Id);
+    }
+
+    public bool DeleteFlashCard(int flashcardId)
+    {
+        return DeleteItem(flashcardId, _flashcards, fc => fc.Id);
+    }
+
+       public bool DeleteItem<T>(int itemId, List<T> itemList, Func<T, int> getIdFunc)
+    {
+        var itemToRemove = itemList.FirstOrDefault(item => getIdFunc(item) == itemId);
+        if (itemToRemove != null)
+        {
+            itemList.Remove(itemToRemove);
+            return true;
         }
+        return false;
+    }
+
 
 
     }

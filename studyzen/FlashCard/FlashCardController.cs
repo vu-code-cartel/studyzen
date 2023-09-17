@@ -23,9 +23,17 @@ namespace StudyZen.FlashCards;
         request = request.ThrowIfRequestArgumentNull(nameof(request));
 
         var flashcardId = _flashcardService.AddFlashcard(request);
+
+        var response = new {
+            
+            FlashCardId = flashcardId,
+            Question = request.Question,
+            Answer = request.Answer
+
+        };
         
         
-        return CreatedAtAction(nameof(GetFlashcard), new { flashcardId = flashcardId }, new { flashcardId });
+        return CreatedAtAction(nameof(GetFlashcard), new { flashcardId = flashcardId }, response);
     }
 
     [HttpGet]
@@ -68,7 +76,16 @@ namespace StudyZen.FlashCards;
         _flashcardService.AddFlashcardToSet(setId, flashcard.Id);
     }
 
-    return CreatedAtAction(nameof(GetFlashcardSet), new { setId = setId }, new {setId});
+     var response = new
+    {
+        SetId = setId,
+        SetName = request.SetName,
+        Color = request.Color,
+        FlashCards = flashcards,
+        LectureId = request.LectureId
+    };
+
+    return CreatedAtAction(nameof(GetFlashcardSet), new { setId = setId }, response);
 }
 
     [HttpGet] 
@@ -90,6 +107,7 @@ namespace StudyZen.FlashCards;
     {
     
         var deleted = _flashcardService.DeleteFlashcardSet(setId);
+       
 
         if (!deleted)
         {
