@@ -1,13 +1,6 @@
 namespace StudyZen.Utils;
 
-public record UserActionStamp
+public record UserActionStamp(string User = "anonymous")
 {
-    public string User { get; init; }
-    public DateTime Timestamp { get; init; }
-
-    public UserActionStamp(string user = "anonymous")
-    {
-        User = user;
-        Timestamp = DateTime.Now;
-    }
+    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
 }

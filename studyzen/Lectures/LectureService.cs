@@ -9,8 +9,8 @@ public interface ILectureService
 {
     Lecture AddLecture(CreateLectureRequest request);
     Lecture? GetLectureById(int lectureId);
-    IEnumerable<Lecture> GetLecturesByCourseId(int? courseId);
-    Lecture? UpdateLectureById(int lectureId, string? name, string? content);
+    IReadOnlyCollection<Lecture> GetLecturesByCourseId(int? courseId);
+    Lecture? UpdateLectureById(int lectureId, UpdateLectureRequest request);
     public void DeleteLectureById(int lectureId);
 }
 
@@ -25,24 +25,24 @@ public sealed class LectureService : ILectureService
 
     public Lecture AddLecture(CreateLectureRequest request)
     {
-        Lecture newLecture = new Lecture(request.CourseId, request.Name, request.Content);
+        var newLecture = new Lecture(request.CourseId, request.Name, request.Content);
         _unitOfWork.Lectures.Add(newLecture);
         return newLecture;
     }
 
     public Lecture? GetLectureById(int lectureId)
     {
-        Lecture? requestedLecture = _unitOfWork.Lectures.GetById(lectureId);
+        var requestedLecture = _unitOfWork.Lectures.GetById(lectureId);
         return requestedLecture;
     }
 
-    public IEnumerable<Lecture> GetLecturesByCourseId(int? courseId)
+    public IReadOnlyCollection<Lecture> GetLecturesByCourseId(int? courseId)
     {
-        IEnumerable<Lecture> allLectures = _unitOfWork.Lectures.GetAll();
+        var allLectures = _unitOfWork.Lectures.GetAll();
         if (courseId != null)
         {
-            IEnumerable<Lecture> courseLectures = allLectures.Where(lecture => lecture.CourseId == courseId);
-            return courseLectures;
+            var courseLectures = allLectures.Where(lecture => lecture.CourseId == courseId);
+            return courseLectures.ToList();
         }
         else
         {
@@ -50,22 +50,23 @@ public sealed class LectureService : ILectureService
         }
     }
 
-    public Lecture? UpdateLectureById(int lectureId, string? name, string? content)
+    public Lecture? UpdateLectureById(int lectureId, UpdateLectureRequest request)
     {
-        Lecture? toBeUpdatedLecture = _unitOfWork.Lectures.GetById(lectureId);
-        if (toBeUpdatedLecture != null)
+        var toBeUpdatedLecture = _unitOfWork.Lectures.GetById(lectureId);
+        if (toBeUpdatedLecture == null)
         {
-            if (name != null)
-            {
-                toBeUpdatedLecture.Name = name;
-            }
-            if (content != null)
-            {
-                toBeUpdatedLecture.Content = content;
-            }
-            toBeUpdatedLecture.UpdatedBy = new UserActionStamp();
-            _unitOfWork.Lectures.Update(toBeUpdatedLecture);
+            return null;
         }
+        if (request.Name != null)
+        {
+            toBeUpdatedLecture.Name = request.Name;
+        }
+        if (request.Content != null)
+        {
+            toBeUpdatedLecture.Content = request.Content;
+        }
+        toBeUpdatedLecture.UpdatedBy = new UserActionStamp();
+        _unitOfWork.Lectures.Update(toBeUpdatedLecture);
         return toBeUpdatedLecture;
     }
 

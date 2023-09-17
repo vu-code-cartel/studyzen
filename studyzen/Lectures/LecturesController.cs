@@ -22,27 +22,20 @@ public sealed class LecturesController : ControllerBase
     [Route("{lectureId}")]
     public async Task<IActionResult> GetLecture(int lectureId)
     {
-        Lecture? requestedLecture = _lectureService.GetLectureById(lectureId);
-        if (requestedLecture == null)
-        {
-            return NotFound();
-        }
-        else
-        {
-            return Ok(requestedLecture);
-        }
+        var requestedLecture = _lectureService.GetLectureById(lectureId);
+        return requestedLecture == null ? NotFound() : Ok(requestedLecture);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateLecture([FromForm] CreateLectureForm form, [FromBody] CreateLectureRequest? request)
+    public async Task<IActionResult> CreateLecture([FromBody] CreateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        Lecture createdLecture = _lectureService.AddLecture(request);
+        var createdLecture = _lectureService.AddLecture(request);
         return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
     }
 
     [HttpGet]
-    public async Task<IActionResult> ListLecturesByCourseId(int? courseId)
+    public async Task<IActionResult> GetLecturesByCourseId(int? courseId)
     {
         return Ok(_lectureService.GetLecturesByCourseId(courseId));
     }
@@ -52,15 +45,8 @@ public sealed class LecturesController : ControllerBase
     public async Task<IActionResult> UpdateLecture(int lectureId, [FromBody] UpdateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        Lecture? updatedLecture = _lectureService.UpdateLectureById(lectureId, request.Name, request.Content);
-        if (updatedLecture != null)
-        {
-            return NoContent();
-        }
-        else
-        {
-            return BadRequest();
-        }
+        var updatedLecture = _lectureService.UpdateLectureById(lectureId, request);
+        return updatedLecture == null ? NotFound() : Ok(updatedLecture);
     }
 
     [HttpDelete]
