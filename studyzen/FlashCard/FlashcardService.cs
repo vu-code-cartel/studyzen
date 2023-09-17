@@ -3,22 +3,20 @@ using StudyZen.Persistence;
 using StudyZen.FlashCardSetClass;
 
 
-
 namespace StudyZen.FlashCards
 {
 
     public interface IFlashcardService
     {
         int AddFlashcard(CreateFlashCardRequest request);
-        FlashCard GetFlashcard(int flashcardId);
-        // int CreateFlashcardSet(string setName, FlashCardSetColor color, int? lectureId);
-        // void AddFlashcardToSet(int setId, int flashcardId);
-        // FlashCardSet GetFlashcardSet(int setId);
-        // List<FlashCard> GetFlashcardsInSet(int setId);
-        // bool DeleteFlashcardSet(int setId);
-        // bool DeleteFlashCard(int flashcardId);
-    }
 
+         FlashCard GetFlashcard(int flashcardId);
+         int AddFlashCardSet(CreateFlashCardSetRequest request); 
+         FlashCardSet GetFlashCardSet(int flashCardSetId);
+          public bool DeleteFlashCard(int flashcardId);
+          public bool DeleteFlashCardSet(int flashCardSetId);
+
+    }
 
     public sealed class FlashcardService : IFlashcardService
     {
@@ -35,12 +33,24 @@ namespace StudyZen.FlashCards
             return flashcard.Id;
 
         }
-        // public int CreateFlashcardSet(string setName, FlashCardSetColor color, int? lectureId)
-        // {
-        //     var set = new FlashCardSet(_flashcardSets.Count + 1, setName, color, lectureId);
-        //     _flashcardSets.Add(set);
-        //     return set.Id;
-        // }
+
+        public int AddFlashCardSet(CreateFlashCardSetRequest request)
+    {
+    
+        FlashCardSet flashCardSet = new FlashCardSet(request.SetName, request.Color, request.LectureId);
+
+    
+        _unitOfWork.FlashCardSets.Add(flashCardSet);
+
+    
+        foreach (var flashCardRequest in request.FlashCards)
+        {
+            int flashcardId = AddFlashcard(flashCardRequest);
+            flashCardSet.FlashCardIds.Add(flashcardId);
+        }
+
+        return flashCardSet.Id;
+    }
 
 
         public FlashCard? GetFlashcard(int flashcardId)
@@ -48,55 +58,46 @@ namespace StudyZen.FlashCards
             return _unitOfWork.FlashCards.GetById(flashcardId);
         }
 
-        // public void AddFlashcardToSet(int setId, int flashcardId)
-        // {
-        //     var set = _flashcardSets.FirstOrDefault(s => s.Id == setId);
-        //     if (set != null)
-        //     {
-        //         set.FlashCardIds.Add(flashcardId);
-        //     }
-        // }
-
-        // public FlashCardSet GetFlashcardSet(int setId)
-        // {
-        //     return _flashcardSets.FirstOrDefault(s => s.Id == setId);
-        // }
-
-        // public List<FlashCard> GetFlashcardsInSet(int setId)
-        // {
-        //     var set = _flashcardSets.FirstOrDefault(s => s.Id == setId);
-        //     if (set != null)
-        //     {
-        //         return _flashcards.Where(f => set.FlashCardIds.Contains(f.Id)).ToList();
-        //     }
-        //     return new List<FlashCard>();
-        // }
-
-
-        // public bool DeleteFlashcardSet(int setId)
-        // {
-        //     return DeleteItem(setId, _flashcardSets, fs => fs.Id);
-        // }
-
-        // public bool DeleteFlashCard(int flashcardId)
-        // {
-        //     return DeleteItem(flashcardId, _flashcards, fc => fc.Id);
-        // }
-
-        public bool DeleteItem<T>(int itemId, List<T> itemList, Func<T, int> getIdFunc)
+        public FlashCardSet GetFlashCardSet(int flashCardSetId)
         {
-            var itemToRemove = itemList.FirstOrDefault(item => getIdFunc(item) == itemId);
-            if (itemToRemove != null)
-            {
-                itemList.Remove(itemToRemove);
-                return true;
-            }
-            return false;
+             return _unitOfWork.FlashCardSets.GetById(flashCardSetId);
         }
 
+        public bool DeleteFlashCard(int flashcardId)
+        {
+            var flashcard = GetFlashcard(flashcardId);
+            if (flashcard == null)
+            {
+                return false; 
+            }
 
+             _unitOfWork.FlashCards.Delete(flashcardId);
+            return true; 
+        }
+
+        public bool DeleteFlashCardSet(int flashCardSetId)
+        {
+            var flashCardSet = GetFlashCardSet(flashCardSetId);
+            if (flashCardSet == null)
+            {
+                return false;
+            }
+
+   
+            foreach (var flashcardId in flashCardSet.FlashCardIds)
+            {
+                _unitOfWork.FlashCards.Delete(flashcardId);
+            }
+
+ 
+             _unitOfWork.FlashCardSets.Delete(flashCardSetId);
+
+            return true; 
+        }
+
+      
 
     }
 
-
 }
+

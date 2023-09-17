@@ -3,7 +3,6 @@ using StudyZen.Common;
 using StudyZen.FlashCards.Requests;
 
 
-
 namespace StudyZen.FlashCards;
 
 [ApiController]
@@ -33,7 +32,6 @@ public sealed class FlashcardsController : ControllerBase
 
         };
 
-
         return CreatedAtAction(nameof(GetFlashcard), new { flashcardId = flashcardId }, response);
     }
 
@@ -49,90 +47,82 @@ public sealed class FlashcardsController : ControllerBase
 
         return Ok(flashcard);
     }
+     [HttpPost("add-flashcardset")]
+        public IActionResult AddFlashCardSet([FromBody] CreateFlashCardSetRequest? request)
+        {
+            request = request.ThrowIfRequestArgumentNull(nameof(request));
 
-    // [HttpPost]
-    // [Route("CreateFlashcardSet")]
-    // public IActionResult CreateFlashcardSet([FromBody] CreateFlashCardSetRequest request)
-    // {
-    //     request = request.ThrowIfRequestArgumentNull(nameof(request));
+            var flashCardSetId = _flashcardService.AddFlashCardSet(request);
 
+            var response = new
+            {
+                FlashCardSetId = flashCardSetId,
+                SetName = request.SetName,
+                Color = request.Color,
+                FlashCards = request.FlashCards.Select(flashCardRequest => new
+                {
+                    Question = flashCardRequest.Question,
+                    Answer = flashCardRequest.Answer
+                }).ToList(),
+                LectureId = request.LectureId
+            };
 
-    //     var flashcards = new List<FlashCard>();
-    //     foreach (var flashCardRequest in request.FlashCards)
-    //     {
-    //         var flashcardId = _flashcardService.AddFlashcard(flashCardRequest);
-    //         var flashcard = _flashcardService.GetFlashcard(flashcardId);
-    //         if (flashcard != null)
-    //         {
-    //             flashcards.Add(flashcard);
-    //         }
-    //     }
+            return CreatedAtAction(nameof(GetFlashCardSet), new { flashCardSetId = flashCardSetId }, response);
+        }
 
+    [HttpGet("get-flashcardset/{flashCardSetId}")]
+public IActionResult GetFlashCardSet(int flashCardSetId)
+{
+    var flashCardSet = _flashcardService.GetFlashCardSet(flashCardSetId);
+    if (flashCardSet == null)
+    {
+        return NotFound();
+    }
 
-    //     var setId = _flashcardService.CreateFlashcardSet(request.SetName, request.Color, request.LectureId);
+    // Extract the questions and answers from the flash cards
+    var flashCards = flashCardSet.FlashCards.Select(flashCard => new
+    {
+        Question = flashCard.Question,
+        Answer = flashCard.Answer
+    }).ToList();
 
+    // Extract the flash card IDs
+    var flashCardIds = flashCardSet.FlashCards.Select(flashCard => flashCard.Id).ToList();
 
-    //     foreach (var flashcard in flashcards)
-    //     {
-    //         _flashcardService.AddFlashcardToSet(setId, flashcard.Id);
-    //     }
+    var response = new
+    {
+        Name = flashCardSet.Name,
+        FlashCards = flashCards,
+        FlashCardIds = flashCardIds,
+        Id = flashCardSet.Id
+    };
 
-    //     var response = new
-    //     {
-    //         SetId = setId,
-    //         SetName = request.SetName,
-    //         Color = request.Color,
-    //         FlashCards = flashcards,
-    //         LectureId = request.LectureId
-    //     };
+    return Ok(response);
+}
 
-    //     return CreatedAtAction(nameof(GetFlashcardSet), new { setId = setId }, response);
-    // }
+    
 
-    // [HttpGet]
-    // [Route("GetFlashcardSet/{setId}")]
-    // public IActionResult GetFlashcardSet(int setId)
-    // {
-    //     var flashcardSet = _flashcardService.GetFlashcardSet(setId);
-    //     if (flashcardSet == null)
-    //     {
-    //         return NotFound();
-    //     }
+    [HttpDelete("delete-flashcard/{flashcardId}")]
+    public IActionResult DeleteFlashcard(int flashcardId)
+    {
+        var deleted = _flashcardService.DeleteFlashCard(flashcardId);
+        if (!deleted)
+        {
+            return NotFound(); 
+    }
 
-    //     return Ok(flashcardSet);
-    // }
+    return Ok("Flashcard was deleted successfully");
+    }
 
-    // [HttpDelete]
-    // [Route("DeleteFlashcardSet/{setId}")]
-    // public IActionResult DeleteFlashcardSet(int setId)
-    // {
+    [HttpDelete("delete-flashcardset/{flashCardSetId}")]
+    public IActionResult DeleteFlashcardSet(int flashCardSetId)
+    {
+        var deleted = _flashcardService.DeleteFlashCardSet(flashCardSetId);
+        if (!deleted)
+        {
+            return NotFound(); 
+        }
 
-    //     var deleted = _flashcardService.DeleteFlashcardSet(setId);
-
-
-    //     if (!deleted)
-    //     {
-    //         return NotFound();
-    //     }
-
-    //     return Ok("Flashcard set was deleted successfully");
-    // }
-
-    // [HttpDelete]
-    // [Route("DeleteFlashcard/{flashcardId}")]
-    // public IActionResult DeleteFlashcard(int flashcardId)
-    // {
-    //     var deleted = _flashcardService.DeleteFlashCard(flashcardId);
-    //     if (!deleted)
-    //     {
-    //         return NotFound();
-    //     }
-
-    //     return Ok("Flashcard was deleted successfully");
-    // }
-
-
-
-
-
+        return Ok("Flashcard set was deleted successfully");
+    }
 }

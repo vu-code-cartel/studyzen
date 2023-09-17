@@ -11,14 +11,12 @@ namespace StudyZen.FlashCardSetClass
     int? LectureId { get; set; }
     public List<int> FlashCardIds { get; } = new List<int>(); 
 
-
-    public FlashCardSet( int id, string name, FlashCardSetColor color, int? lectureId)  : base(default)
-        {
-            Name = name;
-
-           Color = color;
-           FlashCards = new List<FlashCard>();
-           LectureId = lectureId;
-        }
+    public FlashCardSet(string name, FlashCardSetColor color, int? lectureId)
+    : base(default){
+      Name = name;
+    Color = color;
+    LectureId = lectureId;
+    FlashCards = new List<FlashCard>();
+    }
 }
 }
