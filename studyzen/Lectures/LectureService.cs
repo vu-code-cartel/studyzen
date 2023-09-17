@@ -29,11 +29,13 @@ public sealed class LectureService : ILectureService
         _unitOfWork.Lectures.Add(newLecture);
         return newLecture;
     }
+
     public Lecture? GetLectureById(int lectureId)
     {
         Lecture? requestedLecture = _unitOfWork.Lectures.GetById(lectureId);
         return requestedLecture;
     }
+
     public IEnumerable<Lecture> GetLecturesByCourseId(int? courseId)
     {
         IEnumerable<Lecture> allLectures = _unitOfWork.Lectures.GetAll();
@@ -47,6 +49,7 @@ public sealed class LectureService : ILectureService
             return allLectures;
         }
     }
+
     public Lecture? UpdateLectureById(int lectureId, string? name, string? content)
     {
         Lecture? toBeUpdatedLecture = _unitOfWork.Lectures.GetById(lectureId);
@@ -65,6 +68,7 @@ public sealed class LectureService : ILectureService
         }
         return toBeUpdatedLecture;
     }
+
     public void DeleteLectureById(int lectureId)
     {
         _unitOfWork.Lectures.Delete(lectureId);
