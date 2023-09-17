@@ -54,6 +54,8 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
             throw new InstanceNotFoundException(typeof(TEntity).Name, instance.Id);
         }
 
+        instance.UpdateUpdatedBy();
+
         entitySet.Instances[instanceIdx] = instance;
 
         Utilities.WriteToJsonFile(_filePath, entitySet);

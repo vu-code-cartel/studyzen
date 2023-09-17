@@ -65,7 +65,6 @@ public sealed class LectureService : ILectureService
         {
             toBeUpdatedLecture.Content = request.Content;
         }
-        toBeUpdatedLecture.UpdatedBy = new UserActionStamp();
         _unitOfWork.Lectures.Update(toBeUpdatedLecture);
         return toBeUpdatedLecture;
     }
