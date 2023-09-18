@@ -12,7 +12,7 @@ public sealed class CreateFlashCardSetRequest
 
     public CreateFlashCardSetRequest(string? setName, FlashCardSetColor color, List<CreateFlashCardRequest> flashCards, int? lectureId)
     {
-        //SetId = setId;
+       
         SetName = setName.ThrowIfRequestArgumentNull(nameof(setName));
         Color = color;
         FlashCards = flashCards;

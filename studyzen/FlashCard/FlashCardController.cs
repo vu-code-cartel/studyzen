@@ -47,7 +47,7 @@ public sealed class FlashcardsController : ControllerBase
 
         return Ok(flashcard);
     }
-     [HttpPost("add-flashcardset")]
+    [HttpPost("add-flashcardset")]
         public IActionResult AddFlashCardSet([FromBody] CreateFlashCardSetRequest? request)
         {
             request = request.ThrowIfRequestArgumentNull(nameof(request));
@@ -71,34 +71,47 @@ public sealed class FlashcardsController : ControllerBase
         }
 
     [HttpGet("get-flashcardset/{flashCardSetId}")]
-public IActionResult GetFlashCardSet(int flashCardSetId)
-{
-    var flashCardSet = _flashcardService.GetFlashCardSet(flashCardSetId);
-    if (flashCardSet == null)
+    public IActionResult GetFlashCardSet(int flashCardSetId)
     {
-        return NotFound();
+        var flashCardSet = _flashcardService.GetFlashCardSet(flashCardSetId);
+        if (flashCardSet == null)
+        {
+         return NotFound();
+        }
+
+    
+        var flashCards = flashCardSet.FlashCards.Select(flashCard => new
+        {
+            Question = flashCard.Question,
+            Answer = flashCard.Answer
+        }).ToList();
+
+    
+        var flashCardIds = flashCardSet.FlashCards.Select(flashCard => flashCard.Id).ToList();
+
+        var response = new
+        {
+             Name = flashCardSet.Name,
+            FlashCards = flashCards,
+            FlashCardIds = flashCardIds,
+            Id = flashCardSet.Id
+        };
+
+            return Ok(response);
     }
 
-    // Extract the questions and answers from the flash cards
-    var flashCards = flashCardSet.FlashCards.Select(flashCard => new
-    {
-        Question = flashCard.Question,
-        Answer = flashCard.Answer
-    }).ToList();
+     [HttpGet("all-flashcards")]
+        public IActionResult GetAllFlashcards()
+        {
+            var flashcards = _flashcardService.GetAllFlashCards();
 
-    // Extract the flash card IDs
-    var flashCardIds = flashCardSet.FlashCards.Select(flashCard => flashCard.Id).ToList();
+            if (flashcards == null || flashcards.Count == 0)
+            {
+                return NoContent(); // No flashcards found
+            }
 
-    var response = new
-    {
-        Name = flashCardSet.Name,
-        FlashCards = flashCards,
-        FlashCardIds = flashCardIds,
-        Id = flashCardSet.Id
-    };
-
-    return Ok(response);
-}
+            return Ok(flashcards);
+        }
 
     
 

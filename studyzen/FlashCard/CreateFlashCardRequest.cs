@@ -8,9 +8,9 @@ public sealed class CreateFlashCardRequest
     public string Question { get; }
     public string Answer { get; }
 
-    public CreateFlashCardRequest(int setId, string? question, string? answer)
+    public CreateFlashCardRequest(string? question, string? answer)
     {
-        SetId = setId;
+        
         Question = question.ThrowIfRequestArgumentNull(nameof(question));
         Answer = answer.ThrowIfRequestArgumentNull(nameof(answer));
     }

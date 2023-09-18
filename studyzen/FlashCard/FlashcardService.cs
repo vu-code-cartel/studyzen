@@ -16,6 +16,8 @@ namespace StudyZen.FlashCards
           public bool DeleteFlashCard(int flashcardId);
           public bool DeleteFlashCardSet(int flashCardSetId);
 
+          public  List<FlashCard> GetAllFlashCards();
+
     }
 
     public sealed class FlashcardService : IFlashcardService
@@ -28,10 +30,16 @@ namespace StudyZen.FlashCards
 
         public int AddFlashcard(CreateFlashCardRequest request)
         {
-            FlashCard flashcard = new FlashCard(request.SetId, request.Question, request.Answer);
+            FlashCard flashcard = new FlashCard(request.Question, request.Answer);
             _unitOfWork.FlashCards.Add(flashcard);
             return flashcard.Id;
 
+        }
+
+        public List<FlashCard> GetAllFlashCards()
+        {
+        
+            return _unitOfWork.FlashCards.GetAll();
         }
 
         public int AddFlashCardSet(CreateFlashCardSetRequest request)
