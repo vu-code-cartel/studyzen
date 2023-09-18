@@ -61,11 +61,6 @@ public sealed class FlashcardsController : ControllerBase
                 FlashCardSetId = flashCardSetId,
                 SetName = request.SetName,
                 Color = request.Color,
-                FlashCards = request.FlashCards.Select(flashCardRequest => new
-                {
-                    Question = flashCardRequest.Question,
-                    Answer = flashCardRequest.Answer
-                }).ToList(),
                 LectureId = request.LectureId
             };
 
@@ -75,31 +70,25 @@ public sealed class FlashcardsController : ControllerBase
     [HttpGet("get-flashcardset/{flashCardSetId}")]
     public IActionResult GetFlashCardSet(int flashCardSetId)
     {
+        
         var flashCardSet = _flashcardService.GetFlashCardSet(flashCardSetId);
+       
         if (flashCardSet == null)
         {
-         return NotFound();
+            return NotFound();
         }
 
-    
-        var flashCards = flashCardSet.FlashCards.Select(flashCard => new
-        {
-            Question = flashCard.Question,
-            Answer = flashCard.Answer
-        }).ToList();
-
-    
-        var flashCardIds = flashCardSet.FlashCards.Select(flashCard => flashCard.Id).ToList();
-
         var response = new
-        {
-             Name = flashCardSet.Name,
-            FlashCards = flashCards,
-            FlashCardIds = flashCardIds,
-            Id = flashCardSet.Id
-        };
+    {
+        FlashCardSetId = flashCardSet.Id,
+        Name = flashCardSet.Name,
+        Color = flashCardSet.Color,
+        LectureId = flashCardSet.LectureId
+    };
 
-            return Ok(response);
+        return Ok(response);
+
+       
     }
 
      [HttpGet("all-flashcards")]
@@ -113,6 +102,19 @@ public sealed class FlashcardsController : ControllerBase
             }
 
             return Ok(flashcards);
+        }
+
+        [HttpGet("all-flashcardsets")]
+        public IActionResult GetAllFlashCardSets()
+        {
+            var flashCardSets = _flashcardService.GetAllFlashCardSets();
+
+            if (flashCardSets == null || flashCardSets.Count == 0)
+            {
+                return NoContent(); 
+            }
+
+            return Ok(flashCardSets);
         }
 
     
@@ -143,9 +145,7 @@ public sealed class FlashcardsController : ControllerBase
 
 
     [HttpPut("update-flashcard/{flashcardId}")]
-    [CopyFlashcardIdFromRoute]
-    
-    
+    [CopyFlashCardIdFromRoute] 
     public IActionResult UpdateFlashcard(int flashcardId, [FromBody] UpdateFlashCardRequest request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
@@ -165,6 +165,7 @@ public sealed class FlashcardsController : ControllerBase
         return Ok("Flashcard updated successfully");
     }
 
+    
 
 
 }

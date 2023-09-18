@@ -15,7 +15,10 @@ namespace StudyZen.FlashCards
         public bool DeleteFlashCard(int flashcardId);
         public bool DeleteFlashCardSet(int flashCardSetId);
         public  List<FlashCard> GetAllFlashCards();
+
+        public List<FlashCardSet> GetAllFlashCardSets();
         public void UpdateFlashCard(FlashCard flashCard);
+        public void UpdateFlashCardSet(FlashCardSet flashCardSet);
 
     }
 
@@ -39,6 +42,14 @@ namespace StudyZen.FlashCards
         {
         
             return _unitOfWork.FlashCards.GetAll();
+
+        }
+
+        public List<FlashCardSet> GetAllFlashCardSets()
+        {
+
+            return _unitOfWork.FlashCardSets.GetAll();
+            
         }
 
         public int AddFlashCardSet(CreateFlashCardSetRequest request)
@@ -48,13 +59,6 @@ namespace StudyZen.FlashCards
 
     
         _unitOfWork.FlashCardSets.Add(flashCardSet);
-
-    
-        foreach (var flashCardRequest in request.FlashCards)
-        {
-            int flashcardId = AddFlashcard(flashCardRequest);
-            flashCardSet.FlashCardIds.Add(flashcardId);
-        }
 
         return flashCardSet.Id;
     }
@@ -89,13 +93,6 @@ namespace StudyZen.FlashCards
             {
                 return false;
             }
-
-   
-            foreach (var flashcardId in flashCardSet.FlashCardIds)
-            {
-                _unitOfWork.FlashCards.Delete(flashcardId);
-            }
-
  
              _unitOfWork.FlashCardSets.Delete(flashCardSetId);
 
@@ -105,6 +102,11 @@ namespace StudyZen.FlashCards
         public void UpdateFlashCard(FlashCard flashCard)
         {
             _unitOfWork.FlashCards.Update(flashCard);
+        }    
+
+         public void UpdateFlashCardSet(FlashCardSet flashCardSet)
+        {
+            _unitOfWork.FlashCardSets.Update(flashCardSet);
         }       
 
       

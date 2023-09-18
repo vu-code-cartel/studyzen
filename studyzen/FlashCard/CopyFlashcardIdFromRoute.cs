@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using StudyZen.FlashCards;
 
-public class CopyFlashcardIdFromRoute : ActionFilterAttribute
+public class CopyFlashCardIdFromRoute : ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {
