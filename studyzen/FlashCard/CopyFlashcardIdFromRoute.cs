@@ -7,11 +7,11 @@ public class CopyFlashCardIdFromRoute : ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        if (context.ActionArguments.ContainsKey("flashcardId") && context.ActionArguments["flashcardId"] is int flashcardId)
+        if (context.ActionArguments.ContainsKey("flashCardId") && context.ActionArguments["flashCardId"] is int flashCardId)
         {
             if (context.ModelState.TryGetValue("request", out var entry) && entry != null && entry.RawValue is FlashCard request)
             {
-               request.Id = flashcardId;
+               request.Id = flashCardId;
             }
         }
 

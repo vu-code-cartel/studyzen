@@ -6,13 +6,13 @@ using StudyZen.FlashCardSetClass;
 namespace StudyZen.FlashCards
 {
 
-    public interface IFlashcardService
+    public interface IFlashCardService
     {
-        int AddFlashcard(CreateFlashCardRequest request);
-        FlashCard GetFlashcard(int flashcardId);
+        int AddFlashCard(CreateFlashCardRequest request);
+        FlashCard GetFlashCard(int flashCardId);
         int AddFlashCardSet(CreateFlashCardSetRequest request); 
         FlashCardSet GetFlashCardSet(int flashCardSetId);
-        public bool DeleteFlashCard(int flashcardId);
+        public bool DeleteFlashCard(int flashCardId);
         public bool DeleteFlashCardSet(int flashCardSetId);
         public  List<FlashCard> GetAllFlashCards();
 
@@ -22,7 +22,7 @@ namespace StudyZen.FlashCards
 
     }
 
-    public sealed class FlashcardService : IFlashcardService
+    public sealed class FlashcardService : IFlashCardService
     {
         private readonly IUnitOfWork _unitOfWork;
         public FlashcardService(IUnitOfWork unitOfWork)
@@ -30,11 +30,11 @@ namespace StudyZen.FlashCards
             _unitOfWork = unitOfWork;
         }
 
-        public int AddFlashcard(CreateFlashCardRequest request)
+        public int AddFlashCard(CreateFlashCardRequest request)
         {
-            FlashCard flashcard = new FlashCard(request.Question, request.Answer);
-            _unitOfWork.FlashCards.Add(flashcard);
-            return flashcard.Id;
+            FlashCard flashCard = new FlashCard(request.Question, request.Answer);
+            _unitOfWork.FlashCards.Add(flashCard);
+            return flashCard.Id;
 
         }
 
@@ -64,9 +64,9 @@ namespace StudyZen.FlashCards
     }
 
 
-        public FlashCard? GetFlashcard(int flashcardId)
+        public FlashCard? GetFlashCard(int flashCardId)
         {
-            return _unitOfWork.FlashCards.GetById(flashcardId);
+            return _unitOfWork.FlashCards.GetById(flashCardId);
         }
 
         public FlashCardSet GetFlashCardSet(int flashCardSetId)
@@ -74,15 +74,15 @@ namespace StudyZen.FlashCards
              return _unitOfWork.FlashCardSets.GetById(flashCardSetId);
         }
 
-        public bool DeleteFlashCard(int flashcardId)
+        public bool DeleteFlashCard(int flashCardId)
         {
-            var flashcard = GetFlashcard(flashcardId);
+            var flashcard = GetFlashCard(flashCardId);
             if (flashcard == null)
             {
                 return false; 
             }
 
-             _unitOfWork.FlashCards.Delete(flashcardId);
+             _unitOfWork.FlashCards.Delete(flashCardId);
             return true; 
         }
 

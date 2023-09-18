@@ -8,13 +8,13 @@ namespace StudyZen.FlashCards;
 
 [ApiController]
 [Route("[controller]")]
-public sealed class FlashcardsController : ControllerBase
+public sealed class FlashCardsController : ControllerBase
 {
-    private readonly IFlashcardService _flashcardService;
+    private readonly IFlashCardService _flashCardService;
 
-    public FlashcardsController(IFlashcardService flashcardService)
+    public FlashCardsController(IFlashCardService flashCardService)
     {
-        _flashcardService = flashcardService;
+        _flashCardService = flashCardService;
     }
 
     [HttpPost]
@@ -22,31 +22,31 @@ public sealed class FlashcardsController : ControllerBase
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
 
-        var flashcardId = _flashcardService.AddFlashcard(request);
+        var flashCardId = _flashCardService.AddFlashCard(request);
 
         var response = new
         {
 
-            FlashCardId = flashcardId,
+            FlashCardId = flashCardId,
             Question = request.Question,
             Answer = request.Answer
 
         };
 
-        return CreatedAtAction(nameof(GetFlashcard), new { flashcardId = flashcardId }, response);
+        return CreatedAtAction(nameof(GetFlashcard), new { flashCardId = flashCardId }, response);
     }
 
     [HttpGet]
-    [Route("{flashcardId}")]
-    public IActionResult GetFlashcard(int flashcardId)
+    [Route("{flashCardId}")]
+    public IActionResult GetFlashcard(int flashCardId)
     {
-        var flashcard = _flashcardService.GetFlashcard(flashcardId);
-        if (flashcard == null)
+        var flashCard = _flashCardService.GetFlashCard(flashCardId);
+        if (flashCard == null)
         {
             return NotFound();
         }
 
-        return Ok(flashcard);
+        return Ok(flashCard);
     }
     
     [HttpPost("add-flashcardset")]
@@ -54,7 +54,7 @@ public sealed class FlashcardsController : ControllerBase
         {
             request = request.ThrowIfRequestArgumentNull(nameof(request));
 
-            var flashCardSetId = _flashcardService.AddFlashCardSet(request);
+            var flashCardSetId = _flashCardService.AddFlashCardSet(request);
 
             var response = new
             {
@@ -71,7 +71,7 @@ public sealed class FlashcardsController : ControllerBase
     public IActionResult GetFlashCardSet(int flashCardSetId)
     {
         
-        var flashCardSet = _flashcardService.GetFlashCardSet(flashCardSetId);
+        var flashCardSet = _flashCardService.GetFlashCardSet(flashCardSetId);
        
         if (flashCardSet == null)
         {
@@ -94,20 +94,20 @@ public sealed class FlashcardsController : ControllerBase
      [HttpGet("all-flashcards")]
         public IActionResult GetAllFlashcards()
         {
-            var flashcards = _flashcardService.GetAllFlashCards();
+            var flashCards = _flashCardService.GetAllFlashCards();
 
-            if (flashcards == null || flashcards.Count == 0)
+            if (flashCards == null || flashCards.Count == 0)
             {
                 return NoContent(); 
             }
 
-            return Ok(flashcards);
+            return Ok(flashCards);
         }
 
         [HttpGet("all-flashcardsets")]
         public IActionResult GetAllFlashCardSets()
         {
-            var flashCardSets = _flashcardService.GetAllFlashCardSets();
+            var flashCardSets = _flashCardService.GetAllFlashCardSets();
 
             if (flashCardSets == null || flashCardSets.Count == 0)
             {
@@ -119,10 +119,10 @@ public sealed class FlashcardsController : ControllerBase
 
     
 
-    [HttpDelete("delete-flashcard/{flashcardId}")]
-    public IActionResult DeleteFlashcard(int flashcardId)
+    [HttpDelete("delete-flashcard/{flashCardId}")]
+    public IActionResult DeleteFlashcard(int flashCardId)
     {
-        var deleted = _flashcardService.DeleteFlashCard(flashcardId);
+        var deleted = _flashCardService.DeleteFlashCard(flashCardId);
         if (!deleted)
         {
             return NotFound(); 
@@ -134,7 +134,7 @@ public sealed class FlashcardsController : ControllerBase
     [HttpDelete("delete-flashcardset/{flashCardSetId}")]
     public IActionResult DeleteFlashcardSet(int flashCardSetId)
     {
-        var deleted = _flashcardService.DeleteFlashCardSet(flashCardSetId);
+        var deleted = _flashCardService.DeleteFlashCardSet(flashCardSetId);
         if (!deleted)
         {
             return NotFound(); 
@@ -144,23 +144,23 @@ public sealed class FlashcardsController : ControllerBase
     }
 
 
-    [HttpPut("update-flashcard/{flashcardId}")]
+    [HttpPut("update-flashcard/{flashCardId}")]
     [CopyFlashCardIdFromRoute] 
-    public IActionResult UpdateFlashcard(int flashcardId, [FromBody] UpdateFlashCardRequest request)
+    public IActionResult UpdateFlashcard(int flashCardId, [FromBody] UpdateFlashCardRequest request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
 
-        var existingFlashcard = _flashcardService.GetFlashcard(flashcardId);
+        var existingFlashCard = _flashCardService.GetFlashCard(flashCardId);
 
-        if (existingFlashcard == null)
+        if (existingFlashCard == null)
         {   
             return NotFound();
         }
 
-        existingFlashcard.Question = request.Question;
-        existingFlashcard.Answer = request.Answer;
+        existingFlashCard.Question = request.Question;
+        existingFlashCard.Answer = request.Answer;
 
-        _flashcardService.UpdateFlashCard(existingFlashcard);
+        _flashCardService.UpdateFlashCard(existingFlashCard);
 
         return Ok("Flashcard updated successfully");
     }
