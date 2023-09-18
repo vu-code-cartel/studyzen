@@ -3,6 +3,7 @@ using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
 using StudyZen.Common.Exceptions;
 using StudyZen.Courses;
+using StudyZen.Lectures;
 using StudyZen.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ ProblemDetailsExtensions.AddProblemDetails(builder.Services);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ILectureService, LectureService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
