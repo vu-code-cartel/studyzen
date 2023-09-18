@@ -1,10 +1,12 @@
+using System.Text.Json.Serialization;
 using StudyZen.Common;
 
 namespace StudyZen.FlashCards.Requests;
 
 public sealed class CreateFlashCardRequest
 {
-    public int SetId { get; }
+ 
+    public int SetId { get; private set; }
     public string Question { get; }
     public string Answer { get; }
 

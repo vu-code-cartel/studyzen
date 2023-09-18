@@ -5,7 +5,7 @@ using StudyZen.FlashCards.Requests;
 public sealed class CreateFlashCardSetRequest
 {
     public string SetName { get; }
-    public int SetId { get; }
+    public int SetId { get; private set; }
     public FlashCardSetColor Color { get; }
     public List<CreateFlashCardRequest> FlashCards { get; }
     public int? LectureId {get; }

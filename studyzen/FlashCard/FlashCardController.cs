@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Common;
 using StudyZen.FlashCards.Requests;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 
 namespace StudyZen.FlashCards;
@@ -47,6 +48,7 @@ public sealed class FlashcardsController : ControllerBase
 
         return Ok(flashcard);
     }
+    
     [HttpPost("add-flashcardset")]
         public IActionResult AddFlashCardSet([FromBody] CreateFlashCardSetRequest? request)
         {
@@ -107,7 +109,7 @@ public sealed class FlashcardsController : ControllerBase
 
             if (flashcards == null || flashcards.Count == 0)
             {
-                return NoContent(); // No flashcards found
+                return NoContent(); 
             }
 
             return Ok(flashcards);
@@ -138,4 +140,31 @@ public sealed class FlashcardsController : ControllerBase
 
         return Ok("Flashcard set was deleted successfully");
     }
+
+
+    [HttpPut("update-flashcard/{flashcardId}")]
+    [CopyFlashcardIdFromRoute]
+    
+    
+    public IActionResult UpdateFlashcard(int flashcardId, [FromBody] UpdateFlashCardRequest request)
+    {
+        request = request.ThrowIfRequestArgumentNull(nameof(request));
+
+        var existingFlashcard = _flashcardService.GetFlashcard(flashcardId);
+
+        if (existingFlashcard == null)
+        {   
+            return NotFound();
+        }
+
+        existingFlashcard.Question = request.Question;
+        existingFlashcard.Answer = request.Answer;
+
+        _flashcardService.UpdateFlashCard(existingFlashcard);
+
+        return Ok("Flashcard updated successfully");
+    }
+
+
+
 }

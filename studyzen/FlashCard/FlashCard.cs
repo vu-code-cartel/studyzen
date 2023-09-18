@@ -1,9 +1,10 @@
+using System.Text.Json.Serialization;
 using StudyZen.Common;
 namespace StudyZen.FlashCards;
 
 public class FlashCard : BaseEntity
 {
- 
+
   public string Question { get; set; }
 
   public string Answer { get; set; }
