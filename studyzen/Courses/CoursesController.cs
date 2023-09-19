@@ -30,6 +30,15 @@ public sealed class CoursesController : ControllerBase
     public async Task<IActionResult> GetCourse(int courseId)
     {
         var fetchedCourse = _courseService.GetCourseById(courseId);
-        return fetchedCourse != null ? Ok(fetchedCourse) : NotFound();
+        return fetchedCourse == null ? NotFound() : Ok(fetchedCourse);
     }
+
+    [HttpDelete]
+    [Route("{courseId}")]
+    public IActionResult DeleteCourse(int courseId)
+    {
+        var result = _courseService.DeleteCourse(courseId);
+        return result == false ? NotFound() : Ok();
+    }
+
 }
