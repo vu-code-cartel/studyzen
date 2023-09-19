@@ -26,15 +26,14 @@ namespace StudyZen.FlashCardSets
 
 
         public FlashCardSet AddFlashCardSet(CreateFlashCardSetRequest request)
-    {
+        {
     
-        FlashCardSet flashCardSet = new FlashCardSet(request.SetName, request.Color, request.LectureId);
+            FlashCardSet flashCardSet = new FlashCardSet(request.SetName, request.Color, request.LectureId);
 
-    
-        _unitOfWork.FlashCardSets.Add(flashCardSet);
+            _unitOfWork.FlashCardSets.Add(flashCardSet);
 
-        return flashCardSet;
-    }
+            return flashCardSet;
+        }
 
 
 

@@ -8,11 +8,11 @@ using StudyZen.FlashCardSets;
 public sealed class CreateFlashCardSetRequest
 {
     public string SetName { get; }
-    public FlashCardSetColor Color { get; }
+    public Color Color { get; }
     
     public int? LectureId {get; }
 
-    public CreateFlashCardSetRequest(string? setName, FlashCardSetColor color, int? lectureId)
+    public CreateFlashCardSetRequest(string? setName, Color color, int? lectureId)
     {
        
         SetName = setName.ThrowIfRequestArgumentNull(nameof(setName));

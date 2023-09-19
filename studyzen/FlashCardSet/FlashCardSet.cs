@@ -5,11 +5,11 @@ namespace StudyZen.FlashCardSetClass
    public class FlashCardSet : BaseEntity
   {
       public string Name { get; set; }
-      public FlashCardSetColor Color { get; private set; }
+      public Color Color { get; private set; }
    
       public int? LectureId { get; set; }
    
-      public FlashCardSet(string name, FlashCardSetColor color, int? lectureId) : base(default)
+      public FlashCardSet(string name, Color color, int? lectureId) : base(default)
       {
       
          Name = name;

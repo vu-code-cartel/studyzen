@@ -1,6 +1,6 @@
 namespace StudyZen.FlashCardSets
 {
-    public enum FlashCardSetColor
+    public enum Color
     {
         Unset,
         Yellow,
