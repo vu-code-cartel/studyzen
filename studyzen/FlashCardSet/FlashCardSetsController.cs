@@ -8,11 +8,11 @@ namespace StudyZen.FlashCardSets;
 
 [ApiController]
 [Route("[controller]")]
-public sealed class FlashCardSetController : ControllerBase
+public sealed class FlashCardSetsController : ControllerBase
 {
     private readonly IFlashCardSetService _flashCardSetService;
 
-    public FlashCardSetController(IFlashCardSetService flashCardSetService)
+    public FlashCardSetsController(IFlashCardSetService flashCardSetService)
     {
         _flashCardSetService = flashCardSetService;
     }

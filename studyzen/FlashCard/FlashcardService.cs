@@ -9,7 +9,7 @@ namespace StudyZen.FlashCards
     public interface IFlashCardService
     {
         FlashCard AddFlashCard(CreateFlashCardRequest request);
-        FlashCard GetFlashCard(int flashCardId);
+        FlashCard? GetFlashCard(int flashCardId);
         public bool DeleteFlashCard(int flashCardId);
         IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int? flashCardSetId);
         FlashCard? UpdateFlashCardById(int flashCardId, UpdateFlashCardRequest request);
@@ -38,14 +38,9 @@ namespace StudyZen.FlashCards
         }
 
         public bool DeleteFlashCard(int flashCardId)
-        {
-            var flashcard = GetFlashCard(flashCardId);
-            if (flashcard == null)
-            {
-                return false; 
-            }
-
+        {          
              _unitOfWork.FlashCards.Delete(flashCardId);
+             
             return true; 
         }
 
