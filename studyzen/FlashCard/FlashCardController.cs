@@ -49,74 +49,19 @@ public sealed class FlashCardsController : ControllerBase
         return Ok(flashCard);
     }
     
-    [HttpPost("add-flashcardset")]
-        public IActionResult AddFlashCardSet([FromBody] CreateFlashCardSetRequest? request)
-        {
-            request = request.ThrowIfRequestArgumentNull(nameof(request));
 
-            var flashCardSetId = _flashCardService.AddFlashCardSet(request);
-
-            var response = new
-            {
-                FlashCardSetId = flashCardSetId,
-                SetName = request.SetName,
-                Color = request.Color,
-                LectureId = request.LectureId
-            };
-
-            return CreatedAtAction(nameof(GetFlashCardSet), new { flashCardSetId = flashCardSetId }, response);
-        }
-
-    [HttpGet("get-flashcardset/{flashCardSetId}")]
-    public IActionResult GetFlashCardSet(int flashCardSetId)
+    [HttpGet("all-flashcards")]
+    public IActionResult GetAllFlashcards()
     {
-        
-        var flashCardSet = _flashCardService.GetFlashCardSet(flashCardSetId);
-       
-        if (flashCardSet == null)
+        var flashCards = _flashCardService.GetAllFlashCards();
+
+        if (flashCards == null || flashCards.Count == 0)
         {
-            return NotFound();
+            return NoContent(); 
         }
-
-        var response = new
-    {
-        FlashCardSetId = flashCardSet.Id,
-        Name = flashCardSet.Name,
-        Color = flashCardSet.Color,
-        LectureId = flashCardSet.LectureId
-    };
-
-        return Ok(response);
-
-       
-    }
-
-     [HttpGet("all-flashcards")]
-        public IActionResult GetAllFlashcards()
-        {
-            var flashCards = _flashCardService.GetAllFlashCards();
-
-            if (flashCards == null || flashCards.Count == 0)
-            {
-                return NoContent(); 
-            }
 
             return Ok(flashCards);
-        }
-
-        [HttpGet("all-flashcardsets")]
-        public IActionResult GetAllFlashCardSets()
-        {
-            var flashCardSets = _flashCardService.GetAllFlashCardSets();
-
-            if (flashCardSets == null || flashCardSets.Count == 0)
-            {
-                return NoContent(); 
-            }
-
-            return Ok(flashCardSets);
-        }
-
+    }
     
 
     [HttpDelete("delete-flashcard/{flashCardId}")]
@@ -129,18 +74,6 @@ public sealed class FlashCardsController : ControllerBase
     }
 
     return Ok("Flashcard was deleted successfully");
-    }
-
-    [HttpDelete("delete-flashcardset/{flashCardSetId}")]
-    public IActionResult DeleteFlashcardSet(int flashCardSetId)
-    {
-        var deleted = _flashCardService.DeleteFlashCardSet(flashCardSetId);
-        if (!deleted)
-        {
-            return NotFound(); 
-        }
-
-        return Ok("Flashcard set was deleted successfully");
     }
 
 

@@ -1,4 +1,4 @@
-namespace StudyZen.FlashCards
+namespace StudyZen.FlashCardSets
 {
     public enum FlashCardSetColor
     {

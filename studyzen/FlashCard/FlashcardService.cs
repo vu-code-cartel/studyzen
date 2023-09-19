@@ -10,15 +10,9 @@ namespace StudyZen.FlashCards
     {
         int AddFlashCard(CreateFlashCardRequest request);
         FlashCard GetFlashCard(int flashCardId);
-        int AddFlashCardSet(CreateFlashCardSetRequest request); 
-        FlashCardSet GetFlashCardSet(int flashCardSetId);
         public bool DeleteFlashCard(int flashCardId);
-        public bool DeleteFlashCardSet(int flashCardSetId);
         public  List<FlashCard> GetAllFlashCards();
-
-        public List<FlashCardSet> GetAllFlashCardSets();
         public void UpdateFlashCard(FlashCard flashCard);
-        public void UpdateFlashCardSet(FlashCardSet flashCardSet);
 
     }
 
@@ -45,33 +39,10 @@ namespace StudyZen.FlashCards
 
         }
 
-        public List<FlashCardSet> GetAllFlashCardSets()
-        {
-
-            return _unitOfWork.FlashCardSets.GetAll();
-            
-        }
-
-        public int AddFlashCardSet(CreateFlashCardSetRequest request)
-    {
-    
-        FlashCardSet flashCardSet = new FlashCardSet(request.SetName, request.Color, request.LectureId);
-
-    
-        _unitOfWork.FlashCardSets.Add(flashCardSet);
-
-        return flashCardSet.Id;
-    }
-
 
         public FlashCard? GetFlashCard(int flashCardId)
         {
             return _unitOfWork.FlashCards.GetById(flashCardId);
-        }
-
-        public FlashCardSet GetFlashCardSet(int flashCardSetId)
-        {
-             return _unitOfWork.FlashCardSets.GetById(flashCardSetId);
         }
 
         public bool DeleteFlashCard(int flashCardId)
@@ -86,29 +57,10 @@ namespace StudyZen.FlashCards
             return true; 
         }
 
-        public bool DeleteFlashCardSet(int flashCardSetId)
-        {
-            var flashCardSet = GetFlashCardSet(flashCardSetId);
-            if (flashCardSet == null)
-            {
-                return false;
-            }
- 
-             _unitOfWork.FlashCardSets.Delete(flashCardSetId);
-
-            return true; 
-        }
-
         public void UpdateFlashCard(FlashCard flashCard)
         {
             _unitOfWork.FlashCards.Update(flashCard);
-        }    
-
-         public void UpdateFlashCardSet(FlashCardSet flashCardSet)
-        {
-            _unitOfWork.FlashCardSets.Update(flashCardSet);
-        }       
-
+        }   
       
 
     }

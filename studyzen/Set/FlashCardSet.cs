@@ -1,5 +1,5 @@
 using StudyZen.Common;
-using StudyZen.FlashCards;
+using StudyZen.FlashCardSets;
 namespace StudyZen.FlashCardSetClass
 {
    public class FlashCardSet : BaseEntity
