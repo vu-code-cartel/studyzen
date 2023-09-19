@@ -8,7 +8,6 @@ using StudyZen.FlashCardSets;
 public sealed class CreateFlashCardSetRequest
 {
     public string SetName { get; }
-    public int SetId { get; private set; }
     public FlashCardSetColor Color { get; }
     
     public int? LectureId {get; }

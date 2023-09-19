@@ -15,15 +15,13 @@ public sealed class UnitOfWork : IUnitOfWork
 {
     public IGenericRepository<Course> Courses { get; }
     public IGenericRepository<FlashCard> FlashCards { get; }
-
     public IGenericRepository<FlashCardSet> FlashCardSets { get; } 
 
     public UnitOfWork()
     {
         Courses = new GenericRepository<Course>("courses");
         FlashCards = new GenericRepository<FlashCard>("flashCards");
-
-        FlashCardSets = new GenericRepository<FlashCardSet>("flashcardSets");
+        FlashCardSets = new GenericRepository<FlashCardSet>("flashCardSets");
 
     }
 }
