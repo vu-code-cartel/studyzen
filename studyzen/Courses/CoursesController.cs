@@ -33,6 +33,14 @@ public sealed class CoursesController : ControllerBase
         return fetchedCourse == null ? NotFound() : Ok(fetchedCourse);
     }
 
+    [HttpPatch]
+    [Route("{courseId}")]
+    public IActionResult UpdateCourse([FromBody] UpdateCourseRequest? request, int courseId)
+    {
+        var updatedCourse = _courseService.UpdateCourse(request, courseId);
+        return updatedCourse == null ? NotFound() : Ok(updatedCourse);
+    }
+
     [HttpDelete]
     [Route("{courseId}")]
     public IActionResult DeleteCourse(int courseId)
