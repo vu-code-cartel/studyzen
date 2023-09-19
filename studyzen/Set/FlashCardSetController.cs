@@ -86,6 +86,12 @@ public sealed class FlashCardSetController : ControllerBase
         return Ok("Flashcard set was deleted successfully");
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetFlashCardSetsByLectureId(int? lectureId)
+    {
+        return Ok(_flashCardSetService.GetFlashCardSetsByLectureId(lectureId));
+    }
+
 
 
 }

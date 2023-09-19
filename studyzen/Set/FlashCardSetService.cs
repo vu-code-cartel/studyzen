@@ -15,6 +15,8 @@ namespace StudyZen.FlashCardSets
         public List<FlashCardSet> GetAllFlashCardSets();
         public void UpdateFlashCardSet(FlashCardSet flashCardSet);
 
+        IReadOnlyCollection<FlashCardSet> GetFlashCardSetsByLectureId(int? lectureId);
+
     }
 
     public sealed class FlashCardSetService : IFlashCardSetService
@@ -67,7 +69,21 @@ namespace StudyZen.FlashCardSets
          public void UpdateFlashCardSet(FlashCardSet flashCardSet)
         {
             _unitOfWork.FlashCardSets.Update(flashCardSet);
-        }       
+        }     
+
+        public  IReadOnlyCollection<FlashCardSet> GetFlashCardSetsByLectureId(int? lectureId)
+        {
+            var allFlashCardSets = _unitOfWork.FlashCardSets.GetAll();
+            if (lectureId != null)
+            {
+                var lectureSets = allFlashCardSets.Where(flashcardset => flashcardset.LectureId == lectureId);
+                return lectureSets.ToList();
+            }
+            else
+            {
+                return allFlashCardSets;
+            }
+        }  
 
       
 
