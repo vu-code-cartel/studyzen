@@ -53,13 +53,13 @@ namespace StudyZen.FlashCardSets
         public  IReadOnlyCollection<FlashCardSet> GetFlashCardSetsByLectureId(int? lectureId)
         {
             var allFlashCardSets = _unitOfWork.FlashCardSets.GetAll();
-            if (lectureId != null)
+            if (lectureId == null)
             {
-                return allFlashCardSets.Where(flashcardset => flashcardset.LectureId == lectureId).ToList();
+                return allFlashCardSets;
             }
             else
             {
-                return allFlashCardSets;
+                return allFlashCardSets.Where(flashcardset => flashcardset.LectureId == lectureId).ToList();
             }
         }  
 
