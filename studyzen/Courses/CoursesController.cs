@@ -44,8 +44,8 @@ public sealed class CoursesController : ControllerBase
     [Route("{courseId}")]
     public IActionResult DeleteCourse(int courseId)
     {
-        var result = _courseService.DeleteCourse(courseId);
-        return result == false ? NotFound() : Ok();
+        _courseService.DeleteCourse(courseId);
+        return NoContent();
     }
 
 }
