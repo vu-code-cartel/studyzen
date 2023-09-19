@@ -22,7 +22,7 @@ public sealed class CourseService : ICourseService
 
     public Course AddCourse(CreateCourseRequest request)
     {
-        var newCourse = new Course(request.Name,request.Description);
+        var newCourse = new Course(request.Name, request.Description);
         _unitOfWork.Courses.Add(newCourse);
         return newCourse;
     }
