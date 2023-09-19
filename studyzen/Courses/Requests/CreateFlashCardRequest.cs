@@ -6,13 +6,13 @@ namespace StudyZen.FlashCards.Requests;
 public sealed class CreateFlashCardRequest
 {
  
-    public int SetId { get; private set; }
+    public int FlashCardSetId {get;}
     public string Question { get; }
     public string Answer { get; }
 
-    public CreateFlashCardRequest(string? question, string? answer)
+    public CreateFlashCardRequest(int flashCardSetId, string? question, string? answer)
     {
-        
+        FlashCardSetId = flashCardSetId;
         Question = question.ThrowIfRequestArgumentNull(nameof(question));
         Answer = answer.ThrowIfRequestArgumentNull(nameof(answer));
     }

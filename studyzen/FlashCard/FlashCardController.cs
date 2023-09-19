@@ -26,7 +26,7 @@ public sealed class FlashCardsController : ControllerBase
 
         var response = new
         {
-
+            FlashCardSetId = request.FlashCardSetId,
             FlashCardId = flashCardId,
             Question = request.Question,
             Answer = request.Answer
@@ -62,6 +62,12 @@ public sealed class FlashCardsController : ControllerBase
 
             return Ok(flashCards);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetFlashCardsBySetId(int? flashCardSetId)
+    {
+        return Ok(_flashCardService.GetFlashCardsBySetId(flashCardSetId));
+    }
     
 
     [HttpDelete("delete-flashcard/{flashCardId}")]
@@ -90,6 +96,7 @@ public sealed class FlashCardsController : ControllerBase
             return NotFound();
         }
 
+        existingFlashCard.FlashCardSetId = request.FlashCardSetId;
         existingFlashCard.Question = request.Question;
         existingFlashCard.Answer = request.Answer;
 

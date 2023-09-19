@@ -11,6 +11,7 @@ namespace StudyZen.FlashCards
         int AddFlashCard(CreateFlashCardRequest request);
         FlashCard GetFlashCard(int flashCardId);
         public bool DeleteFlashCard(int flashCardId);
+        IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int? flashCardSetId);
         public  List<FlashCard> GetAllFlashCards();
         public void UpdateFlashCard(FlashCard flashCard);
 
@@ -26,7 +27,7 @@ namespace StudyZen.FlashCards
 
         public int AddFlashCard(CreateFlashCardRequest request)
         {
-            FlashCard flashCard = new FlashCard(request.Question, request.Answer);
+            FlashCard flashCard = new FlashCard(request.FlashCardSetId, request.Question, request.Answer);
             _unitOfWork.FlashCards.Add(flashCard);
             return flashCard.Id;
 
@@ -61,6 +62,20 @@ namespace StudyZen.FlashCards
         {
             _unitOfWork.FlashCards.Update(flashCard);
         }   
+
+        public IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int? flashCardSetId)
+        {
+            var allFlashCards = _unitOfWork.FlashCards.GetAll();
+            if (flashCardSetId != null)
+            {
+                var setFlashCards = allFlashCards.Where(flashcard => flashcard.FlashCardSetId == flashCardSetId);
+                return setFlashCards.ToList();
+            }
+            else
+            {
+                return allFlashCards;
+            }
+        }
       
 
     }

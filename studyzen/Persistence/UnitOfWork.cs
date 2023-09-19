@@ -8,7 +8,7 @@ public interface IUnitOfWork
 {
     IGenericRepository<Course> Courses { get; }
     IGenericRepository<FlashCard> FlashCards { get; }
-     IGenericRepository<FlashCardSet> FlashCardSets { get; }
+    IGenericRepository<FlashCardSet> FlashCardSets { get; }
 }
 
 public sealed class UnitOfWork : IUnitOfWork
