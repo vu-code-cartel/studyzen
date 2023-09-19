@@ -13,7 +13,7 @@ namespace StudyZen.FlashCardSets
         public bool DeleteFlashCardSet(int flashCardSetId);
 
         public List<FlashCardSet> GetAllFlashCardSets();
-       // public void UpdateFlashCardSet(FlashCardSet flashCardSet);
+        public void UpdateFlashCardSet(FlashCardSet flashCardSet);
 
     }
 

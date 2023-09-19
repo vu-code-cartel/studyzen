@@ -61,18 +61,18 @@ public sealed class FlashCardSetController : ControllerBase
     }
 
      
-        [HttpGet("all-flashcardsets")]
-        public IActionResult GetAllFlashCardSets()
+    [HttpGet("all-flashcardsets")]
+    public IActionResult GetAllFlashCardSets()
+    {
+        var flashCardSets = _flashCardSetService.GetAllFlashCardSets();
+
+        if (flashCardSets == null || flashCardSets.Count == 0)
         {
-            var flashCardSets = _flashCardSetService.GetAllFlashCardSets();
-
-            if (flashCardSets == null || flashCardSets.Count == 0)
-            {
-                return NoContent(); 
-            }
-
-            return Ok(flashCardSets);
+            return NoContent(); 
         }
+
+        return Ok(flashCardSets);
+    }
 
     [HttpDelete("delete-flashcardset/{flashCardSetId}")]
     public IActionResult DeleteFlashcardSet(int flashCardSetId)
