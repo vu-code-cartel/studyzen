@@ -1,13 +1,13 @@
-import ChakraProvider from './ChakraProvider';
 import { QueryProvider } from './QueryProvider';
 import { RouterProvider } from './RouterProvider';
+import { StylesProvider } from './StylesProvider';
 
 export const Providers = () => {
   return (
     <QueryProvider>
-      <ChakraProvider>
+      <StylesProvider>
         <RouterProvider />
-      </ChakraProvider>
+      </StylesProvider>
     </QueryProvider>
   );
 };

@@ -1,4 +1,44 @@
 {
-  "MainPage": "This is our main page",
-  "NotFoundPage": "This is our not found page"
+  "Common": {
+    "AppName": "StudyZen"
+  },
+  "NavBar": {
+    "Courses": "Courses",
+    "Flashcards": "Flashcards"
+  },
+  "HomePage": {
+    "DocumentTitle": "StudyZen",
+    "Title": "Welcome to StudyZen!"
+  },
+  "CoursesPage": {
+    "DocumentTitle": "Courses",
+    "Title": "Courses",
+    "NewCourse": "New course"
+  },
+  "CoursePage": {
+    "Tabs": {
+      "Lectures": "Lectures",
+      "About": "About"
+    },
+    "NewLecture": "New lecture"
+  },
+  "NewCoursePage": {
+    "DocumentTitle": "New course",
+    "Title": "New",
+    "Submit": "Create",
+    "Fields": {
+      "Name": "Name",
+      "Description": "Description"
+    },
+    "Errors": {
+      "NameMustNotBeEmpty": "Course name must not be empty.",
+      "DescriptionMustNotBeEmpty": "Course description must not be empty."
+    }
+  },
+  "NotFoundPage": {
+    "DocumentTitle": "Page not found",
+    "Title": "The page you are looking for doesn't exist or has been moved.",
+    "404": "404",
+    "GoBackHome": "Go back home"
+  }
 }
