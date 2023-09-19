@@ -8,7 +8,7 @@ public sealed class UpdateFlashCardRequest
     public string? Answer { get; }
 
 
-    public UpdateFlashCardRequest(int flashCardSetId, string? question, string? answer)
+    public UpdateFlashCardRequest(string? question, string? answer)
     {
         Question = question;
         Answer = answer;

@@ -59,7 +59,7 @@ public sealed class FlashCardsController : ControllerBase
 
 
     [HttpPut("{flashCardId}")]
-    public IActionResult UpdateFlashcard(int flashCardId, [FromBody] CreateFlashCardRequest? request)
+    public IActionResult UpdateFlashcard(int flashCardId, [FromBody] UpdateFlashCardRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
 
@@ -70,13 +70,13 @@ public sealed class FlashCardsController : ControllerBase
             return NotFound();
         }
 
-        existingFlashCard.FlashCardSetId = request.FlashCardSetId;
+       
         existingFlashCard.Question = request.Question;
         existingFlashCard.Answer = request.Answer;
 
         _flashCardService.UpdateFlashCard(existingFlashCard);
 
-        return Ok("Flashcard updated successfully");
+        return Ok(existingFlashCard);
 
     }
 
