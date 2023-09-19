@@ -59,7 +59,7 @@ public sealed class FlashCardsController : ControllerBase
 
 
     [HttpPut("{flashCardId}")]
-    public IActionResult UpdateFlashcard(int flashCardId, [FromBody] CreateFlashCardRequest request)
+    public IActionResult UpdateFlashcard(int flashCardId, [FromBody] CreateFlashCardRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
 
@@ -77,6 +77,7 @@ public sealed class FlashCardsController : ControllerBase
         _flashCardService.UpdateFlashCard(existingFlashCard);
 
         return Ok("Flashcard updated successfully");
+
     }
 
     
