@@ -84,8 +84,7 @@ public sealed class FlashCardsController : ControllerBase
 
 
     [HttpPut("update-flashcard/{flashCardId}")]
-    [CopyFlashCardIdFromRoute] 
-    public IActionResult UpdateFlashcard(int flashCardId, [FromBody] UpdateFlashCardRequest request)
+    public IActionResult UpdateFlashcard(int flashCardId, [FromBody] CreateFlashCardRequest request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
 
