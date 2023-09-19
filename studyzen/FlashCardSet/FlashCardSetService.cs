@@ -55,8 +55,7 @@ namespace StudyZen.FlashCardSets
             var allFlashCardSets = _unitOfWork.FlashCardSets.GetAll();
             if (lectureId != null)
             {
-                var lectureSets = allFlashCardSets.Where(flashcardset => flashcardset.LectureId == lectureId);
-                return lectureSets.ToList();
+                return allFlashCardSets.Where(flashcardset => flashcardset.LectureId == lectureId).ToList();
             }
             else
             {

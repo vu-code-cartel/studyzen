@@ -51,7 +51,7 @@ public sealed class FlashCardsController : ControllerBase
         
         if (!deleted)
         {
-            return NotFound(); 
+            return NoContent(); 
         }
 
         return Ok("Flashcard was deleted successfully");

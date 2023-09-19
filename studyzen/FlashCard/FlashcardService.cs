@@ -69,8 +69,7 @@ namespace StudyZen.FlashCards
             var allFlashCards = _unitOfWork.FlashCards.GetAll();
             if (flashCardSetId != null)
             {
-                var setFlashCards = allFlashCards.Where(flashCard => flashCard.FlashCardSetId == flashCardSetId);
-                return setFlashCards.ToList();
+                return allFlashCards.Where(flashCard => flashCard.FlashCardSetId == flashCardSetId).ToList();
             }
             else
             {

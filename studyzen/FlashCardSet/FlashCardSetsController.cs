@@ -45,7 +45,7 @@ public sealed class FlashCardSetsController : ControllerBase
         var deleted = _flashCardSetService.DeleteFlashCardSet(flashCardSetId);
         if (!deleted)
         {
-            return NotFound(); 
+            return NoContent(); 
         }
 
         return Ok("Flashcard set was deleted successfully");
