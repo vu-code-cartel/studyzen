@@ -58,26 +58,13 @@ public sealed class FlashCardsController : ControllerBase
     }
 
 
-    [HttpPut("{flashCardId}")]
-    public IActionResult UpdateFlashcard(int flashCardId, [FromBody] UpdateFlashCardRequest? request)
+    [HttpPatch]
+    [Route("{flashCardId}")]
+    public async Task<IActionResult> UpdateFlashCardById(int flashCardId, [FromBody] UpdateFlashCardRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-
-        var existingFlashCard = _flashCardService.GetFlashCard(flashCardId);
-
-        if (existingFlashCard == null)
-        {   
-            return NotFound();
-        }
-
-       
-        existingFlashCard.Question = request.Question;
-        existingFlashCard.Answer = request.Answer;
-
-        _flashCardService.UpdateFlashCard(existingFlashCard);
-
-        return Ok(existingFlashCard);
-
+        var updatedFlashCard = _flashCardService.UpdateFlashCardById(flashCardId, request);
+        return updatedFlashCard == null ? NotFound() : Ok(updatedFlashCard);
     }
 
     

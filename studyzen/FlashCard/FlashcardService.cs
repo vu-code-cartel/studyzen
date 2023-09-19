@@ -12,7 +12,7 @@ namespace StudyZen.FlashCards
         FlashCard GetFlashCard(int flashCardId);
         public bool DeleteFlashCard(int flashCardId);
         IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int? flashCardSetId);
-        public void UpdateFlashCard(FlashCard flashCard);
+        FlashCard? UpdateFlashCardById(int flashCardId, UpdateFlashCardRequest request);
 
     }
 
@@ -49,10 +49,25 @@ namespace StudyZen.FlashCards
             return true; 
         }
 
-        public void UpdateFlashCard(FlashCard flashCard)
+        public FlashCard? UpdateFlashCardById(int flashCardId, UpdateFlashCardRequest request)
+    {
+        var toBeUpdatedFlashCard = _unitOfWork.FlashCards.GetById(flashCardId);
+        if (toBeUpdatedFlashCard  == null)
         {
-            _unitOfWork.FlashCards.Update(flashCard);
-        }   
+            return null;
+        }
+        if (request.Question != null)
+        {
+            toBeUpdatedFlashCard.Question = request.Question;
+        }
+        if (request.Answer != null)
+        {
+            toBeUpdatedFlashCard.Answer = request.Answer;
+        }
+        _unitOfWork.FlashCards.Update(toBeUpdatedFlashCard);
+        
+        return toBeUpdatedFlashCard;
+    }
 
         public IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int? flashCardSetId)
         {
