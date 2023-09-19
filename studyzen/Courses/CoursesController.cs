@@ -20,9 +20,9 @@ public sealed class CoursesController : ControllerBase
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
 
-        var courseId = _courseService.AddCourse(request);
+        var newCourse = _courseService.AddCourse(request);
 
-        return CreatedAtAction(nameof(GetCourse), new { courseId = courseId }, null);
+        return CreatedAtAction(nameof(GetCourse), new { courseId = newCourse.Id }, newCourse);
     }
 
     [HttpGet]
