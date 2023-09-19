@@ -29,6 +29,7 @@ public sealed class CoursesController : ControllerBase
     [Route("{courseId}")]
     public async Task<IActionResult> GetCourse(int courseId)
     {
-        return Ok(courseId);
+        var fetchedCourse = _courseService.GetCourseById(courseId);
+        return fetchedCourse != null ? Ok(fetchedCourse) : NotFound();
     }
 }
