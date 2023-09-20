@@ -10,6 +10,6 @@ public sealed class CreateCourseRequest
     public CreateCourseRequest(string? name, string? description)
     {
         Name = name.ThrowIfRequestArgumentNull(nameof(name));
-        Description = description.ThrowIfRequestArgumentNull(nameof(description));
+        Description = description ?? "";
     }
 }

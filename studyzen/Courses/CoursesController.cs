@@ -19,16 +19,33 @@ public sealed class CoursesController : ControllerBase
     public IActionResult CreateCourse([FromBody] CreateCourseRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-
-        var courseId = _courseService.AddCourse(request);
-
-        return CreatedAtAction(nameof(GetCourse), new { courseId = courseId }, null);
+        var newCourse = _courseService.AddCourse(request);
+        return CreatedAtAction(nameof(GetCourse), new { courseId = newCourse.Id }, newCourse);
     }
 
     [HttpGet]
     [Route("{courseId}")]
     public async Task<IActionResult> GetCourse(int courseId)
     {
-        return Ok(courseId);
+        var fetchedCourse = _courseService.GetCourseById(courseId);
+        return fetchedCourse == null ? NotFound() : Ok(fetchedCourse);
     }
+
+    [HttpPatch]
+    [Route("{courseId}")]
+    public IActionResult UpdateCourse([FromBody] UpdateCourseRequest? request, int courseId)
+    {
+        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        var updatedCourse = _courseService.UpdateCourse(request, courseId);
+        return updatedCourse == null ? NotFound() : Ok(updatedCourse);
+    }
+
+    [HttpDelete]
+    [Route("{courseId}")]
+    public IActionResult DeleteCourse(int courseId)
+    {
+        _courseService.DeleteCourse(courseId);
+        return NoContent();
+    }
+
 }
