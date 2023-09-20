@@ -1,18 +1,55 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { MainPage } from '../pages/MainPage';
-import { NotFoundPage } from '../pages/NotFoundPage';
+import { RouterProvider as Provider, createBrowserRouter } from 'react-router-dom';
+import { HomePage } from '../pages/HomePage';
+import { AppRoutes } from '../common/app-routes';
+import { CoursesPage } from '../pages/CoursesPage';
+import { NewCoursePage } from '../pages/NewCoursePage';
+import { LecturePage } from '../pages/LecturePage';
+import { NewLecturePage } from '../pages/NewLecturePage';
+import { CourseLecturesPage } from '../pages/CourseLecturesPage';
+import { CourseAboutPage } from '../pages/CourseAboutPage';
+import { AppFrame } from '../components/AppFrame';
+import { NotFound } from '../components/NotFound';
 
-export class AppRoutes {
-  public static readonly MainPage = '/';
-}
+const router = createBrowserRouter([
+  {
+    element: <AppFrame />,
+    children: [
+      {
+        path: AppRoutes.Home,
+        element: <HomePage />,
+      },
+      {
+        path: AppRoutes.Courses,
+        element: <CoursesPage />,
+      },
+      {
+        path: AppRoutes.Course,
+        element: <CourseLecturesPage />,
+      },
+      {
+        path: AppRoutes.CourseAbout,
+        element: <CourseAboutPage />,
+      },
+      {
+        path: AppRoutes.NewCourse,
+        element: <NewCoursePage />,
+      },
+      {
+        path: AppRoutes.Lecture,
+        element: <LecturePage />,
+      },
+      {
+        path: AppRoutes.NewLecture,
+        element: <NewLecturePage />,
+      },
+      {
+        path: '*',
+        element: <NotFound />,
+      },
+    ],
+  },
+]);
 
 export const RouterProvider = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path={AppRoutes.MainPage} element={<MainPage />} />
-        <Route path='*' element={<NotFoundPage />} />
-      </Routes>
-    </Router>
-  );
+  return <Provider router={router} />;
 };
