@@ -13,9 +13,9 @@ public sealed class LecturesController : ControllerBase
 {
     private readonly ILectureService _lectureService;
 
-    public LecturesController(ILectureService courseService)
+    public LecturesController(ILectureService lectureService)
     {
-        _lectureService = courseService;
+        _lectureService = lectureService;
     }
 
     [HttpGet]
