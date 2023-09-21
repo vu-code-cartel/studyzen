@@ -5,8 +5,7 @@ using StudyZen.FlashCards.Requests;
 
 namespace StudyZen.FlashCards;
 
-[ApiController]
-[Route("[controller]")]
+[ApiController, Route("flashcards")]
 public sealed class FlashCardsController : ControllerBase
 {
     private readonly IFlashCardService _flashCardService;
@@ -20,7 +19,7 @@ public sealed class FlashCardsController : ControllerBase
     public IActionResult CreateFlashCard([FromBody] CreateFlashCardRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var flashCard = _flashCardService.AddFlashCard(request);
+        var flashCard = _flashCardService.CreateFlashCard(request);
         return CreatedAtAction(nameof(GetFlashCard), new { flashCardId = flashCard.Id }, flashCard);
     }
 
@@ -33,21 +32,18 @@ public sealed class FlashCardsController : ControllerBase
         return flashCard == null ? NotFound() : Ok(flashCard);
     }
 
+    [HttpGet]
+    [Route("all")]
+    public IActionResult GetAllFlashCards()
+    {
+        return Ok(_flashCardService.GetAllFlashCards());
+    }
 
     [HttpGet]
-    public IActionResult GetFlashCardsBySetId(int? flashCardSetId)
+    public IActionResult GetFlashCardsBySetId([FromQuery] int flashCardSetId)
     {
         return Ok(_flashCardService.GetFlashCardsBySetId(flashCardSetId));
     }
-
-
-    [HttpDelete("{flashCardId}")]
-    public IActionResult DeleteFlashcard(int flashCardId)
-    {
-        _flashCardService.DeleteFlashCardById(flashCardId);
-        return NoContent();
-    }
-
 
     [HttpPatch]
     [Route("{flashCardId}")]
@@ -57,11 +53,11 @@ public sealed class FlashCardsController : ControllerBase
         var updatedFlashCard = _flashCardService.UpdateFlashCardById(flashCardId, request);
         return updatedFlashCard == null ? NotFound() : Ok(updatedFlashCard);
     }
-    [HttpGet]
-    public IActionResult GetAllFlashCards()
+
+    [HttpDelete("{flashCardId}")]
+    public IActionResult DeleteFlashcard(int flashCardId)
     {
-        return Ok(_flashCardService.GetAllFlashCards());
+        _flashCardService.DeleteFlashCardById(flashCardId);
+        return NoContent();
     }
-
-
 }

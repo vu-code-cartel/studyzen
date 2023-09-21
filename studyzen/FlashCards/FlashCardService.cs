@@ -1,35 +1,33 @@
 using StudyZen.FlashCards.Requests;
 using StudyZen.Persistence;
-using StudyZen.FlashCardSetClass;
 
 
 namespace StudyZen.FlashCards
 {
-
     public interface IFlashCardService
     {
-        FlashCard AddFlashCard(CreateFlashCardRequest request);
+        FlashCard CreateFlashCard(CreateFlashCardRequest request);
         FlashCard? GetFlashCardById(int flashCardId);
-        void DeleteFlashCardById(int flashCardId);
-        IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int? flashCardSetId);
+        IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int flashCardSetId);
+        IReadOnlyCollection<FlashCard> GetAllFlashCards();
         FlashCard? UpdateFlashCardById(int flashCardId, UpdateFlashCardRequest request);
-        public IReadOnlyCollection<FlashCard> GetAllFlashCards();
+        void DeleteFlashCardById(int flashCardId);
     }
 
     public sealed class FlashcardService : IFlashCardService
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public FlashcardService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public FlashCard AddFlashCard(CreateFlashCardRequest request)
+        public FlashCard CreateFlashCard(CreateFlashCardRequest request)
         {
             var newFlashCard = new FlashCard(request.FlashCardSetId, request.Question, request.Answer);
             _unitOfWork.FlashCards.Add(newFlashCard);
             return newFlashCard;
-
         }
 
         public FlashCard? GetFlashCardById(int flashCardId)
@@ -37,9 +35,15 @@ namespace StudyZen.FlashCards
             return _unitOfWork.FlashCards.GetById(flashCardId);
         }
 
-        public void DeleteFlashCardById(int flashCardId)
+        public IReadOnlyCollection<FlashCard> GetAllFlashCards()
         {
-            _unitOfWork.FlashCards.Delete(flashCardId);
+            return _unitOfWork.FlashCards.GetAll();
+        }
+
+        public IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int flashCardSetId)
+        {
+            var allFlashCards = _unitOfWork.FlashCards.GetAll();
+            return allFlashCards.Where(flashCard => flashCard.FlashCardSetId == flashCardSetId).ToList();
         }
 
         public FlashCard? UpdateFlashCardById(int flashCardId, UpdateFlashCardRequest request)
@@ -58,22 +62,13 @@ namespace StudyZen.FlashCards
                 toBeUpdatedFlashCard.Answer = request.Answer;
             }
             _unitOfWork.FlashCards.Update(toBeUpdatedFlashCard);
-
             return toBeUpdatedFlashCard;
         }
 
-        public IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int? flashCardSetId)
+        public void DeleteFlashCardById(int flashCardId)
         {
-            var allFlashCards = _unitOfWork.FlashCards.GetAll();
-            return allFlashCards.Where(flashCard => flashCard.FlashCardSetId == flashCardSetId).ToList();
-        }
-
-        public IReadOnlyCollection<FlashCard> GetAllFlashCards()
-        {
-            return _unitOfWork.FlashCards.GetAll();
+            _unitOfWork.FlashCards.Delete(flashCardId);
         }
 
     }
-
 }
-
