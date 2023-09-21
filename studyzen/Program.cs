@@ -4,6 +4,8 @@ using Hellang.Middleware.ProblemDetails.Mvc;
 using StudyZen.Common.Exceptions;
 using StudyZen.Courses;
 using StudyZen.Lectures;
+using StudyZen.FlashCards;
+using StudyZen.FlashCardSets;
 using StudyZen.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,8 @@ ProblemDetailsExtensions.AddProblemDetails(builder.Services);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ILectureService, LectureService>();
+builder.Services.AddScoped<IFlashCardService, FlashcardService>();
+builder.Services.AddScoped<IFlashCardSetService, FlashCardSetService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
