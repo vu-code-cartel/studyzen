@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Studyzen.Lectures;
 using StudyZen.Common;
-using StudyZen.Courses;
-using StudyZen.Lectures.Forms;
 using StudyZen.Lectures.Requests;
 
 namespace StudyZen.Lectures;
@@ -18,14 +15,6 @@ public sealed class LecturesController : ControllerBase
         _lectureService = lectureService;
     }
 
-    [HttpGet]
-    [Route("{lectureId}")]
-    public IActionResult GetLecture(int lectureId)
-    {
-        var requestedLecture = _lectureService.GetLectureById(lectureId);
-        return requestedLecture == null ? NotFound() : Ok(requestedLecture);
-    }
-
     [HttpPost]
     public IActionResult CreateLecture([FromBody] CreateLectureRequest? request)
     {
@@ -35,9 +24,24 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetLecturesByCourseId(int? courseId)
+    public IActionResult GetLecturesByCourseId(int courseId)
     {
         return Ok(_lectureService.GetLecturesByCourseId(courseId));
+    }
+
+    [HttpGet]
+    [Route("{lectureId}")]
+    public IActionResult GetLecture(int lectureId)
+    {
+        var requestedLecture = _lectureService.GetLectureById(lectureId);
+        return requestedLecture == null ? NotFound() : Ok(requestedLecture);
+    }
+
+    [HttpGet]
+    [Route("all")]
+    public IActionResult GetAllLectures()
+    {
+        return Ok(_lectureService.GetAllLectures());
     }
 
     [HttpPatch]
