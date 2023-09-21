@@ -48,4 +48,11 @@ public sealed class CoursesController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet]
+    public IActionResult GetAllCourses()
+    {
+        var allCourses = _courseService.GetAllCourses();
+        return Ok(allCourses);
+    }
+
 }

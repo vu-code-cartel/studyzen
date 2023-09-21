@@ -9,6 +9,7 @@ public interface ICourseService
     Course? GetCourseById(int id);
     Course? UpdateCourse(UpdateCourseRequest request, int id);
     void DeleteCourse(int id);
+    List<Course> GetAllCourses();
 }
 
 public sealed class CourseService : ICourseService
@@ -33,7 +34,7 @@ public sealed class CourseService : ICourseService
         return course;
     }
 
-    public Course? UpdateCourse(UpdateCourseRequest request,int id)
+    public Course? UpdateCourse(UpdateCourseRequest request, int id)
     {
         var oldCourse = _unitOfWork.Courses.GetById(id);
         if (oldCourse != null)
@@ -43,11 +44,18 @@ public sealed class CourseService : ICourseService
             _unitOfWork.Courses.Update(oldCourse);
             return oldCourse;
         }
+
         return null;
     }
 
     public void DeleteCourse(int id)
     {
-            _unitOfWork.Courses.Delete(id);
+        _unitOfWork.Courses.Delete(id);
+    }
+
+    public List<Course> GetAllCourses()
+    {
+        var allCourses = _unitOfWork.Courses.GetAll();
+        return allCourses;
     }
 }
