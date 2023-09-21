@@ -20,14 +20,14 @@ public sealed class LecturesController : ControllerBase
 
     [HttpGet]
     [Route("{lectureId}")]
-    public async Task<IActionResult> GetLecture(int lectureId)
+    public IActionResult GetLecture(int lectureId)
     {
         var requestedLecture = _lectureService.GetLectureById(lectureId);
         return requestedLecture == null ? NotFound() : Ok(requestedLecture);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateLecture([FromBody] CreateLectureRequest? request)
+    public IActionResult CreateLecture([FromBody] CreateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
         var createdLecture = _lectureService.AddLecture(request);
@@ -35,14 +35,14 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetLecturesByCourseId(int? courseId)
+    public IActionResult GetLecturesByCourseId(int? courseId)
     {
         return Ok(_lectureService.GetLecturesByCourseId(courseId));
     }
 
     [HttpPatch]
     [Route("{lectureId}")]
-    public async Task<IActionResult> UpdateLecture(int lectureId, [FromBody] UpdateLectureRequest? request)
+    public IActionResult UpdateLecture(int lectureId, [FromBody] UpdateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
         var updatedLecture = _lectureService.UpdateLectureById(lectureId, request);
@@ -51,7 +51,7 @@ public sealed class LecturesController : ControllerBase
 
     [HttpDelete]
     [Route("{lectureId}")]
-    public async Task<IActionResult> DeleteLecture(int lectureId)
+    public IActionResult DeleteLecture(int lectureId)
     {
         _lectureService.DeleteLectureById(lectureId);
         return NoContent();
