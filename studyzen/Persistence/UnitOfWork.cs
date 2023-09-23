@@ -1,7 +1,7 @@
 ﻿using StudyZen.Courses;
 using Studyzen.Lectures;
-using StudyZen.FlashCards;
-using StudyZen.FlashCardSetClass;
+using StudyZen.Flashcards;
+using StudyZen.FlashcardSetClass;
 
 namespace StudyZen.Persistence;
 
@@ -9,22 +9,22 @@ public interface IUnitOfWork
 {
     IGenericRepository<Course> Courses { get; }
     IGenericRepository<Lecture> Lectures { get; }
-    IGenericRepository<FlashCard> FlashCards { get; }
-    IGenericRepository<FlashCardSet> FlashCardSets { get; }
+    IGenericRepository<Flashcard> Flashcards { get; }
+    IGenericRepository<FlashcardSet> FlashcardSets { get; }
 }
 
 public sealed class UnitOfWork : IUnitOfWork
 {
     public IGenericRepository<Course> Courses { get; }
     public IGenericRepository<Lecture> Lectures { get; }
-    public IGenericRepository<FlashCard> FlashCards { get; }
-    public IGenericRepository<FlashCardSet> FlashCardSets { get; }
+    public IGenericRepository<Flashcard> Flashcards { get; }
+    public IGenericRepository<FlashcardSet> FlashcardSets { get; }
 
     public UnitOfWork()
     {
         Courses = new GenericRepository<Course>("courses");
         Lectures = new GenericRepository<Lecture>("lectures");
-        FlashCards = new GenericRepository<FlashCard>("flashCards");
-        FlashCardSets = new GenericRepository<FlashCardSet>("flashCardSets");
+        Flashcards = new GenericRepository<Flashcard>("flashcards");
+        FlashcardSets = new GenericRepository<FlashcardSet>("flashcardSets");
     }
 }

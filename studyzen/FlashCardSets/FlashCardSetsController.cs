@@ -1,62 +1,62 @@
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Common;
-using StudyZen.FlashCardSets.Requests;
+using StudyZen.FlashcardSets.Requests;
 
-namespace StudyZen.FlashCardSets;
+namespace StudyZen.FlashcardSets;
 
 [ApiController, Route("flashcardsets")]
-public sealed class FlashCardSetsController : ControllerBase
+public sealed class FlashcardSetsController : ControllerBase
 {
-    private readonly IFlashCardSetService _flashCardSetService;
+    private readonly IFlashcardSetService _flashcardSetService;
 
-    public FlashCardSetsController(IFlashCardSetService flashCardSetService)
+    public FlashcardSetsController(IFlashcardSetService flashcardSetService)
     {
-        _flashCardSetService = flashCardSetService;
+        _flashcardSetService = flashcardSetService;
     }
 
     [HttpPost]
-    public IActionResult CreateFlashCardSet([FromBody] CreateFlashCardSetRequest? request)
+    public IActionResult CreateFlashcardSet([FromBody] CreateFlashcardSetRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var createdFlashCardSet = _flashCardSetService.AddFlashCardSet(request);
-        return CreatedAtAction(nameof(GetFlashCardSet), new
+        var createdFlashcardSet = _flashcardSetService.AddFlashcardSet(request);
+        return CreatedAtAction(nameof(GetFlashcardSet), new
         {
-            flashCardSetId = createdFlashCardSet.Id
-        }, createdFlashCardSet);
+            flashcardSetId = createdFlashcardSet.Id
+        }, createdFlashcardSet);
     }
 
-    [HttpGet("{flashCardSetId}")]
-    public IActionResult GetFlashCardSet(int flashCardSetId)
+    [HttpGet("{flashcardSetId}")]
+    public IActionResult GetFlashcardSet(int flashcardSetId)
     {
-        var flashCardSet = _flashCardSetService.GetFlashCardSetById(flashCardSetId);
-        return flashCardSet == null ? NotFound() : Ok(flashCardSet);
+        var flashcardSet = _flashcardSetService.GetFlashcardSetById(flashcardSetId);
+        return flashcardSet == null ? NotFound() : Ok(flashcardSet);
     }
 
     [HttpGet]
     [Route("all")]
-    public IActionResult GetAllFlashCardSets()
+    public IActionResult GetAllFlashcardSets()
     {
-        return Ok(_flashCardSetService.GetAllFlashCardSets());
+        return Ok(_flashcardSetService.GetAllFlashcardSets());
     }
 
     [HttpGet]
-    public IActionResult GetFlashCardSetsByLectureId(int lectureId)
+    public IActionResult GetFlashcardSetsByLectureId(int lectureId)
     {
-        return Ok(_flashCardSetService.GetFlashCardSetsByLectureId(lectureId));
+        return Ok(_flashcardSetService.GetFlashcardSetsByLectureId(lectureId));
     }
 
-    [HttpPatch("{flashCardSetId}")]
-    public IActionResult UpdateFlashCardSetById(int flashCardSetId, [FromBody] UpdateFlashCardSetRequest? request)
+    [HttpPatch("{flashcardSetId}")]
+    public IActionResult UpdateFlashcardSetById(int flashcardSetId, [FromBody] UpdateFlashcardSetRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var updatedFlashCardSet = _flashCardSetService.UpdateFlashCardSetById(flashCardSetId, request);
-        return updatedFlashCardSet == null ? NotFound() : Ok(updatedFlashCardSet);
+        var updatedFlashcardSet = _flashcardSetService.UpdateFlashcardSetById(flashcardSetId, request);
+        return updatedFlashcardSet == null ? NotFound() : Ok(updatedFlashcardSet);
     }
 
-    [HttpDelete("{flashCardSetId}")]
-    public IActionResult DeleteFlashcardSet(int flashCardSetId)
+    [HttpDelete("{flashcardSetId}")]
+    public IActionResult DeleteFlashcardSet(int flashcardSetId)
     {
-        _flashCardSetService.DeleteFlashCardSetById(flashCardSetId);
+        _flashcardSetService.DeleteFlashcardSetById(flashcardSetId);
         return NoContent();
     }
 }

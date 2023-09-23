@@ -1,15 +1,15 @@
 using StudyZen.Common;
-using StudyZen.FlashCardSets;
+using StudyZen.FlashcardSets;
 
-namespace StudyZen.FlashCardSetClass
+namespace StudyZen.FlashcardSetClass
 {
-    public class FlashCardSet : BaseEntity
+    public class FlashcardSet : BaseEntity
     {
         public int? LectureId { get; set; }
         public string Name { get; set; }
         public Color Color { get; set; }
 
-        public FlashCardSet(int? lectureId, string name, Color color) : base(default)
+        public FlashcardSet(int? lectureId, string name, Color color) : base(default)
         {
             LectureId = lectureId;
             Name = name;

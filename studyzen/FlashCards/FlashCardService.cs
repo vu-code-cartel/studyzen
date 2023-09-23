@@ -1,20 +1,20 @@
-using StudyZen.FlashCards.Requests;
+using StudyZen.Flashcards.Requests;
 using StudyZen.Persistence;
 
 
-namespace StudyZen.FlashCards
+namespace StudyZen.Flashcards
 {
-    public interface IFlashCardService
+    public interface IFlashcardService
     {
-        FlashCard CreateFlashCard(CreateFlashCardRequest request);
-        FlashCard? GetFlashCardById(int flashCardId);
-        IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int flashCardSetId);
-        IReadOnlyCollection<FlashCard> GetAllFlashCards();
-        FlashCard? UpdateFlashCardById(int flashCardId, UpdateFlashCardRequest request);
-        void DeleteFlashCardById(int flashCardId);
+        Flashcard CreateFlashcard(CreateFlashcardRequest request);
+        Flashcard? GetFlashcardById(int flashcardId);
+        IReadOnlyCollection<Flashcard> GetFlashcardsBySetId(int flashcardSetId);
+        IReadOnlyCollection<Flashcard> GetAllFlashcards();
+        Flashcard? UpdateFlashcardById(int flashcardId, UpdateFlashcardRequest request);
+        void DeleteFlashcardById(int flashcardId);
     }
 
-    public sealed class FlashcardService : IFlashCardService
+    public sealed class FlashcardService : IFlashcardService
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -23,51 +23,51 @@ namespace StudyZen.FlashCards
             _unitOfWork = unitOfWork;
         }
 
-        public FlashCard CreateFlashCard(CreateFlashCardRequest request)
+        public Flashcard CreateFlashcard(CreateFlashcardRequest request)
         {
-            var newFlashCard = new FlashCard(request.FlashCardSetId, request.Question, request.Answer);
-            _unitOfWork.FlashCards.Add(newFlashCard);
-            return newFlashCard;
+            var newFlashcard = new Flashcard(request.FlashcardSetId, request.Question, request.Answer);
+            _unitOfWork.Flashcards.Add(newFlashcard);
+            return newFlashcard;
         }
 
-        public FlashCard? GetFlashCardById(int flashCardId)
+        public Flashcard? GetFlashcardById(int flashcardId)
         {
-            return _unitOfWork.FlashCards.GetById(flashCardId);
+            return _unitOfWork.Flashcards.GetById(flashcardId);
         }
 
-        public IReadOnlyCollection<FlashCard> GetAllFlashCards()
+        public IReadOnlyCollection<Flashcard> GetAllFlashcards()
         {
-            return _unitOfWork.FlashCards.GetAll();
+            return _unitOfWork.Flashcards.GetAll();
         }
 
-        public IReadOnlyCollection<FlashCard> GetFlashCardsBySetId(int flashCardSetId)
+        public IReadOnlyCollection<Flashcard> GetFlashcardsBySetId(int flashcardSetId)
         {
-            var allFlashCards = _unitOfWork.FlashCards.GetAll();
-            return allFlashCards.Where(flashCard => flashCard.FlashCardSetId == flashCardSetId).ToList();
+            var allFlashcards = _unitOfWork.Flashcards.GetAll();
+            return allFlashcards.Where(flashcard => flashcard.FlashcardSetId == flashcardSetId).ToList();
         }
 
-        public FlashCard? UpdateFlashCardById(int flashCardId, UpdateFlashCardRequest request)
+        public Flashcard? UpdateFlashcardById(int flashcardId, UpdateFlashcardRequest request)
         {
-            var toBeUpdatedFlashCard = _unitOfWork.FlashCards.GetById(flashCardId);
-            if (toBeUpdatedFlashCard == null)
+            var toBeUpdatedFlashcard = _unitOfWork.Flashcards.GetById(flashcardId);
+            if (toBeUpdatedFlashcard == null)
             {
                 return null;
             }
             if (request.Question != null)
             {
-                toBeUpdatedFlashCard.Question = request.Question;
+                toBeUpdatedFlashcard.Question = request.Question;
             }
             if (request.Answer != null)
             {
-                toBeUpdatedFlashCard.Answer = request.Answer;
+                toBeUpdatedFlashcard.Answer = request.Answer;
             }
-            _unitOfWork.FlashCards.Update(toBeUpdatedFlashCard);
-            return toBeUpdatedFlashCard;
+            _unitOfWork.Flashcards.Update(toBeUpdatedFlashcard);
+            return toBeUpdatedFlashcard;
         }
 
-        public void DeleteFlashCardById(int flashCardId)
+        public void DeleteFlashcardById(int flashcardId)
         {
-            _unitOfWork.FlashCards.Delete(flashCardId);
+            _unitOfWork.Flashcards.Delete(flashcardId);
         }
 
     }

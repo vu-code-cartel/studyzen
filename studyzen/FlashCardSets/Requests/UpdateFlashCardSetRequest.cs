@@ -1,12 +1,12 @@
-namespace StudyZen.FlashCardSets.Requests;
+namespace StudyZen.FlashcardSets.Requests;
 
-public sealed class UpdateFlashCardSetRequest
+public sealed class UpdateFlashcardSetRequest
 {
     public int? LectureId { get; }
     public string? Name { get; }
     public Color? Color { get; }
 
-    public UpdateFlashCardSetRequest(string? name, Color? color, int? lectureId)
+    public UpdateFlashcardSetRequest(string? name, Color? color, int? lectureId)
     {
         Name = name;
         Color = color;

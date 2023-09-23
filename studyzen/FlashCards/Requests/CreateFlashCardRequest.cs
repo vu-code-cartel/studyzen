@@ -1,16 +1,16 @@
 using StudyZen.Common;
 
-namespace StudyZen.FlashCards.Requests;
+namespace StudyZen.Flashcards.Requests;
 
-public sealed class CreateFlashCardRequest
+public sealed class CreateFlashcardRequest
 {
-    public int FlashCardSetId { get; }
+    public int FlashcardSetId { get; }
     public string Question { get; }
     public string Answer { get; }
 
-    public CreateFlashCardRequest(int flashCardSetId, string? question, string? answer)
+    public CreateFlashcardRequest(int flashcardSetId, string? question, string? answer)
     {
-        FlashCardSetId = flashCardSetId;
+        FlashcardSetId = flashcardSetId;
         Question = question.ThrowIfRequestArgumentNull(nameof(question));
         Answer = answer.ThrowIfRequestArgumentNull(nameof(answer));
     }
