@@ -1,7 +1,8 @@
-import { ButtonVariant, useMantineColorScheme } from '@mantine/core';
+import { ButtonVariant } from '@mantine/core';
+import { useAppStore } from './useAppStore';
 
 export const useButtonVariant = (): ButtonVariant => {
-  const { colorScheme } = useMantineColorScheme();
+  const colorScheme = useAppStore((state) => state.colorScheme);
 
-  return colorScheme == 'dark' ? 'light' : 'filled';
+  return colorScheme == 'light' ? 'filled' : 'light';
 };

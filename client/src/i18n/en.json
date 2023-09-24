@@ -1,44 +1,116 @@
 {
-  "Common": {
-    "AppName": "StudyZen"
+  "App": {
+    "Title": "StudyZen",
+    "Nav": {
+      "Courses": "Courses",
+      "Flashcards": "Flashcards",
+      "ToggleColorScheme": "Toggle color scheme"
+    },
+    "Action": {
+      "Yes": "Yes",
+      "No": "No"
+    },
+    "Stamp": {
+      "CreatedBy": "Created by",
+      "UpdatedBy": "Updated by"
+    }
   },
-  "NavBar": {
-    "Courses": "Courses",
-    "Flashcards": "Flashcards"
-  },
-  "HomePage": {
+  "Home": {
     "DocumentTitle": "StudyZen",
     "Title": "Welcome to StudyZen!"
   },
-  "CoursesPage": {
-    "DocumentTitle": "Courses",
-    "Title": "Courses",
-    "NewCourse": "New course"
-  },
-  "CoursePage": {
-    "Tabs": {
-      "Lectures": "Lectures",
-      "About": "About"
-    },
-    "NewLecture": "New lecture"
-  },
-  "NewCoursePage": {
-    "DocumentTitle": "New course",
-    "Title": "New",
-    "Submit": "Create",
-    "Fields": {
-      "Name": "Name",
-      "Description": "Description"
-    },
-    "Errors": {
-      "NameMustNotBeEmpty": "Course name must not be empty.",
-      "DescriptionMustNotBeEmpty": "Course description must not be empty."
-    }
-  },
-  "NotFoundPage": {
+  "NotFound": {
     "DocumentTitle": "Page not found",
     "Title": "The page you are looking for doesn't exist or has been moved.",
     "404": "404",
     "GoBackHome": "Go back home"
+  },
+  "Course": {
+    "Action": {
+      "NewCourse": "New course",
+      "CreateCourse": "Create"
+    },
+    "Settings": {
+      "Delete": "Delete",
+      "DeleteCourse": "Delete course",
+      "DeleteConfirmPrompt": "Are you sure you want to delete the course '{{courseName}}'?"
+    },
+    "Title": {
+      "Courses": "Courses",
+      "NewCourse": "New course"
+    },
+    "DocumentTitle": {
+      "Courses": "Courses",
+      "NewCourse": "New course",
+      "Course": "{{courseName}}"
+    },
+    "Notification": {
+      "CourseCreatedSuccessfully": "The course was created successfully.",
+      "FailedToCreateCourse": "Failed to create the course.",
+      "FailedToGetCourse": "Failed to get the course.",
+      "FailedToGetCourses": "Failed to get courses.",
+      "CourseUpdatedSuccessfully": "The course was updated successfully.",
+      "FailedToUpdateCourse": "Failed to update the course.",
+      "CourseDeletedSuccessfully": "The course was deleted successfully.",
+      "FailedToDeleteCourse": "Failed to delete the course."
+    },
+    "Field": {
+      "Name": "Name",
+      "Description": "Description"
+    },
+    "Validation": {
+      "NameMustNotBeEmpty": "Course name must not be empty."
+    },
+    "Tab": {
+      "Lectures": "Lectures",
+      "About": "About",
+      "Settings": "Settings"
+    }
+  },
+  "Lecture": {
+    "Action": {
+      "NewLecture": "New lecture",
+      "CreateLecture": "Create"
+    },
+    "Title": {
+      "NewLecture": "New lecture"
+    },
+    "DocumentTitle": {
+      "Lecture": "{{lectureName}} | {{courseName}}",
+      "NewLecture": "New lecture | {{courseName}}"
+    },
+    "Notification": {
+      "LectureCreatedSuccessfully": "The lecture was created successfully.",
+      "FailedToCreateLecture": "Failed to create the lecture.",
+      "FailedToGetLectures": "Failed to get the lectures.",
+      "FailedToGetLecture": "Failed to get the lecture.",
+      "LectureUpdatedSuccessfully": "The lecture was updated successfully.",
+      "FailedToUpdateLecture": "Failed to update the lecture.",
+      "LectureDeletedSuccessfully": "The lecture was deleted successfully.",
+      "FailedToDeleteLecture": "Failed to delete the lecture."
+    },
+    "Validation": {
+      "NameMustNotBeEmpty": "Lecture name must not be empty.",
+      "DescriptionMustNotBeEmpty": "Lecture description must not be empty."
+    },
+    "Field": {
+      "Name": "Name",
+      "Content": "Content"
+    },
+    "Tab": {
+      "Lecture": "Lecture",
+      "Settings": "Settings"
+    },
+    "Settings": {
+      "Delete": "Delete",
+      "DeleteLecture": "Delete lecture",
+      "DeleteConfirmPrompt": "Are you sure you want to delete the lecture '{{lectureName}}'?"
+    }
+  },
+  "RichTextEditor": {
+    "Control": {
+      "EditContent": "Edit content",
+      "SaveChanges": "Save changes"
+    }
   }
 }

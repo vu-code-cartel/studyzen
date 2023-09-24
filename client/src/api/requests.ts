@@ -4,8 +4,8 @@ export type CreateCourseRequest = {
 };
 
 export type UpdateCourseRequest = {
-  name?: string;
-  description?: string;
+  name: string | null;
+  description: string | null;
 };
 
 export type CreateLectureRequest = {
@@ -15,6 +15,6 @@ export type CreateLectureRequest = {
 };
 
 export type UpdateLectureRequest = {
-  name?: string;
-  content?: string;
+  name: string | null;
+  content: string | null;
 };

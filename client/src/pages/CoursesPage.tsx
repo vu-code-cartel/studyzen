@@ -1,50 +1,33 @@
-import { Button, Card, Text, Image, SimpleGrid, Container } from '@mantine/core';
+import { Button, Card, Text, Image, SimpleGrid } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { AppRoutes, getCourseRoute } from '../common/app-routes';
 import { PageHeader } from '../components/PageHeader';
-import { CourseDto } from '../api/dtos';
 import { AppBreadcrumbs } from '../components/AppBreadcrumbs';
 import { useDocumentTitle } from '@mantine/hooks';
 import { usePageCategory } from '../hooks/usePageCategory';
 import { useButtonVariant } from '../hooks/useButtonVariant';
-
-const courses: CourseDto[] = [
-  {
-    id: 1,
-    name: 'Software Engineering I',
-    description: 'just a test',
-  },
-  {
-    id: 2,
-    name: 'Database / Management',
-    description: 'yep',
-  },
-  {
-    id: 3,
-    name: 'Mathematical Logic',
-    description: 'dan',
-  },
-  {
-    id: 4,
-    name: 'Functional Programming',
-    description: 'dan',
-  },
-];
+import { useGetCourses } from '../hooks/useCoursesApi';
+import { CenteredLoader } from '../components/CenteredLoader';
+import { PageContainer } from '../components/PageContainer';
 
 export const CoursesPage = () => {
   const { t } = useTranslation();
   const buttonVariant = useButtonVariant();
-
-  useDocumentTitle(t('CoursesPage.DocumentTitle'));
+  const { data: courses, isLoading } = useGetCourses();
+  useDocumentTitle(t('Course.DocumentTitle.Courses'));
   usePageCategory('courses');
 
+  if (!courses || isLoading) {
+    return <CenteredLoader />;
+  }
+
   return (
-    <Container>
+    <PageContainer>
       <PageHeader>
-        <AppBreadcrumbs items={[{ title: t('CoursesPage.Title'), to: AppRoutes.Courses }]} />
+        <AppBreadcrumbs items={[{ title: t('Course.Title.Courses'), to: AppRoutes.Courses }]} />
         <Button component={Link} to={AppRoutes.NewCourse} color='teal' variant={buttonVariant}>
-          {t('CoursesPage.NewCourse')}
+          {t('Course.Action.NewCourse')}
         </Button>
       </PageHeader>
 
@@ -54,7 +37,7 @@ export const CoursesPage = () => {
             padding='lg'
             withBorder
             component={Link}
-            to={getCourseRoute(course.id, course.name, 'lectures')}
+            to={getCourseRoute(course.id, course.name)}
             key={course.id}
             shadow='sm'
           >
@@ -67,6 +50,6 @@ export const CoursesPage = () => {
           </Card>
         ))}
       </SimpleGrid>
-    </Container>
+    </PageContainer>
   );
 };

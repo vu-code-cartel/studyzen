@@ -9,6 +9,8 @@ export const QueryProvider = (props: QueryProviderProps) => {
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
+        cacheTime: 5 * 60 * 1000,
+        staleTime: 5 * 60 * 1000,
       },
     },
   });
