@@ -72,9 +72,20 @@ namespace StudyZen.FlashcardSets
             _unitOfWork.FlashcardSets.Update(toBeUpdatedFlashcardSet);
             return toBeUpdatedFlashcardSet;
         }
+
         public void DeleteFlashcardSetById(int flashcardSetId)
         {
             _unitOfWork.FlashcardSets.Delete(flashcardSetId);
+        }
+
+        private void DeleteFlashCardsBySetId(int flashcardSetId)
+        {
+            var allFlashcards = _unitOfWork.Flashcards.GetAll();
+            var setFlashcards = allFlashcards.Where(flashcard => flashcardSetId == flashcard.FlashcardSetId);
+            foreach (var setFlashcard in setFlashcards)
+            {
+                _unitOfWork.Flashcards.Delete(setFlashcard.Id);
+            }
         }
 
     }
