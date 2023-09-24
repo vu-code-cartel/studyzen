@@ -25,7 +25,7 @@ public sealed class CoursesController : ControllerBase
 
     [HttpGet]
     [Route("{courseId}")]
-    public async Task<IActionResult> GetCourse(int courseId)
+    public IActionResult GetCourse(int courseId)
     {
         var fetchedCourse = _courseService.GetCourseById(courseId);
         return fetchedCourse == null ? NotFound() : Ok(fetchedCourse);
