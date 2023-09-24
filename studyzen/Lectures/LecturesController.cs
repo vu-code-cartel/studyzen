@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Studyzen.Lectures;
 using StudyZen.Common;
-using StudyZen.Courses;
-using StudyZen.Lectures.Forms;
 using StudyZen.Lectures.Requests;
 
 namespace StudyZen.Lectures;
@@ -13,21 +10,13 @@ public sealed class LecturesController : ControllerBase
 {
     private readonly ILectureService _lectureService;
 
-    public LecturesController(ILectureService courseService)
+    public LecturesController(ILectureService lectureService)
     {
-        _lectureService = courseService;
-    }
-
-    [HttpGet]
-    [Route("{lectureId}")]
-    public async Task<IActionResult> GetLecture(int lectureId)
-    {
-        var requestedLecture = _lectureService.GetLectureById(lectureId);
-        return requestedLecture == null ? NotFound() : Ok(requestedLecture);
+        _lectureService = lectureService;
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateLecture([FromBody] CreateLectureRequest? request)
+    public IActionResult CreateLecture([FromBody] CreateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
         var createdLecture = _lectureService.AddLecture(request);
@@ -35,14 +24,29 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetLecturesByCourseId(int? courseId)
+    public IActionResult GetLecturesByCourseId(int courseId)
     {
         return Ok(_lectureService.GetLecturesByCourseId(courseId));
     }
 
+    [HttpGet]
+    [Route("{lectureId}")]
+    public IActionResult GetLecture(int lectureId)
+    {
+        var requestedLecture = _lectureService.GetLectureById(lectureId);
+        return requestedLecture == null ? NotFound() : Ok(requestedLecture);
+    }
+
+    [HttpGet]
+    [Route("all")]
+    public IActionResult GetAllLectures()
+    {
+        return Ok(_lectureService.GetAllLectures());
+    }
+
     [HttpPatch]
     [Route("{lectureId}")]
-    public async Task<IActionResult> UpdateLecture(int lectureId, [FromBody] UpdateLectureRequest? request)
+    public IActionResult UpdateLecture(int lectureId, [FromBody] UpdateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
         var updatedLecture = _lectureService.UpdateLectureById(lectureId, request);
@@ -51,7 +55,7 @@ public sealed class LecturesController : ControllerBase
 
     [HttpDelete]
     [Route("{lectureId}")]
-    public async Task<IActionResult> DeleteLecture(int lectureId)
+    public IActionResult DeleteLecture(int lectureId)
     {
         _lectureService.DeleteLectureById(lectureId);
         return NoContent();

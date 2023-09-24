@@ -9,9 +9,10 @@ public interface ILectureService
 {
     Lecture AddLecture(CreateLectureRequest request);
     Lecture? GetLectureById(int lectureId);
-    IReadOnlyCollection<Lecture> GetLecturesByCourseId(int? courseId);
+    IReadOnlyCollection<Lecture> GetAllLectures();
+    IReadOnlyCollection<Lecture> GetLecturesByCourseId(int courseId);
     Lecture? UpdateLectureById(int lectureId, UpdateLectureRequest request);
-    public void DeleteLectureById(int lectureId);
+    void DeleteLectureById(int lectureId);
 }
 
 public sealed class LectureService : ILectureService
@@ -36,18 +37,16 @@ public sealed class LectureService : ILectureService
         return requestedLecture;
     }
 
-    public IReadOnlyCollection<Lecture> GetLecturesByCourseId(int? courseId)
+    public IReadOnlyCollection<Lecture> GetAllLectures()
+    {
+        return _unitOfWork.Lectures.GetAll();
+    }
+
+    public IReadOnlyCollection<Lecture> GetLecturesByCourseId(int courseId)
     {
         var allLectures = _unitOfWork.Lectures.GetAll();
-        if (courseId != null)
-        {
-            var courseLectures = allLectures.Where(lecture => lecture.CourseId == courseId);
-            return courseLectures.ToList();
-        }
-        else
-        {
-            return allLectures;
-        }
+        var courseLectures = allLectures.Where(lecture => lecture.CourseId == courseId);
+        return courseLectures.ToList();
     }
 
     public Lecture? UpdateLectureById(int lectureId, UpdateLectureRequest request)
