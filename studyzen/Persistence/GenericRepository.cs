@@ -1,5 +1,4 @@
 ﻿using StudyZen.Common;
-using StudyZen.Common.Exceptions;
 
 namespace StudyZen.Persistence;
 
@@ -8,7 +7,7 @@ public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     void Add(TEntity instance);
     TEntity? GetById(int instanceId);
     List<TEntity> GetAll();
-    void Update(TEntity instance);
+    bool Update(TEntity instance);
     void Delete(int instanceId);
 }
 
@@ -44,14 +43,14 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return GetEntitySet().Instances;
     }
 
-    public void Update(TEntity instance)
+    public bool Update(TEntity instance)
     {
         var entitySet = GetEntitySet();
 
         var instanceIdx = entitySet.Instances.FindIndex(i => i.Id == instance.Id);
         if (instanceIdx < 0)
         {
-            throw new InstanceNotFoundException(typeof(TEntity).Name, instance.Id);
+            return false;
         }
 
         instance.UpdateUpdatedBy();
@@ -59,6 +58,8 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         entitySet.Instances[instanceIdx] = instance;
 
         Utilities.WriteToJsonFile(_filePath, entitySet);
+
+        return true;
     }
 
     public void Delete(int instanceId)

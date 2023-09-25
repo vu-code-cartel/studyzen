@@ -1,4 +1,4 @@
-namespace StudyZen.Utils;
+namespace StudyZen.Common;
 
 public record UserActionStamp(string User = "anonymous")
 {

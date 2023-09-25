@@ -1,12 +1,11 @@
-namespace StudyZen.FlashcardSets
+namespace StudyZen.FlashcardSets;
+
+public enum Color
 {
-    public enum Color
-    {
-        None,
-        Blue,
-        Green,
-        Red,
-        Purple,
-        Yellow
-    }
+    Unset,
+    Blue,
+    Green,
+    Red,
+    Purple,
+    Yellow
 }

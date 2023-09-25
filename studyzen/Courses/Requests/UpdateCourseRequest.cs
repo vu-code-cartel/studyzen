@@ -1,6 +1,4 @@
-﻿using StudyZen.Common;
-
-namespace StudyZen.Courses.Requests;
+﻿namespace StudyZen.Courses.Requests;
 
 public sealed class UpdateCourseRequest
 {

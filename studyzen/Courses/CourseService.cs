@@ -5,11 +5,11 @@ namespace StudyZen.Courses;
 
 public interface ICourseService
 {
-    Course AddCourse(CreateCourseRequest request);
+    Course CreateCourse(CreateCourseRequest request);
     Course? GetCourseById(int id);
-    Course? UpdateCourse(UpdateCourseRequest request, int id);
+    IReadOnlyCollection<Course> GetAllCourses();
+    Course? UpdateCourse(int id, UpdateCourseRequest request);
     void DeleteCourse(int id);
-    List<Course> GetAllCourses();
 }
 
 public sealed class CourseService : ICourseService
@@ -21,7 +21,7 @@ public sealed class CourseService : ICourseService
         _unitOfWork = unitOfWork;
     }
 
-    public Course AddCourse(CreateCourseRequest request)
+    public Course CreateCourse(CreateCourseRequest request)
     {
         var newCourse = new Course(request.Name, request.Description);
         _unitOfWork.Courses.Add(newCourse);
@@ -34,18 +34,19 @@ public sealed class CourseService : ICourseService
         return course;
     }
 
-    public Course? UpdateCourse(UpdateCourseRequest request, int id)
+    public Course? UpdateCourse(int id, UpdateCourseRequest request)
     {
-        var oldCourse = _unitOfWork.Courses.GetById(id);
-        if (oldCourse != null)
+        var course = _unitOfWork.Courses.GetById(id);
+        if (course is null)
         {
-            oldCourse.Name = request.Name ?? oldCourse.Name;
-            oldCourse.Description = request.Description ?? oldCourse.Description;
-            _unitOfWork.Courses.Update(oldCourse);
-            return oldCourse;
+            return null;
         }
 
-        return null;
+        course.Name = request.Name ?? course.Name;
+        course.Description = request.Description ?? course.Description;
+        _unitOfWork.Courses.Update(course);
+
+        return course;
     }
 
     public void DeleteCourse(int id)
@@ -54,15 +55,17 @@ public sealed class CourseService : ICourseService
         _unitOfWork.Courses.Delete(id);
     }
 
-    public List<Course> GetAllCourses()
+    public IReadOnlyCollection<Course> GetAllCourses()
     {
         var allCourses = _unitOfWork.Courses.GetAll();
         return allCourses;
     }
+
     private void DeleteLecturesByCourseId(int? courseId)
     {
         var allLectures = _unitOfWork.Lectures.GetAll();
         var courseLectures = allLectures.Where(lecture => lecture.CourseId == courseId);
+
         foreach (var courseLecture in courseLectures)
         {
             _unitOfWork.Lectures.Delete(courseLecture.Id);

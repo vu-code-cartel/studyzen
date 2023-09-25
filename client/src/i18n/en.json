@@ -91,7 +91,7 @@
     },
     "Validation": {
       "NameMustNotBeEmpty": "Lecture name must not be empty.",
-      "DescriptionMustNotBeEmpty": "Lecture description must not be empty."
+      "ContentMustNotBeEmpty": "Lecture content must not be empty."
     },
     "Field": {
       "Name": "Name",

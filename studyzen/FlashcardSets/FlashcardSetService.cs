@@ -1,92 +1,82 @@
 using StudyZen.FlashcardSets.Requests;
 using StudyZen.Persistence;
-using StudyZen.FlashcardSetClass;
-using StudyZen.Common;
 
+namespace StudyZen.FlashcardSets;
 
-namespace StudyZen.FlashcardSets
+public interface IFlashcardSetService
 {
-    public interface IFlashcardSetService
+    FlashcardSet CreateFlashcardSet(CreateFlashcardSetRequest request);
+    FlashcardSet? GetFlashcardSetById(int flashcardSetId);
+    IReadOnlyCollection<FlashcardSet> GetAllFlashcardSets();
+    IReadOnlyCollection<FlashcardSet> GetFlashcardSetsByLectureId(int? lectureId);
+    FlashcardSet? UpdateFlashcardSet(int flashCardSetId, UpdateFlashcardSetRequest request);
+    void DeleteFlashcardSet(int flashcardSetId);
+}
+
+public sealed class FlashcardSetService : IFlashcardSetService
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public FlashcardSetService(IUnitOfWork unitOfWork)
     {
-        FlashcardSet AddFlashcardSet(CreateFlashcardSetRequest request);
-        FlashcardSet? GetFlashcardSetById(int flashcardSetId);
-        IReadOnlyCollection<FlashcardSet> GetAllFlashcardSets();
-        IReadOnlyCollection<FlashcardSet> GetFlashcardSetsByLectureId(int? lectureId);
-        FlashcardSet? UpdateFlashcardSetById(int flachCardSetId, UpdateFlashcardSetRequest request);
-        void DeleteFlashcardSetById(int flashcardSetId);
+        _unitOfWork = unitOfWork;
     }
 
-    public sealed class FlashcardSetService : IFlashcardSetService
+    public FlashcardSet CreateFlashcardSet(CreateFlashcardSetRequest request)
     {
-        private readonly IUnitOfWork _unitOfWork;
+        var newFlashcardSet = new FlashcardSet(request.LectureId, request.Name, request.Color);
+        _unitOfWork.FlashcardSets.Add(newFlashcardSet);
+        return newFlashcardSet;
+    }
 
-        public FlashcardSetService(IUnitOfWork unitOfWork)
+    public FlashcardSet? GetFlashcardSetById(int flashcardSetId)
+    {
+        var flashcardSet = _unitOfWork.FlashcardSets.GetById(flashcardSetId);
+        return flashcardSet;
+    }
+
+    public IReadOnlyCollection<FlashcardSet> GetAllFlashcardSets()
+    {
+        var allFlashcardSets = _unitOfWork.FlashcardSets.GetAll();
+        return allFlashcardSets;
+    }
+
+    public IReadOnlyCollection<FlashcardSet> GetFlashcardSetsByLectureId(int? lectureId)
+    {
+        var allFlashcardSets = _unitOfWork.FlashcardSets.GetAll();
+        var lectureFlashcardSets = allFlashcardSets.Where(s => s.LectureId == lectureId).ToList();
+        return lectureFlashcardSets;
+    }
+
+    public FlashcardSet? UpdateFlashcardSet(int flashCardSetId, UpdateFlashcardSetRequest request)
+    {
+        var flashcardSet = _unitOfWork.FlashcardSets.GetById(flashCardSetId);
+        if (flashcardSet is null)
         {
-            _unitOfWork = unitOfWork;
+            return null;
         }
 
-        public FlashcardSet AddFlashcardSet(CreateFlashcardSetRequest? request)
-        {
-            request = request.ThrowIfRequestArgumentNull(nameof(request));
-            FlashcardSet flashcardSet = new FlashcardSet(request.LectureId, request.Name, request.Color);
-            _unitOfWork.FlashcardSets.Add(flashcardSet);
-            return flashcardSet;
-        }
+        flashcardSet.Name = request.Name ?? flashcardSet.Name;
+        flashcardSet.Color = request.Color ?? flashcardSet.Color;
+        _unitOfWork.FlashcardSets.Update(flashcardSet);
 
-        public FlashcardSet? GetFlashcardSetById(int flashcardSetId)
-        {
-            return _unitOfWork.FlashcardSets.GetById(flashcardSetId);
-        }
+        return flashcardSet;
+    }
 
-        public IReadOnlyCollection<FlashcardSet> GetAllFlashcardSets()
-        {
-            return _unitOfWork.FlashcardSets.GetAll();
-        }
+    public void DeleteFlashcardSet(int flashcardSetId)
+    {
+        DeleteFlashcardsBySetId(flashcardSetId);
+        _unitOfWork.FlashcardSets.Delete(flashcardSetId);
+    }
 
-        public IReadOnlyCollection<FlashcardSet> GetFlashcardSetsByLectureId(int? lectureId)
-        {
-            var allFlashcardSets = _unitOfWork.FlashcardSets.GetAll();
-            return allFlashcardSets.Where(flashcardset => flashcardset.LectureId == lectureId).ToList();
-        }
+    private void DeleteFlashcardsBySetId(int flashcardSetId)
+    {
+        var allFlashcards = _unitOfWork.Flashcards.GetAll();
+        var setFlashcards = allFlashcards.Where(flashcard => flashcardSetId == flashcard.FlashcardSetId);
 
-        public FlashcardSet? UpdateFlashcardSetById(int flachCardSetId, UpdateFlashcardSetRequest request)
+        foreach (var setFlashcard in setFlashcards)
         {
-            var toBeUpdatedFlashcardSet = _unitOfWork.FlashcardSets.GetById(flachCardSetId);
-            if (toBeUpdatedFlashcardSet == null)
-            {
-                return null;
-            }
-            if (request.Name != null)
-            {
-                toBeUpdatedFlashcardSet.Name = request.Name;
-            }
-            if (request.Color != null)
-            {
-                toBeUpdatedFlashcardSet.Color = request.Color.Value;
-            }
-            else
-            {
-                toBeUpdatedFlashcardSet.Color = Color.None;
-            }
-            toBeUpdatedFlashcardSet.LectureId = request.LectureId;
-            _unitOfWork.FlashcardSets.Update(toBeUpdatedFlashcardSet);
-            return toBeUpdatedFlashcardSet;
+            _unitOfWork.Flashcards.Delete(setFlashcard.Id);
         }
-
-        public void DeleteFlashcardSetById(int flashcardSetId)
-        {
-            _unitOfWork.FlashcardSets.Delete(flashcardSetId);
-        }
-
-        private void DeleteFlashCardsBySetId(int flashcardSetId)
-        {
-            var allFlashcards = _unitOfWork.Flashcards.GetAll();
-            var setFlashcards = allFlashcards.Where(flashcard => flashcardSetId == flashcard.FlashcardSetId);
-            foreach (var setFlashcard in setFlashcards)
-            {
-                _unitOfWork.Flashcards.Delete(setFlashcard.Id);
-            }
-        }
-
     }
 }

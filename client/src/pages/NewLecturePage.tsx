@@ -66,7 +66,7 @@ const NewLectureForm = (props: NewLectureFormProps) => {
     },
     validate: {
       name: (value) => (value ? null : t('Lecture.Validation.NameMustNotBeEmpty')),
-      content: (value) => (value ? null : t('Lecture.Validation.DescriptionMustNotBeEmpty')),
+      content: (value) => (value ? null : t('Lecture.Validation.ContentMustNotBeEmpty')),
     },
   });
 

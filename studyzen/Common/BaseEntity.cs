@@ -1,6 +1,4 @@
-﻿using StudyZen.Utils;
-
-namespace StudyZen.Common;
+﻿namespace StudyZen.Common;
 
 public abstract class BaseEntity
 {
