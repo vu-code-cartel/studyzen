@@ -2,7 +2,7 @@ using StudyZen.Common;
 
 namespace StudyZen.Flashcards;
 
-public class Flashcard : BaseEntity
+public sealed class Flashcard : BaseEntity
 {
     public int FlashcardSetId { get; set; }
     public string Question { get; set; }
