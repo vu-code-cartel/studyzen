@@ -50,6 +50,7 @@ public sealed class CourseService : ICourseService
 
     public void DeleteCourse(int id)
     {
+        DeleteLecturesByCourseId(id);
         _unitOfWork.Courses.Delete(id);
     }
 
@@ -57,5 +58,14 @@ public sealed class CourseService : ICourseService
     {
         var allCourses = _unitOfWork.Courses.GetAll();
         return allCourses;
+    }
+    private void DeleteLecturesByCourseId(int? courseId)
+    {
+        var allLectures = _unitOfWork.Lectures.GetAll();
+        var courseLectures = allLectures.Where(lecture => lecture.CourseId == courseId);
+        foreach (var courseLecture in courseLectures)
+        {
+            _unitOfWork.Lectures.Delete(courseLecture.Id);
+        }
     }
 }

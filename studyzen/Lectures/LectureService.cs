@@ -70,6 +70,18 @@ public sealed class LectureService : ILectureService
 
     public void DeleteLectureById(int lectureId)
     {
+        DeleteFlashcardSetsFromLecture(lectureId);
         _unitOfWork.Lectures.Delete(lectureId);
+    }
+
+    private void DeleteFlashcardSetsFromLecture(int lectureId)
+    {
+        var allFlashcardSets = _unitOfWork.FlashcardSets.GetAll();
+        var lectureFlashcardSets = allFlashcardSets.Where(flashcardSet => lectureId == flashcardSet.LectureId);
+        foreach (var lectureFlashcardSet in lectureFlashcardSets)
+        {
+            lectureFlashcardSet.LectureId = null;
+            _unitOfWork.FlashcardSets.Update(lectureFlashcardSet);
+        }
     }
 }
