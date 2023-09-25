@@ -1,4 +1,5 @@
 ﻿using StudyZen.Common;
+using Serilog;
 
 namespace StudyZen.Persistence;
 
@@ -93,6 +94,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         if (!File.Exists(_filePath))
         {
             File.Create(_filePath).Close();
+            Log.Information("File {path} was created", _filePath);
         }
     }
 }
