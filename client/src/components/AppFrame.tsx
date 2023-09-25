@@ -5,14 +5,32 @@ import { AppRoutes } from '../common/app-routes';
 import { useTranslation } from 'react-i18next';
 import { IconMoonStars, IconSun } from '@tabler/icons-react';
 import { Link, Outlet } from 'react-router-dom';
-import { useDisclosure } from '@mantine/hooks';
+import { useColorScheme, useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useEffect } from 'react';
 
 export const AppFrame = () => {
   const [isOpen, { toggle, close }] = useDisclosure();
   const activeCategory = useAppStore((state) => state.pageCategory);
+  const setIsMobile = useAppStore((state) => state.setIsMobile);
+  const setColorScheme = useAppStore((state) => state.setColorScheme);
+  const colorScheme = useAppStore((state) => state.colorScheme);
   const { t } = useTranslation();
   const theme = useMantineTheme();
-  const colorScheme = useMantineColorScheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const { colorScheme: mantineColorScheme, toggleColorScheme } = useMantineColorScheme();
+  const mediaColorScheme = useColorScheme();
+
+  useEffect(() => {
+    if (mantineColorScheme != 'auto') {
+      setColorScheme(mantineColorScheme);
+    } else {
+      setColorScheme(mediaColorScheme);
+    }
+  }, [mantineColorScheme, mediaColorScheme, setColorScheme]);
+
+  useEffect(() => {
+    setIsMobile(isMobile);
+  }, [setIsMobile, isMobile]);
 
   return (
     <AppShell
@@ -27,30 +45,27 @@ export const AppFrame = () => {
         </div>
       </AppShell.Header>
 
-      <AppShell.Navbar
-        bg={colorScheme.colorScheme == 'dark' ? theme.colors.dark[8] : undefined}
-        style={{ height: '100%' }}
-      >
+      <AppShell.Navbar bg={colorScheme == 'dark' ? theme.colors.dark[8] : undefined} style={{ height: '100%' }}>
         <AppShell.Section p='md'>
           <Group justify='space-between'>
             <Text fw={600} component={Link} to={AppRoutes.Home}>
-              {t('Common.AppName')}
+              {t('App.Title')}
             </Text>
-            <ActionIcon variant='default' onClick={colorScheme.toggleColorScheme} title='Toggle color scheme'>
-              {colorScheme.colorScheme === 'dark' ? <IconSun size='1rem' /> : <IconMoonStars size='1rem' />}
+            <ActionIcon variant='default' onClick={toggleColorScheme} title={t('App.Nav.ToggleColorScheme')}>
+              {colorScheme === 'dark' ? <IconSun size='1rem' /> : <IconMoonStars size='1rem' />}
             </ActionIcon>
           </Group>
         </AppShell.Section>
 
         <AppShell.Section grow>
           <AppNavLink
-            label={t('NavBar.Courses')}
+            label={t('App.Nav.Courses')}
             to={AppRoutes.Courses}
             isActive={activeCategory == 'courses'}
             onClick={close}
           />
           <AppNavLink
-            label={t('NavBar.Flashcards')}
+            label={t('App.Nav.Flashcards')}
             to={'#'}
             isActive={activeCategory == 'flashcards'}
             onClick={close}

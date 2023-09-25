@@ -5,8 +5,7 @@ import { CoursesPage } from '../pages/CoursesPage';
 import { NewCoursePage } from '../pages/NewCoursePage';
 import { LecturePage } from '../pages/LecturePage';
 import { NewLecturePage } from '../pages/NewLecturePage';
-import { CourseLecturesPage } from '../pages/CourseLecturesPage';
-import { CourseAboutPage } from '../pages/CourseAboutPage';
+import { CoursePage } from '../pages/CoursePage';
 import { AppFrame } from '../components/AppFrame';
 import { NotFound } from '../components/NotFound';
 
@@ -24,11 +23,7 @@ const router = createBrowserRouter([
       },
       {
         path: AppRoutes.Course,
-        element: <CourseLecturesPage />,
-      },
-      {
-        path: AppRoutes.CourseAbout,
-        element: <CourseAboutPage />,
+        element: <CoursePage />,
       },
       {
         path: AppRoutes.NewCourse,

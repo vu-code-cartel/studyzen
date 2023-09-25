@@ -6,7 +6,7 @@ public abstract class BaseEntity
 {
     public int Id { get; set; }
     public UserActionStamp CreatedBy { get; init; }
-    public UserActionStamp UpdatedBy { get; private set; }
+    public UserActionStamp UpdatedBy { get; set; }
 
     protected BaseEntity(int id)
     {

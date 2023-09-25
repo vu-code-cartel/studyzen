@@ -1,31 +1,140 @@
+import { useTranslation } from 'react-i18next';
 import { SERVER_URL, axiosClient } from '../api/config';
 import { CourseDto } from '../api/dtos';
 import { CreateCourseRequest, UpdateCourseRequest } from '../api/requests';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { notifications } from '@mantine/notifications';
 
-export const useCoursesApi = () => {
-  const url = `${SERVER_URL}/courses`;
+const COURSES_API_URL = `${SERVER_URL}/courses`;
 
-  const createCourse = async (request: CreateCourseRequest): Promise<void> => {
-    await axiosClient.post(url, request);
-  };
+export const useCreateCourse = () => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
-  const getCourses = async (): Promise<CourseDto[]> => {
-    const response = await axiosClient.get<CourseDto[]>(url);
-    return response.data;
-  };
+  return useMutation({
+    mutationFn: async (request: CreateCourseRequest) => {
+      await axiosClient.post(COURSES_API_URL, request);
+    },
+    onSuccess() {
+      notifications.show({
+        message: t('Course.Notification.CourseCreatedSuccessfully'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'teal',
+      });
 
-  const getCourse = async (courseId: number): Promise<CourseDto> => {
-    const response = await axiosClient.get(`${url}/${courseId}`);
-    return response.data;
-  };
+      queryClient.invalidateQueries(['getCourses']);
+    },
+    onError: () => {
+      notifications.show({
+        message: t('Course.Notification.FailedToCreateCourse'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'red',
+      });
+    },
+  });
+};
 
-  const updateCourse = async (courseId: number, request: UpdateCourseRequest): Promise<void> => {
-    await axiosClient.patch(`${url}/${courseId}`, request);
-  };
+export const useGetCourse = (courseId: number | null) => {
+  const { t } = useTranslation();
 
-  const deleteCourse = async (courseId: number): Promise<void> => {
-    await axiosClient.delete(`${url}/${courseId}`);
-  };
+  return useQuery(['getCourse', courseId], async () => {
+    if (!courseId) {
+      return null;
+    }
 
-  return { createCourse, getCourses, getCourse, updateCourse, deleteCourse };
+    try {
+      const response = await axiosClient.get<CourseDto>(`${COURSES_API_URL}/${courseId}`);
+      return response.data;
+    } catch {
+      notifications.show({
+        message: t('Course.Notification.FailedToGetCourse'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'red',
+      });
+    }
+  });
+};
+
+export const useGetCourses = () => {
+  const { t } = useTranslation();
+
+  return useQuery(['getCourses'], {
+    queryFn: async () => {
+      try {
+        const response = await axiosClient.get<CourseDto[]>(COURSES_API_URL);
+        return response.data;
+      } catch {
+        notifications.show({
+          message: t('Course.Notification.FailedToGetCourses'),
+          withBorder: true,
+          withCloseButton: true,
+          color: 'red',
+        });
+
+        return [];
+      }
+    },
+  });
+};
+
+export const useUpdateCourse = () => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ courseId, request }: { courseId: number; request: UpdateCourseRequest }) => {
+      await axiosClient.patch(`${COURSES_API_URL}/${courseId}`, request);
+    },
+    onSuccess(_, { courseId }) {
+      notifications.show({
+        message: t('Course.Notification.CourseUpdatedSuccessfully'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'teal',
+      });
+
+      queryClient.invalidateQueries(['getCourse', courseId]);
+      queryClient.invalidateQueries(['getCourses']);
+    },
+    onError: () => {
+      notifications.show({
+        message: t('Course.Notification.FailedToUpdateCourse'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'red',
+      });
+    },
+  });
+};
+
+export const useDeleteCourse = () => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (courseId: number) => {
+      await axiosClient.delete(`${COURSES_API_URL}/${courseId}`);
+    },
+    onSuccess() {
+      notifications.show({
+        message: t('Course.Notification.CourseDeletedSuccessfully'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'teal',
+      });
+
+      queryClient.invalidateQueries(['getCourses']);
+    },
+    onError: () => {
+      notifications.show({
+        message: t('Course.Notification.FailedToDeleteCourse'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'red',
+      });
+    },
+  });
 };

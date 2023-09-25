@@ -11,6 +11,16 @@ using StudyZen.Persistence;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy => policy
+        .WithOrigins(
+            "http://127.0.0.1:5173",
+            "http://localhost:5173")
+        .AllowAnyHeader()
+        .AllowAnyMethod());
+});
+
 builder.Services
     .AddProblemDetails(options =>
     {
@@ -44,6 +54,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseProblemDetails();
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 

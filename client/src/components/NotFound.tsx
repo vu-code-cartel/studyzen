@@ -8,16 +8,16 @@ import { useButtonVariant } from '../hooks/useButtonVariant';
 export const NotFound = () => {
   const { t } = useTranslation();
   const buttonVariant = useButtonVariant();
-  useDocumentTitle(t('NotFoundPage.DocumentTitle'));
+  useDocumentTitle(t('NotFound.DocumentTitle'));
 
   return (
     <Stack align='center' gap='sm' pt='30vh' p='lg'>
-      <Title>{t('NotFoundPage.404')}</Title>
+      <Title>{t('NotFound.404')}</Title>
       <Text fw={600} ta='center'>
-        {t('NotFoundPage.Title')}
+        {t('NotFound.Title')}
       </Text>
       <Button component={Link} to={AppRoutes.Home} color='teal' variant={buttonVariant}>
-        {t('NotFoundPage.GoBackHome')}
+        {t('NotFound.GoBackHome')}
       </Button>
     </Stack>
   );
