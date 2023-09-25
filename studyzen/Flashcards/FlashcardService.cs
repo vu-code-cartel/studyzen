@@ -36,7 +36,7 @@ public sealed class FlashcardService : IFlashcardService
     public IReadOnlyCollection<Flashcard> GetFlashcardsBySetId(int flashcardSetId)
     {
         var allFlashcards = _unitOfWork.Flashcards.GetAll();
-        var setFlashcards = allFlashcards.Where(flashcard => flashcard.FlashcardSetId == flashcardSetId).ToList();
+        var setFlashcards = allFlashcards.Where(f => f.FlashcardSetId == flashcardSetId).ToList();
         return setFlashcards;
     }
 

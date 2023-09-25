@@ -72,7 +72,7 @@ public sealed class FlashcardSetService : IFlashcardSetService
     private void DeleteFlashcardsBySetId(int flashcardSetId)
     {
         var allFlashcards = _unitOfWork.Flashcards.GetAll();
-        var setFlashcards = allFlashcards.Where(flashcard => flashcardSetId == flashcard.FlashcardSetId);
+        var setFlashcards = allFlashcards.Where(f => f.FlashcardSetId == flashcardSetId);
 
         foreach (var setFlashcard in setFlashcards)
         {

@@ -64,7 +64,7 @@ public sealed class CourseService : ICourseService
     private void DeleteLecturesByCourseId(int? courseId)
     {
         var allLectures = _unitOfWork.Lectures.GetAll();
-        var courseLectures = allLectures.Where(lecture => lecture.CourseId == courseId);
+        var courseLectures = allLectures.Where(l => l.CourseId == courseId);
 
         foreach (var courseLecture in courseLectures)
         {

@@ -37,7 +37,7 @@ public sealed class LectureService : ILectureService
     public IReadOnlyCollection<Lecture> GetLecturesByCourseId(int courseId)
     {
         var allLectures = _unitOfWork.Lectures.GetAll();
-        var courseLectures = allLectures.Where(lecture => lecture.CourseId == courseId).ToList();
+        var courseLectures = allLectures.Where(l => l.CourseId == courseId).ToList();
         return courseLectures;
     }
 
@@ -65,7 +65,7 @@ public sealed class LectureService : ILectureService
     private void DeleteFlashcardSetsFromLecture(int lectureId)
     {
         var allFlashcardSets = _unitOfWork.FlashcardSets.GetAll();
-        var lectureFlashcardSets = allFlashcardSets.Where(flashcardSet => lectureId == flashcardSet.LectureId);
+        var lectureFlashcardSets = allFlashcardSets.Where(s => lectureId == s.LectureId);
 
         foreach (var lectureFlashcardSet in lectureFlashcardSets)
         {
