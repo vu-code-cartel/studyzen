@@ -7,6 +7,7 @@ using StudyZen.Lectures;
 using StudyZen.Flashcards;
 using StudyZen.FlashcardSets;
 using StudyZen.Persistence;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,9 @@ builder.Services.AddScoped<IFlashcardSetService, FlashcardSetService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
+builder.Host.UseSerilog();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -47,6 +51,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseProblemDetails();
 app.UseHttpsRedirection();
