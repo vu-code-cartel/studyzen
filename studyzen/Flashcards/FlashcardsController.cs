@@ -50,6 +50,6 @@ public sealed class FlashcardsController : ControllerBase
     public IActionResult DeleteFlashcard(int flashcardId)
     {
         _flashcardService.DeleteFlashcard(flashcardId);
-        return NoContent();
+        return Ok();
     }
 }

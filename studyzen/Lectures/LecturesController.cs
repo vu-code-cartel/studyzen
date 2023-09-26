@@ -52,6 +52,6 @@ public sealed class LecturesController : ControllerBase
     public IActionResult DeleteLecture(int lectureId)
     {
         _lectureService.DeleteLecture(lectureId);
-        return NoContent();
+        return Ok();
     }
 }
