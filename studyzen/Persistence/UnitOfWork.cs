@@ -1,7 +1,7 @@
 ﻿using StudyZen.Courses;
-using Studyzen.Lectures;
 using StudyZen.Flashcards;
-using StudyZen.FlashcardSetClass;
+using StudyZen.FlashcardSets;
+using StudyZen.Lectures;
 
 namespace StudyZen.Persistence;
 

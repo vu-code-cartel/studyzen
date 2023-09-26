@@ -19,29 +19,23 @@ public sealed class LecturesController : ControllerBase
     public IActionResult CreateLecture([FromBody] CreateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var createdLecture = _lectureService.AddLecture(request);
+        var createdLecture = _lectureService.CreateLecture(request);
         return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
     }
 
     [HttpGet]
     public IActionResult GetLecturesByCourseId(int courseId)
     {
-        return Ok(_lectureService.GetLecturesByCourseId(courseId));
+        var courseLectures = _lectureService.GetLecturesByCourseId(courseId);
+        return Ok(courseLectures);
     }
 
     [HttpGet]
     [Route("{lectureId}")]
     public IActionResult GetLecture(int lectureId)
     {
-        var requestedLecture = _lectureService.GetLectureById(lectureId);
-        return requestedLecture == null ? NotFound() : Ok(requestedLecture);
-    }
-
-    [HttpGet]
-    [Route("all")]
-    public IActionResult GetAllLectures()
-    {
-        return Ok(_lectureService.GetAllLectures());
+        var lecture = _lectureService.GetLectureById(lectureId);
+        return lecture is null ? NotFound() : Ok(lecture);
     }
 
     [HttpPatch]
@@ -49,15 +43,15 @@ public sealed class LecturesController : ControllerBase
     public IActionResult UpdateLecture(int lectureId, [FromBody] UpdateLectureRequest? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var updatedLecture = _lectureService.UpdateLectureById(lectureId, request);
-        return updatedLecture == null ? NotFound() : Ok(updatedLecture);
+        var updatedLecture = _lectureService.UpdateLecture(lectureId, request);
+        return updatedLecture is null ? NotFound() : Ok(updatedLecture);
     }
 
     [HttpDelete]
     [Route("{lectureId}")]
     public IActionResult DeleteLecture(int lectureId)
     {
-        _lectureService.DeleteLectureById(lectureId);
+        _lectureService.DeleteLecture(lectureId);
         return NoContent();
     }
 }

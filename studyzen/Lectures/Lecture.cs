@@ -1,7 +1,6 @@
 using StudyZen.Common;
-using StudyZen.Utils;
 
-namespace Studyzen.Lectures;
+namespace StudyZen.Lectures;
 
 public sealed class Lecture : BaseEntity
 {

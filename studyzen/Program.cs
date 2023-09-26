@@ -22,11 +22,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services
-    .AddProblemDetails(options =>
-    {
-        options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest);
-        options.MapToStatusCode<InstanceNotFoundException>(StatusCodes.Status404NotFound);
-    })
+    .AddProblemDetails(options => { options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest); })
     .AddControllers()
     .AddProblemDetailsConventions()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));

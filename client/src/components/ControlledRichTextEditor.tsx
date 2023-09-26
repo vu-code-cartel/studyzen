@@ -119,6 +119,13 @@ export const ControlledRichTextEditor = (props: ControlledRichTextEditorProps) =
                 </RichTextEditor.ControlsGroup>
 
                 <RichTextEditor.ControlsGroup>
+                  <RichTextEditor.AlignLeft />
+                  <RichTextEditor.AlignCenter />
+                  <RichTextEditor.AlignJustify />
+                  <RichTextEditor.AlignRight />
+                </RichTextEditor.ControlsGroup>
+
+                <RichTextEditor.ControlsGroup>
                   <RichTextEditor.Blockquote />
                   <RichTextEditor.Hr />
                   <RichTextEditor.BulletList />
@@ -135,13 +142,6 @@ export const ControlledRichTextEditor = (props: ControlledRichTextEditorProps) =
                 <RichTextEditor.ControlsGroup>
                   <RichTextEditor.Link />
                   <RichTextEditor.Unlink />
-                </RichTextEditor.ControlsGroup>
-
-                <RichTextEditor.ControlsGroup>
-                  <RichTextEditor.AlignLeft />
-                  <RichTextEditor.AlignCenter />
-                  <RichTextEditor.AlignJustify />
-                  <RichTextEditor.AlignRight />
                 </RichTextEditor.ControlsGroup>
               </>
             )}

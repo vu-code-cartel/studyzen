@@ -1,6 +1,6 @@
 using StudyZen.Common;
-using StudyZen.FlashcardSets;
 
+namespace StudyZen.FlashcardSets.Requests;
 
 public sealed class CreateFlashcardSetRequest
 {
