@@ -8,7 +8,7 @@ public interface ICourseService
     Course CreateCourse(CreateCourseRequest request);
     Course? GetCourseById(int id);
     IReadOnlyCollection<Course> GetAllCourses();
-    Course? UpdateCourse(int id, UpdateCourseRequest request);
+    bool UpdateCourse(int id, UpdateCourseRequest request);
     void DeleteCourse(int id);
 }
 
@@ -34,19 +34,19 @@ public sealed class CourseService : ICourseService
         return course;
     }
 
-    public Course? UpdateCourse(int id, UpdateCourseRequest request)
+    public bool UpdateCourse(int id, UpdateCourseRequest request)
     {
         var course = _unitOfWork.Courses.GetById(id);
         if (course is null)
         {
-            return null;
+            return false;
         }
 
         course.Name = request.Name ?? course.Name;
         course.Description = request.Description ?? course.Description;
         _unitOfWork.Courses.Update(course);
 
-        return course;
+        return true;
     }
 
     public void DeleteCourse(int id)

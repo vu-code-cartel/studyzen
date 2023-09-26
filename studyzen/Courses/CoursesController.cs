@@ -44,7 +44,7 @@ public sealed class CoursesController : ControllerBase
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
         var updatedCourse = _courseService.UpdateCourse(courseId, request);
-        return updatedCourse is null ? NotFound() : Ok(updatedCourse);
+        return updatedCourse ? Ok() : NotFound();
     }
 
     [HttpDelete]
@@ -52,6 +52,6 @@ public sealed class CoursesController : ControllerBase
     public IActionResult DeleteCourse(int courseId)
     {
         _courseService.DeleteCourse(courseId);
-        return NoContent();
+        return Ok();
     }
 }
