@@ -5,9 +5,9 @@ namespace StudyZen.Application.Services;
 
 public interface ICourseService
 {
-    Course CreateCourse(CreateCourseDto dto);
-    Course? GetCourseById(int id);
-    IReadOnlyCollection<Course> GetAllCourses();
-    Course? UpdateCourse(int id, UpdateCourseDto dto);
+    CourseDto CreateCourse(CreateCourseDto dto);
+    CourseDto? GetCourseById(int id);
+    IReadOnlyCollection<CourseDto> GetAllCourses();
+    CourseDto? UpdateCourse(int id, UpdateCourseDto dto);
     void DeleteCourse(int id);
 }

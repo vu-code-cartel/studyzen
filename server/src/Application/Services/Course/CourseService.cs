@@ -1,6 +1,7 @@
 ﻿using StudyZen.Application.Dtos;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
+using StudyZen.DtoControllers;
 
 namespace StudyZen.Application.Services;
 
@@ -15,20 +16,20 @@ public sealed class CourseService : ICourseService
         _lectures = lectures;
     }
 
-    public Course CreateCourse(CreateCourseDto dto)
+    public CourseDto CreateCourse(CreateCourseDto dto)
     {
         var newCourse = new Course(dto.Name, dto.Description);
         _courses.Add(newCourse);
-        return newCourse;
+        return CourseDtoController.ToDto(newCourse);
     }
 
-    public Course? GetCourseById(int id)
+    public CourseDto? GetCourseById(int id)
     {
         var course = _courses.GetById(id);
-        return course;
+        return course != null ? CourseDtoController.ToDto(course) : null;
     }
 
-    public Course? UpdateCourse(int id, UpdateCourseDto dto)
+    public CourseDto? UpdateCourse(int id, UpdateCourseDto dto)
     {
         var course = _courses.GetById(id);
         if (course is null)
@@ -40,7 +41,7 @@ public sealed class CourseService : ICourseService
         course.Description = dto.Description ?? course.Description;
         _courses.Update(course);
 
-        return course;
+        return CourseDtoController.ToDto(course);
     }
 
     public void DeleteCourse(int id)
@@ -49,10 +50,10 @@ public sealed class CourseService : ICourseService
         _courses.Delete(id);
     }
 
-    public IReadOnlyCollection<Course> GetAllCourses()
+    public IReadOnlyCollection<CourseDto> GetAllCourses()
     {
         var allCourses = _courses.GetAll();
-        return allCourses;
+        return allCourses.Select(course => CourseDtoController.ToDto(course)).ToList();
     }
 
     private void DeleteLecturesByCourseId(int courseId)
