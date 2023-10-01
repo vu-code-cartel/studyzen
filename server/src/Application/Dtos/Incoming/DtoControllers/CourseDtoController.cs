@@ -9,6 +9,7 @@ namespace StudyZen.DtoControllers
         {
             return new CourseDto
             {
+               Id = course.Id,
                Name = course.Name,
                Description = course.Description
             };

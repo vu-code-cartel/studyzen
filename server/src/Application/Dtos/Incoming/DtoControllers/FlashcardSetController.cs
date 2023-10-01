@@ -9,6 +9,7 @@ namespace StudyZen.DtoControllers
         {
             return new FlashcardSetDto
             {
+                Id = flashcardSet.Id,
                 LectureId = flashcardSet.LectureId,
                 Name = flashcardSet.Name,
                 Color = flashcardSet.Color
