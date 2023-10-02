@@ -9,14 +9,17 @@ public class LectureDto
     public string Name { get; set; }
     public string Content { get; set; }
 
+    public LectureDto(Lecture lecture)
+    {
+        Id = lecture.Id;
+        CourseId = lecture.CourseId;
+        Name = lecture.Name;
+        Content = lecture.Content;
+    }
+
     public static LectureDto ToDto(Lecture lecture)
     {
-        return new LectureDto
-        {
-            Id = lecture.Id,
-            CourseId = lecture.CourseId,
-            Name = lecture.Name,
-            Content = lecture.Content
-        };
+        return new LectureDto(lecture);
     }
+    
 }

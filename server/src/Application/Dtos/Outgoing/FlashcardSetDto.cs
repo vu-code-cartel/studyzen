@@ -10,14 +10,17 @@ public class FlashcardSetDto
     public string Name { get; set; }
     public Color Color { get; set; }
 
+     public FlashcardSetDto(FlashcardSet flashcardSet)
+    {
+        Id = flashcardSet.Id;
+        LectureId = flashcardSet.LectureId;
+        Name = flashcardSet.Name;
+        Color = flashcardSet.Color;
+    }
+
     public static FlashcardSetDto ToDto(FlashcardSet flashcardSet)
     {
-        return new FlashcardSetDto
-        {
-            Id = flashcardSet.Id,
-            LectureId = flashcardSet.LectureId,
-            Name = flashcardSet.Name,
-            Color = flashcardSet.Color
-        };
+        return new FlashcardSetDto(flashcardSet);
     }
+
 }

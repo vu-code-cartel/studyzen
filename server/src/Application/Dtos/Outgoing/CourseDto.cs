@@ -8,13 +8,15 @@ public class CourseDto
     public string Name { get; set; }
     public string Description { get; set; }
 
+    public CourseDto(Course course)
+    {
+        Id = course.Id;
+        Name = course.Name;
+        Description = course.Description;
+    }
+
     public static CourseDto ToDto(Course course)
     {
-        return new CourseDto
-        {
-            Id = course.Id,
-            Name = course.Name,
-            Description = course.Description
-        };
+        return new CourseDto(course);
     }
 }
