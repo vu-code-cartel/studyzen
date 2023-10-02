@@ -8,6 +8,6 @@ public interface IFlashcardService
     Flashcard CreateFlashcard(CreateFlashcardDto dto);
     Flashcard? GetFlashcardById(int flashcardId);
     IReadOnlyCollection<Flashcard> GetFlashcardsBySetId(int flashcardSetId);
-    Flashcard? UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto);
+    bool UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto);
     void DeleteFlashcard(int flashcardId);
 }

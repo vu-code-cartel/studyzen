@@ -35,19 +35,19 @@ public sealed class LectureService : ILectureService
         return courseLectures;
     }
 
-    public Lecture? UpdateLecture(int lectureId, UpdateLectureDto dto)
+    public bool UpdateLecture(int lectureId, UpdateLectureDto dto)
     {
         var lecture = _lectures.GetById(lectureId);
         if (lecture is null)
         {
-            return null;
+            return false;
         }
 
         lecture.Name = dto.Name ?? lecture.Name;
         lecture.Content = dto.Content ?? lecture.Content;
         _lectures.Update(lecture);
 
-        return lecture;
+        return true;
     }
 
     public void DeleteLecture(int lectureId)
