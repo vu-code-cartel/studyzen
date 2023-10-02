@@ -23,6 +23,10 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateFlashcardDto>, UpdateFlashcardRequestValidator>();
         services.AddScoped<IValidator<CreateFlashcardDto>, CreateFlashcardRequestValidator>();
         services.AddScoped<IValidator<UpdateFlashcardSetDto>, UpdateFlashcardSetRequestValidator>();
+        services.AddScoped<IValidator<Course>, UpdatedCourseValidator>();
+        services.AddScoped<IValidator<Lecture>, UpdatedLectureValidator>();
+        services.AddScoped<IValidator<Flashcard>, UpdatedFlashcardValidator>();
+        services.AddScoped<IValidator<FlashcardSet>, UpdatedFlashcardSetValidator>();
 
         return services;
     }
