@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
+using FluentValidation;
 
 namespace StudyZen.Api.Controllers;
 
@@ -10,18 +11,30 @@ namespace StudyZen.Api.Controllers;
 public sealed class LecturesController : ControllerBase
 {
     private readonly ILectureService _lectureService;
+    private readonly IValidator<CreateLectureDto> _createLectureValidator;
+    private readonly IValidator<UpdateLectureDto> _updateLectureValidator;
 
-    public LecturesController(ILectureService lectureService)
+    public LecturesController(ILectureService lectureService, IValidator<CreateLectureDto> createLectureValidator, IValidator<UpdateLectureDto> updateLectureValidator)
     {
         _lectureService = lectureService;
+        _createLectureValidator = createLectureValidator;
+        _updateLectureValidator = updateLectureValidator;
     }
 
     [HttpPost]
     public IActionResult CreateLecture([FromBody] CreateLectureDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var createdLecture = _lectureService.CreateLecture(request);
-        return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
+        var validationResult = _createLectureValidator.Validate(request);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
+        else
+        {
+            var createdLecture = _lectureService.CreateLecture(request);
+            return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
+        }
     }
 
     [HttpGet]
@@ -44,8 +57,16 @@ public sealed class LecturesController : ControllerBase
     public IActionResult UpdateLecture(int lectureId, [FromBody] UpdateLectureDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var updatedLecture = _lectureService.UpdateLecture(lectureId, request);
-        return updatedLecture is null ? NotFound() : Ok(updatedLecture);
+        var validationResult = _updateLectureValidator.Validate(request);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
+        else
+        {
+            var updatedLecture = _lectureService.UpdateLecture(lectureId, request);
+            return updatedLecture is null ? NotFound() : Ok(updatedLecture);
+        }
     }
 
     [HttpDelete]

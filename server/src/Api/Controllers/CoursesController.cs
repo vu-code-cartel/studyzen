@@ -2,6 +2,7 @@
 using StudyZen.Api.Extensions;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
+using FluentValidation;
 
 namespace StudyZen.Api.Controllers;
 
@@ -10,18 +11,30 @@ namespace StudyZen.Api.Controllers;
 public sealed class CoursesController : ControllerBase
 {
     private readonly ICourseService _courseService;
+    private readonly IValidator<CreateCourseDto> _createCourseValidator;
+    private readonly IValidator<UpdateCourseDto> _updateCourseValidator;
 
-    public CoursesController(ICourseService courseService)
+    public CoursesController(ICourseService courseService, IValidator<CreateCourseDto> createCourseValidator, IValidator<UpdateCourseDto> updateCourseValidator)
     {
         _courseService = courseService;
+        _createCourseValidator = createCourseValidator;
+        _updateCourseValidator = updateCourseValidator;
     }
 
     [HttpPost]
     public IActionResult CreateCourse([FromBody] CreateCourseDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var newCourse = _courseService.CreateCourse(request);
-        return CreatedAtAction(nameof(GetCourse), new { courseId = newCourse.Id }, newCourse);
+        var validationResult = _createCourseValidator.Validate(request);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
+        else
+        {
+            var newCourse = _courseService.CreateCourse(request);
+            return CreatedAtAction(nameof(GetCourse), new { courseId = newCourse.Id }, newCourse);
+        }
     }
 
     [HttpGet]
@@ -44,8 +57,16 @@ public sealed class CoursesController : ControllerBase
     public IActionResult UpdateCourse(int courseId, [FromBody] UpdateCourseDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var updatedCourse = _courseService.UpdateCourse(courseId, request);
-        return updatedCourse is null ? NotFound() : Ok(updatedCourse);
+        var validationResult = _updateCourseValidator.Validate(request);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
+        else
+        {
+            var updatedCourse = _courseService.UpdateCourse(courseId, request);
+            return updatedCourse is null ? NotFound() : Ok(updatedCourse);
+        }
     }
 
     [HttpDelete]

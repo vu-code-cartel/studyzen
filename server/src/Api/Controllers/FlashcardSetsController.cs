@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
+using FluentValidation;
 
 namespace StudyZen.Api.Controllers;
 
@@ -10,21 +11,33 @@ namespace StudyZen.Api.Controllers;
 public sealed class FlashcardSetsController : ControllerBase
 {
     private readonly IFlashcardSetService _flashcardSetService;
+    private readonly IValidator<CreateFlashcardSetDto> _createFlashcardSetValidator;
+    private readonly IValidator<UpdateFlashcardSetDto> _updateFlashcardSetValidator;
 
-    public FlashcardSetsController(IFlashcardSetService flashcardSetService)
+    public FlashcardSetsController(IFlashcardSetService flashcardSetService, IValidator<CreateFlashcardSetDto> createFlashcardSetValidator, IValidator<UpdateFlashcardSetDto> updateFlashcardSetValidator)
     {
         _flashcardSetService = flashcardSetService;
+        _createFlashcardSetValidator = createFlashcardSetValidator;
+        _updateFlashcardSetValidator = updateFlashcardSetValidator;
     }
 
     [HttpPost]
     public IActionResult CreateFlashcardSet([FromBody] CreateFlashcardSetDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var createdFlashcardSet = _flashcardSetService.CreateFlashcardSet(request);
-        return CreatedAtAction(nameof(GetFlashcardSet), new
+        var validationResult = _createFlashcardSetValidator.Validate(request);
+        if (!validationResult.IsValid)
         {
-            flashcardSetId = createdFlashcardSet.Id
-        }, createdFlashcardSet);
+            return BadRequest(validationResult.Errors);
+        }
+        else
+        {
+            var createdFlashcardSet = _flashcardSetService.CreateFlashcardSet(request);
+            return CreatedAtAction(nameof(GetFlashcardSet), new
+            {
+                flashcardSetId = createdFlashcardSet.Id
+            }, createdFlashcardSet);
+        }
     }
 
     [HttpGet("{flashcardSetId}")]
@@ -51,8 +64,16 @@ public sealed class FlashcardSetsController : ControllerBase
     public IActionResult UpdateFlashcardSetById(int flashcardSetId, [FromBody] UpdateFlashcardSetDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var updatedFlashcardSet = _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
-        return updatedFlashcardSet == null ? NotFound() : Ok(updatedFlashcardSet);
+        var validationResult = _updateFlashcardSetValidator.Validate(request);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
+        else
+        {
+            var updatedFlashcardSet = _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
+            return updatedFlashcardSet == null ? NotFound() : Ok(updatedFlashcardSet);
+        }
     }
 
     [HttpDelete("{flashcardSetId}")]
