@@ -1,5 +1,6 @@
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Repositories;
+using FluentValidation;
 using StudyZen.Domain.Entities;
 
 namespace StudyZen.Application.Services;
@@ -8,11 +9,13 @@ public sealed class LectureService : ILectureService
 {
     private readonly ILectureRepository _lectures;
     private readonly IFlashcardSetRepository _flashcardSets;
+    private readonly IValidator<Lecture> _updatedLectureValidator;
 
-    public LectureService(ILectureRepository lectures, IFlashcardSetRepository flashcardSets)
+    public LectureService(ILectureRepository lectures, IFlashcardSetRepository flashcardSets, IValidator<Lecture> updatedLectureValidator)
     {
         _lectures = lectures;
         _flashcardSets = flashcardSets;
+        _updatedLectureValidator = updatedLectureValidator;
     }
 
     public Lecture CreateLecture(CreateLectureDto dto)
@@ -45,6 +48,7 @@ public sealed class LectureService : ILectureService
 
         lecture.Name = dto.Name ?? lecture.Name;
         lecture.Content = dto.Content ?? lecture.Content;
+        _updatedLectureValidator.ValidateAndThrow(lecture);
         _lectures.Update(lecture);
 
         return lecture;
