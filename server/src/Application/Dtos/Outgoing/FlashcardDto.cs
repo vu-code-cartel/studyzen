@@ -9,7 +9,7 @@ public class FlashcardDto
     public string Question { get; set; }
     public string Answer { get; set; }
 
-    public FlashcardDto(Flashcard flashcar)
+    public FlashcardDto(Flashcard flashcard)
     {
         Id = flashcard.Id;
         FlashcardSetId = flashcard.FlashcardSetId;
@@ -21,5 +21,5 @@ public class FlashcardDto
     {
         return new FlashcardDto(flashcard);
     }
-    
+
 }
