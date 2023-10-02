@@ -64,8 +64,15 @@ public sealed class CoursesController : ControllerBase
         }
         else
         {
-            var updatedCourse = _courseService.UpdateCourse(courseId, request);
-            return updatedCourse is null ? NotFound() : Ok(updatedCourse);
+            try
+            {
+                var updatedCourse = _courseService.UpdateCourse(courseId, request);
+                return updatedCourse is null ? NotFound() : Ok(updatedCourse);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Errors);
+            }
         }
     }
 

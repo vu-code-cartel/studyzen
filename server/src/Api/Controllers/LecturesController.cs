@@ -64,8 +64,15 @@ public sealed class LecturesController : ControllerBase
         }
         else
         {
-            var updatedLecture = _lectureService.UpdateLecture(lectureId, request);
-            return updatedLecture is null ? NotFound() : Ok(updatedLecture);
+            try
+            {
+                var updatedLecture = _lectureService.UpdateLecture(lectureId, request);
+                return updatedLecture is null ? NotFound() : Ok(updatedLecture);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Errors);
+            }
         }
     }
 

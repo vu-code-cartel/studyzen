@@ -63,8 +63,15 @@ public sealed class FlashcardsController : ControllerBase
         }
         else
         {
-            var updatedFlashcard = _flashcardService.UpdateFlashcard(flashcardId, request);
-            return updatedFlashcard is null ? NotFound() : Ok(updatedFlashcard);
+            try
+            {
+                var updatedFlashcard = _flashcardService.UpdateFlashcard(flashcardId, request);
+                return updatedFlashcard is null ? NotFound() : Ok(updatedFlashcard);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Errors);
+            }
         }
     }
 
