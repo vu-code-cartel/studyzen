@@ -7,7 +7,7 @@ using FluentValidation;
 namespace StudyZen.Api.Controllers;
 
 [ApiController]
-[Route("lectures")]
+[Route("[controller]")]
 public sealed class LecturesController : ControllerBase
 {
     private readonly ILectureService _lectureService;
@@ -49,15 +49,15 @@ public sealed class LecturesController : ControllerBase
     public IActionResult UpdateLecture(int lectureId, [FromBody] UpdateLectureDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var updatedLecture = _lectureService.UpdateLecture(lectureId, request);
-        return updatedLecture is null ? NotFound() : Ok(updatedLecture);
+        var isSuccess = _lectureService.UpdateLecture(lectureId, request);
+        return isSuccess ? Ok() : BadRequest();
     }
 
     [HttpDelete]
     [Route("{lectureId}")]
     public IActionResult DeleteLecture(int lectureId)
     {
-        _lectureService.DeleteLecture(lectureId);
-        return NoContent();
+        var isSuccess = _lectureService.DeleteLecture(lectureId);
+        return isSuccess ? Ok() : NotFound();
     }
 }
