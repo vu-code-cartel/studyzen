@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
-using StudyZen.Application.Validators;
-using StudyZen.Domain.Entities;
+using StudyZen.Application.Validation;
+using StudyZen.Application.Validation.Validators;
+
 
 namespace StudyZen.Application;
 
@@ -15,18 +15,8 @@ public static class DependencyInjection
         services.AddScoped<ILectureService, LectureService>();
         services.AddScoped<IFlashcardService, FlashcardService>();
         services.AddScoped<IFlashcardSetService, FlashcardSetService>();
-        services.AddScoped<IValidator<CreateCourseDto>, CreateCourseRequestValidator>();
-        services.AddScoped<IValidator<UpdateCourseDto>, UpdateCourseRequestValidator>();
-        services.AddScoped<IValidator<CreateLectureDto>, CreateLectureRequestValidator>();
-        services.AddScoped<IValidator<UpdateLectureDto>, UpdateLectureRequestValidator>();
-        services.AddScoped<IValidator<CreateFlashcardDto>, CreateFlashcardRequestValidator>();
-        services.AddScoped<IValidator<UpdateFlashcardDto>, UpdateFlashcardRequestValidator>();
-        services.AddScoped<IValidator<CreateFlashcardDto>, CreateFlashcardRequestValidator>();
-        services.AddScoped<IValidator<UpdateFlashcardSetDto>, UpdateFlashcardSetRequestValidator>();
-        services.AddScoped<IValidator<Course>, UpdatedCourseValidator>();
-        services.AddScoped<IValidator<Lecture>, UpdatedLectureValidator>();
-        services.AddScoped<IValidator<Flashcard>, UpdatedFlashcardValidator>();
-        services.AddScoped<IValidator<FlashcardSet>, UpdatedFlashcardSetValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateLectureRequestValidator>();
+        services.AddTransient<ValidationHandler>();
 
         return services;
     }

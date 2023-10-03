@@ -24,6 +24,11 @@ public static class DependencyInjection
             .AddControllers()
             .AddProblemDetailsConventions()
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+        services
+            .AddProblemDetails(options => { options.MapToStatusCode<FailedValidationException>(StatusCodes.Status400BadRequest); })
+            .AddControllers()
+            .AddProblemDetailsConventions()
+            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         ProblemDetailsExtensions.AddProblemDetails(services);
 
