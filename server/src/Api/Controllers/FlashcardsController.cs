@@ -25,16 +25,8 @@ public sealed class FlashcardsController : ControllerBase
     public IActionResult CreateFlashcard([FromBody] CreateFlashcardDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var validationResult = _createFlashcardValidator.Validate(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.Errors);
-        }
-        else
-        {
-            var newFlashcard = _flashcardService.CreateFlashcard(request);
-            return CreatedAtAction(nameof(GetFlashcard), new { flashcardId = newFlashcard.Id }, newFlashcard);
-        }
+        var newFlashcard = _flashcardService.CreateFlashcard(request);
+        return CreatedAtAction(nameof(GetFlashcard), new { flashcardId = newFlashcard.Id }, newFlashcard);
     }
 
     [HttpGet]
@@ -56,24 +48,10 @@ public sealed class FlashcardsController : ControllerBase
     public IActionResult UpdateFlashcardById(int flashcardId, [FromBody] UpdateFlashcardDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var validationResult = _updateFlashcardValidator.Validate(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.Errors);
-        }
-        else
-        {
-            try
-            {
-                var updatedFlashcard = _flashcardService.UpdateFlashcard(flashcardId, request);
-                return updatedFlashcard is null ? NotFound() : Ok(updatedFlashcard);
-            }
-            catch (ValidationException e)
-            {
-                return BadRequest(e.Errors);
-            }
-        }
+        var updatedFlashcard = _flashcardService.UpdateFlashcard(flashcardId, request);
+        return updatedFlashcard is null ? NotFound() : Ok(updatedFlashcard);
     }
+
 
     [HttpDelete("{flashcardId}")]
     public IActionResult DeleteFlashcard(int flashcardId)

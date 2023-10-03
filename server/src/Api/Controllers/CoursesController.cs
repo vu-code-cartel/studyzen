@@ -25,16 +25,9 @@ public sealed class CoursesController : ControllerBase
     public IActionResult CreateCourse([FromBody] CreateCourseDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var validationResult = _createCourseValidator.Validate(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.Errors);
-        }
-        else
-        {
-            var newCourse = _courseService.CreateCourse(request);
-            return CreatedAtAction(nameof(GetCourse), new { courseId = newCourse.Id }, newCourse);
-        }
+        var newCourse = _courseService.CreateCourse(request);
+        return CreatedAtAction(nameof(GetCourse), new { courseId = newCourse.Id }, newCourse);
+
     }
 
     [HttpGet]
@@ -57,23 +50,8 @@ public sealed class CoursesController : ControllerBase
     public IActionResult UpdateCourse(int courseId, [FromBody] UpdateCourseDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var validationResult = _updateCourseValidator.Validate(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.Errors);
-        }
-        else
-        {
-            try
-            {
-                var updatedCourse = _courseService.UpdateCourse(courseId, request);
-                return updatedCourse is null ? NotFound() : Ok(updatedCourse);
-            }
-            catch (ValidationException e)
-            {
-                return BadRequest(e.Errors);
-            }
-        }
+        var updatedCourse = _courseService.UpdateCourse(courseId, request);
+        return updatedCourse is null ? NotFound() : Ok(updatedCourse);
     }
 
     [HttpDelete]

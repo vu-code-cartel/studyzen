@@ -25,19 +25,11 @@ public sealed class FlashcardSetsController : ControllerBase
     public IActionResult CreateFlashcardSet([FromBody] CreateFlashcardSetDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var validationResult = _createFlashcardSetValidator.Validate(request);
-        if (!validationResult.IsValid)
+        var createdFlashcardSet = _flashcardSetService.CreateFlashcardSet(request);
+        return CreatedAtAction(nameof(GetFlashcardSet), new
         {
-            return BadRequest(validationResult.Errors);
-        }
-        else
-        {
-            var createdFlashcardSet = _flashcardSetService.CreateFlashcardSet(request);
-            return CreatedAtAction(nameof(GetFlashcardSet), new
-            {
-                flashcardSetId = createdFlashcardSet.Id
-            }, createdFlashcardSet);
-        }
+            flashcardSetId = createdFlashcardSet.Id
+        }, createdFlashcardSet);
     }
 
     [HttpGet("{flashcardSetId}")]
@@ -64,23 +56,8 @@ public sealed class FlashcardSetsController : ControllerBase
     public IActionResult UpdateFlashcardSetById(int flashcardSetId, [FromBody] UpdateFlashcardSetDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var validationResult = _updateFlashcardSetValidator.Validate(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.Errors);
-        }
-        else
-        {
-            try
-            {
-                var updatedFlashcardSet = _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
-                return updatedFlashcardSet == null ? NotFound() : Ok(updatedFlashcardSet);
-            }
-            catch (ValidationException e)
-            {
-                return BadRequest(e.Errors);
-            }
-        }
+        var updatedFlashcardSet = _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
+        return updatedFlashcardSet == null ? NotFound() : Ok(updatedFlashcardSet);
     }
 
     [HttpDelete("{flashcardSetId}")]

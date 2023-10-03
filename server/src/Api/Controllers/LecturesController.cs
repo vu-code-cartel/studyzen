@@ -25,16 +25,8 @@ public sealed class LecturesController : ControllerBase
     public IActionResult CreateLecture([FromBody] CreateLectureDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var validationResult = _createLectureValidator.Validate(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.Errors);
-        }
-        else
-        {
-            var createdLecture = _lectureService.CreateLecture(request);
-            return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
-        }
+        var createdLecture = _lectureService.CreateLecture(request);
+        return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
     }
 
     [HttpGet]
@@ -57,23 +49,8 @@ public sealed class LecturesController : ControllerBase
     public IActionResult UpdateLecture(int lectureId, [FromBody] UpdateLectureDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var validationResult = _updateLectureValidator.Validate(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.Errors);
-        }
-        else
-        {
-            try
-            {
-                var updatedLecture = _lectureService.UpdateLecture(lectureId, request);
-                return updatedLecture is null ? NotFound() : Ok(updatedLecture);
-            }
-            catch (ValidationException e)
-            {
-                return BadRequest(e.Errors);
-            }
-        }
+        var updatedLecture = _lectureService.UpdateLecture(lectureId, request);
+        return updatedLecture is null ? NotFound() : Ok(updatedLecture);
     }
 
     [HttpDelete]
