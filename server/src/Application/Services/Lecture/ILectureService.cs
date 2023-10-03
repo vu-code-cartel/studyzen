@@ -8,6 +8,6 @@ public interface ILectureService
     Lecture CreateLecture(CreateLectureDto dto);
     Lecture? GetLectureById(int lectureId);
     IReadOnlyCollection<Lecture> GetLecturesByCourseId(int courseId);
-    Lecture? UpdateLecture(int lectureId, UpdateLectureDto dto);
-    void DeleteLecture(int lectureId);
+    bool UpdateLecture(int lectureId, UpdateLectureDto dto);
+    bool DeleteLecture(int lectureId);
 }

@@ -18,7 +18,7 @@ public sealed class CourseService : ICourseService
 
     public CourseDto CreateCourse(CreateCourseDto dto)
     {
-        var newCourse = new Course(dto.Name, dto.Description);
+        var newCourse = new Course(name: dto.Name, description: dto.Description);
         _courses.Add(newCourse);
         return CourseDto.ToDto(newCourse);
     }
@@ -29,25 +29,24 @@ public sealed class CourseService : ICourseService
         return course != null ? CourseDto.ToDto(course) : null;
     }
 
-    public CourseDto? UpdateCourse(int id, UpdateCourseDto dto)
+    public bool UpdateCourse(int id, UpdateCourseDto dto)
     {
         var course = _courses.GetById(id);
         if (course is null)
         {
-            return null;
+            return false;
         }
 
         course.Name = dto.Name ?? course.Name;
         course.Description = dto.Description ?? course.Description;
         _courses.Update(course);
-
-        return CourseDto.ToDto(course);
+        return true;
     }
 
-    public void DeleteCourse(int id)
+    public bool DeleteCourse(int id)
     {
         DeleteLecturesByCourseId(id);
-        _courses.Delete(id);
+        return _courses.Delete(id);
     }
 
     public IReadOnlyCollection<CourseDto> GetAllCourses()
