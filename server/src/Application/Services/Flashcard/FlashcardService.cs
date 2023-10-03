@@ -47,8 +47,8 @@ public sealed class FlashcardService : IFlashcardService
         return true;
     }
 
-    public void DeleteFlashcard(int flashcardId)
+    public bool DeleteFlashcard(int flashcardId)
     {
-        _flashcards.Delete(flashcardId);
+        return _flashcards.Delete(flashcardId);
     }
 }

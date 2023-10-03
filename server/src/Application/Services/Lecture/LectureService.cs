@@ -50,10 +50,10 @@ public sealed class LectureService : ILectureService
         return true;
     }
 
-    public void DeleteLecture(int lectureId)
+    public bool DeleteLecture(int lectureId)
     {
         DeleteFlashcardSetsFromLecture(lectureId);
-        _lectures.Delete(lectureId);
+        return _lectures.Delete(lectureId);
     }
 
     private void DeleteFlashcardSetsFromLecture(int lectureId)

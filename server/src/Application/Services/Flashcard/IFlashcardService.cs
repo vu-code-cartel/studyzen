@@ -9,5 +9,5 @@ public interface IFlashcardService
     Flashcard? GetFlashcardById(int flashcardId);
     IReadOnlyCollection<Flashcard> GetFlashcardsBySetId(int flashcardSetId);
     bool UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto);
-    void DeleteFlashcard(int flashcardId);
+    bool DeleteFlashcard(int flashcardId);
 }

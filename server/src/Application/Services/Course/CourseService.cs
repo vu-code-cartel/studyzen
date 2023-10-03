@@ -43,10 +43,10 @@ public sealed class CourseService : ICourseService
         return true;
     }
 
-    public void DeleteCourse(int id)
+    public bool DeleteCourse(int id)
     {
         DeleteLecturesByCourseId(id);
-        _courses.Delete(id);
+        return _courses.Delete(id);
     }
 
     public IReadOnlyCollection<Course> GetAllCourses()
