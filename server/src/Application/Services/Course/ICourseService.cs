@@ -8,6 +8,6 @@ public interface ICourseService
     Course CreateCourse(CreateCourseDto dto);
     Course? GetCourseById(int id);
     IReadOnlyCollection<Course> GetAllCourses();
-    Course? UpdateCourse(int id, UpdateCourseDto dto);
+    bool UpdateCourse(int id, UpdateCourseDto dto);
     void DeleteCourse(int id);
 }

@@ -41,19 +41,19 @@ public sealed class FlashcardSetService : IFlashcardSetService
         return lectureFlashcardSets;
     }
 
-    public FlashcardSet? UpdateFlashcardSet(int flashCardSetId, UpdateFlashcardSetDto dto)
+    public bool UpdateFlashcardSet(int flashCardSetId, UpdateFlashcardSetDto dto)
     {
         var flashcardSet = _flashcardSets.GetById(flashCardSetId);
         if (flashcardSet is null)
         {
-            return null;
+            return false;
         }
 
         flashcardSet.Name = dto.Name ?? flashcardSet.Name;
         flashcardSet.Color = dto.Color ?? flashcardSet.Color;
         _flashcardSets.Update(flashcardSet);
 
-        return flashcardSet;
+        return true;
     }
 
     public void DeleteFlashcardSet(int flashcardSetId)

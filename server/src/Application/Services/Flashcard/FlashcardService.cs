@@ -32,19 +32,19 @@ public sealed class FlashcardService : IFlashcardService
         return setFlashcards;
     }
 
-    public Flashcard? UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto)
+    public bool UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto)
     {
         var flashcard = _flashcards.GetById(flashcardId);
         if (flashcard is null)
         {
-            return null;
+            return false;
         }
 
         flashcard.Question = dto.Question ?? flashcard.Question;
         flashcard.Answer = dto.Answer ?? flashcard.Answer;
         _flashcards.Update(flashcard);
 
-        return flashcard;
+        return true;
     }
 
     public void DeleteFlashcard(int flashcardId)

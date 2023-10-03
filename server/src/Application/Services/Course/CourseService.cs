@@ -28,19 +28,19 @@ public sealed class CourseService : ICourseService
         return course;
     }
 
-    public Course? UpdateCourse(int id, UpdateCourseDto dto)
+    public bool UpdateCourse(int id, UpdateCourseDto dto)
     {
         var course = _courses.GetById(id);
         if (course is null)
         {
-            return null;
+            return false;
         }
 
         course.Name = dto.Name ?? course.Name;
         course.Description = dto.Description ?? course.Description;
         _courses.Update(course);
 
-        return course;
+        return true;
     }
 
     public void DeleteCourse(int id)

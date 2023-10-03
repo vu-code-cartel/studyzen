@@ -6,7 +6,7 @@ using StudyZen.Application.Services;
 namespace StudyZen.Api.Controllers;
 
 [ApiController]
-[Route("flashcardsets")]
+[Route("[controller]")]
 public sealed class FlashcardSetsController : ControllerBase
 {
     private readonly IFlashcardSetService _flashcardSetService;
@@ -21,10 +21,7 @@ public sealed class FlashcardSetsController : ControllerBase
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
         var createdFlashcardSet = _flashcardSetService.CreateFlashcardSet(request);
-        return CreatedAtAction(nameof(GetFlashcardSet), new
-        {
-            flashcardSetId = createdFlashcardSet.Id
-        }, createdFlashcardSet);
+        return CreatedAtAction(nameof(GetFlashcardSet), new { flashcardSetId = createdFlashcardSet.Id }, createdFlashcardSet);
     }
 
     [HttpGet("{flashcardSetId}")]
@@ -51,14 +48,14 @@ public sealed class FlashcardSetsController : ControllerBase
     public IActionResult UpdateFlashcardSetById(int flashcardSetId, [FromBody] UpdateFlashcardSetDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var updatedFlashcardSet = _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
-        return updatedFlashcardSet == null ? NotFound() : Ok(updatedFlashcardSet);
+        var isSuccess = _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
+        return isSuccess ? Ok() : BadRequest();
     }
 
     [HttpDelete("{flashcardSetId}")]
     public IActionResult DeleteFlashcardSet(int flashcardSetId)
     {
         _flashcardSetService.DeleteFlashcardSet(flashcardSetId);
-        return NoContent();
+        return Ok();
     }
 }
