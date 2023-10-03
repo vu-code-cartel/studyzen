@@ -17,7 +17,7 @@ public sealed class CourseService : ICourseService
 
     public Course CreateCourse(CreateCourseDto dto)
     {
-        var newCourse = new Course(dto.Name, dto.Description);
+        var newCourse = new Course(name: dto.Name, description: dto.Description);
         _courses.Add(newCourse);
         return newCourse;
     }
