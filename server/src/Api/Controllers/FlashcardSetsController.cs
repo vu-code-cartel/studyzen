@@ -55,7 +55,7 @@ public sealed class FlashcardSetsController : ControllerBase
     [HttpDelete("{flashcardSetId}")]
     public IActionResult DeleteFlashcardSet(int flashcardSetId)
     {
-        var isDeleted = _flashcardSetService.DeleteFlashcardSet(flashcardSetId);
-        return isDeleted ? Ok() : NotFound();
+        var isSuccess = _flashcardSetService.DeleteFlashcardSet(flashcardSetId);
+        return isSuccess ? Ok() : NotFound();
     }
 }
