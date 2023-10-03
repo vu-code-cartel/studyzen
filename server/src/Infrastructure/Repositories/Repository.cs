@@ -25,6 +25,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
 
         instance.Id = ++entitySet.TotalCount;
         entitySet.Instances.Add(instance);
+        Log.Information("A new instance of {instanceType} with the id {id} was added to {filePath}.", typeof(TEntity).Name, instance.Id, _filePath);
 
         Log.Information("Adding a new instance of '{0}' with id '{1}'", typeof(TEntity).Name, instance.Id);
         _fileService.WriteToJsonFile(_filePath, entitySet);
