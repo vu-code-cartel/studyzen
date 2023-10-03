@@ -2,6 +2,7 @@ using StudyZen.Application.Dtos;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
 using FluentValidation;
+using StudyZen.Application.Validation;
 
 namespace StudyZen.Application.Services;
 
@@ -9,17 +10,18 @@ public sealed class FlashcardSetService : IFlashcardSetService
 {
     private readonly IFlashcardSetRepository _flashcardSets;
     private readonly IFlashcardRepository _flashcards;
-    private readonly IValidator<FlashcardSet> _updatedFlashcardSetValidator;
+    private readonly ValidationHandler _validationHandler;
 
-    public FlashcardSetService(IFlashcardSetRepository flashcardSets, IFlashcardRepository flashcards, IValidator<FlashcardSet> updatedFlashcardSetValidator)
+    public FlashcardSetService(IFlashcardSetRepository flashcardSets, IFlashcardRepository flashcards, ValidationHandler validationHandler)
     {
         _flashcardSets = flashcardSets;
         _flashcards = flashcards;
-        _updatedFlashcardSetValidator = updatedFlashcardSetValidator;
+        _validationHandler = validationHandler;
     }
 
     public FlashcardSet CreateFlashcardSet(CreateFlashcardSetDto dto)
     {
+        _validationHandler.Validate(dto);
         var newFlashcardSet = new FlashcardSet(dto.LectureId, dto.Name, dto.Color);
         _flashcardSets.Add(newFlashcardSet);
         return newFlashcardSet;
@@ -52,9 +54,9 @@ public sealed class FlashcardSetService : IFlashcardSetService
             return null;
         }
 
+        _validationHandler.Validate(dto);
         flashcardSet.Name = dto.Name ?? flashcardSet.Name;
         flashcardSet.Color = dto.Color ?? flashcardSet.Color;
-        _updatedFlashcardSetValidator.ValidateAndThrow(flashcardSet);
         _flashcardSets.Update(flashcardSet);
 
         return flashcardSet;
