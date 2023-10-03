@@ -60,19 +60,21 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         return true;
     }
 
-    public void Delete(int instanceId)
+    public bool Delete(int instanceId)
     {
         var entitySet = GetEntitySet();
 
         var instance = entitySet.Instances.FirstOrDefault(i => i.Id == instanceId);
         if (instance is null)
         {
-            return;
+            return false;
         }
 
         entitySet.Instances.Remove(instance);
 
         _fileService.WriteToJsonFile(_filePath, entitySet);
+
+        return true;
     }
 
     private EntitySet<TEntity> GetEntitySet()

@@ -9,5 +9,5 @@ public interface ICourseService
     Course? GetCourseById(int id);
     IReadOnlyCollection<Course> GetAllCourses();
     bool UpdateCourse(int id, UpdateCourseDto dto);
-    void DeleteCourse(int id);
+    bool DeleteCourse(int id);
 }

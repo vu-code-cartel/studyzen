@@ -56,10 +56,10 @@ public sealed class FlashcardSetService : IFlashcardSetService
         return true;
     }
 
-    public void DeleteFlashcardSet(int flashcardSetId)
+    public bool DeleteFlashcardSet(int flashcardSetId)
     {
         DeleteFlashcardsBySetId(flashcardSetId);
-        _flashcardSets.Delete(flashcardSetId);
+        return _flashcardSets.Delete(flashcardSetId);
     }
 
     private void DeleteFlashcardsBySetId(int flashcardSetId)

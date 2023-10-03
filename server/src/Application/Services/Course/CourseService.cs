@@ -17,7 +17,7 @@ public sealed class CourseService : ICourseService
 
     public Course CreateCourse(CreateCourseDto dto)
     {
-        var newCourse = new Course(dto.Name, dto.Description);
+        var newCourse = new Course(name: dto.Name, description: dto.Description);
         _courses.Add(newCourse);
         return newCourse;
     }
@@ -43,10 +43,10 @@ public sealed class CourseService : ICourseService
         return true;
     }
 
-    public void DeleteCourse(int id)
+    public bool DeleteCourse(int id)
     {
         DeleteLecturesByCourseId(id);
-        _courses.Delete(id);
+        return _courses.Delete(id);
     }
 
     public IReadOnlyCollection<Course> GetAllCourses()

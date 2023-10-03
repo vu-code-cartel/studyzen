@@ -52,7 +52,7 @@ public sealed class CoursesController : ControllerBase
     [Route("{courseId}")]
     public IActionResult DeleteCourse(int courseId)
     {
-        _courseService.DeleteCourse(courseId);
-        return Ok();
+        var isSuccess = _courseService.DeleteCourse(courseId);
+        return isSuccess ? Ok() : NotFound();
     }
 }

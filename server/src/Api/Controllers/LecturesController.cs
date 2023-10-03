@@ -52,7 +52,7 @@ public sealed class LecturesController : ControllerBase
     [Route("{lectureId}")]
     public IActionResult DeleteLecture(int lectureId)
     {
-        _lectureService.DeleteLecture(lectureId);
-        return Ok();
+        var isSuccess = _lectureService.DeleteLecture(lectureId);
+        return isSuccess ? Ok() : NotFound();
     }
 }

@@ -9,5 +9,5 @@ public interface ILectureService
     Lecture? GetLectureById(int lectureId);
     IReadOnlyCollection<Lecture> GetLecturesByCourseId(int courseId);
     bool UpdateLecture(int lectureId, UpdateLectureDto dto);
-    void DeleteLecture(int lectureId);
+    bool DeleteLecture(int lectureId);
 }
