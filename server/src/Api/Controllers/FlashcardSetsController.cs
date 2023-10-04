@@ -11,14 +11,10 @@ namespace StudyZen.Api.Controllers;
 public sealed class FlashcardSetsController : ControllerBase
 {
     private readonly IFlashcardSetService _flashcardSetService;
-    private readonly IValidator<CreateFlashcardSetDto> _createFlashcardSetValidator;
-    private readonly IValidator<UpdateFlashcardSetDto> _updateFlashcardSetValidator;
 
-    public FlashcardSetsController(IFlashcardSetService flashcardSetService, IValidator<CreateFlashcardSetDto> createFlashcardSetValidator, IValidator<UpdateFlashcardSetDto> updateFlashcardSetValidator)
+    public FlashcardSetsController(IFlashcardSetService flashcardSetService)
     {
         _flashcardSetService = flashcardSetService;
-        _createFlashcardSetValidator = createFlashcardSetValidator;
-        _updateFlashcardSetValidator = updateFlashcardSetValidator;
     }
 
     [HttpPost]

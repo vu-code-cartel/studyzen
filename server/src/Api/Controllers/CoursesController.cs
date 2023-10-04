@@ -11,14 +11,10 @@ namespace StudyZen.Api.Controllers;
 public sealed class CoursesController : ControllerBase
 {
     private readonly ICourseService _courseService;
-    private readonly IValidator<CreateCourseDto> _createCourseValidator;
-    private readonly IValidator<UpdateCourseDto> _updateCourseValidator;
 
-    public CoursesController(ICourseService courseService, IValidator<CreateCourseDto> createCourseValidator, IValidator<UpdateCourseDto> updateCourseValidator)
+    public CoursesController(ICourseService courseService)
     {
         _courseService = courseService;
-        _createCourseValidator = createCourseValidator;
-        _updateCourseValidator = updateCourseValidator;
     }
 
     [HttpPost]
