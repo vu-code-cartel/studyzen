@@ -23,7 +23,6 @@ public sealed class CoursesController : ControllerBase
         request = request.ThrowIfRequestArgumentNull(nameof(request));
         var newCourse = _courseService.CreateCourse(request);
         return CreatedAtAction(nameof(GetCourse), new { courseId = newCourse.Id }, newCourse);
-
     }
 
     [HttpGet]

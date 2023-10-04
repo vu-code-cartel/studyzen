@@ -47,7 +47,6 @@ public sealed class FlashcardsController : ControllerBase
         return updatedFlashcard is null ? NotFound() : Ok(updatedFlashcard);
     }
 
-
     [HttpDelete("{flashcardId}")]
     public IActionResult DeleteFlashcard(int flashcardId)
     {
