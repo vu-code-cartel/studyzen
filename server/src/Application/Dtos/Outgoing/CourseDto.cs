@@ -15,7 +15,7 @@ public class CourseDto
         Description = course.Description;
     }
 
-    public static CourseDto ToDto(Course course)
+    public static CourseDto toDto(Course course)
     {
         return new CourseDto(course);
     }

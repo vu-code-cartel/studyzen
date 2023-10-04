@@ -15,24 +15,24 @@ public sealed class LectureService : ILectureService
         _flashcardSets = flashcardSets;
     }
 
-    public Lecture CreateLecture(CreateLectureDto dto)
+    public LectureDto CreateLecture(CreateLectureDto dto)
     {
         var newLecture = new Lecture(dto.CourseId, dto.Name, dto.Content);
         _lectures.Add(newLecture);
-        return newLecture;
+        return LectureDto.toDto(newLecture);
     }
 
-    public Lecture? GetLectureById(int lectureId)
+    public LectureDto? GetLectureById(int lectureId)
     {
         var lecture = _lectures.GetById(lectureId);
-        return lecture;
+        return lecture != null ? LectureDto.toDto(lecture) : null;
     }
 
-    public IReadOnlyCollection<Lecture> GetLecturesByCourseId(int courseId)
+    public IReadOnlyCollection<LectureDto> GetLecturesByCourseId(int courseId)
     {
         var allLectures = _lectures.GetAll();
         var courseLectures = allLectures.Where(l => l.CourseId == courseId).ToList();
-        return courseLectures;
+        return courseLectures.Select(lecture => LectureDto.toDto(lecture)).ToList();
     }
 
     public bool UpdateLecture(int lectureId, UpdateLectureDto dto)

@@ -15,30 +15,32 @@ public sealed class FlashcardSetService : IFlashcardSetService
         _flashcards = flashcards;
     }
 
-    public FlashcardSet CreateFlashcardSet(CreateFlashcardSetDto dto)
+    public FlashcardSetDto CreateFlashcardSet(CreateFlashcardSetDto dto)
     {
         var newFlashcardSet = new FlashcardSet(dto.LectureId, dto.Name, dto.Color);
         _flashcardSets.Add(newFlashcardSet);
-        return newFlashcardSet;
+        return FlashcardSetDto.toDto(newFlashcardSet);
     }
 
-    public FlashcardSet? GetFlashcardSetById(int flashcardSetId)
+    public FlashcardSetDto? GetFlashcardSetById(int flashcardSetId)
     {
         var flashcardSet = _flashcardSets.GetById(flashcardSetId);
-        return flashcardSet;
+
+        return flashcardSet != null ? FlashcardSetDto.toDto(flashcardSet) : null;
     }
 
-    public IReadOnlyCollection<FlashcardSet> GetAllFlashcardSets()
+    public IReadOnlyCollection<FlashcardSetDto> GetAllFlashcardSets()
     {
         var allFlashcardSets = _flashcardSets.GetAll();
-        return allFlashcardSets;
+
+        return allFlashcardSets.Select(flashcardSet => FlashcardSetDto.toDto(flashcardSet)).ToList();
     }
 
-    public IReadOnlyCollection<FlashcardSet> GetFlashcardSetsByLectureId(int? lectureId)
+    public IReadOnlyCollection<FlashcardSetDto> GetFlashcardSetsByLectureId(int? lectureId)
     {
         var allFlashcardSets = _flashcardSets.GetAll();
         var lectureFlashcardSets = allFlashcardSets.Where(fs => fs.LectureId == lectureId).ToList();
-        return lectureFlashcardSets;
+        return lectureFlashcardSets.Select(flashcardSet => FlashcardSetDto.toDto(flashcardSet)).ToList();
     }
 
     public bool UpdateFlashcardSet(int flashCardSetId, UpdateFlashcardSetDto dto)

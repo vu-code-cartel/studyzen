@@ -20,13 +20,13 @@ public sealed class CourseService : ICourseService
     {
         var newCourse = new Course(name: dto.Name, description: dto.Description);
         _courses.Add(newCourse);
-        return CourseDto.ToDto(newCourse);
+        return CourseDto.toDto(newCourse);
     }
 
     public CourseDto? GetCourseById(int id)
     {
         var course = _courses.GetById(id);
-        return course != null ? CourseDto.ToDto(course) : null;
+        return course != null ? CourseDto.toDto(course) : null;
     }
 
     public bool UpdateCourse(int id, UpdateCourseDto dto)
@@ -52,7 +52,7 @@ public sealed class CourseService : ICourseService
     public IReadOnlyCollection<CourseDto> GetAllCourses()
     {
         var allCourses = _courses.GetAll();
-        return allCourses.Select(course => CourseDto.ToDto(course)).ToList();
+        return allCourses.Select(course => CourseDto.toDto(course)).ToList();
     }
 
     private void DeleteLecturesByCourseId(int courseId)

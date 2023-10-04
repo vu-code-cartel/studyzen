@@ -17,7 +17,7 @@ public class FlashcardDto
         Answer = flashcard.Answer;
     }
 
-    public static FlashcardDto ToDto(Flashcard flashcard)
+    public static FlashcardDto toDto(Flashcard flashcard)
     {
         return new FlashcardDto(flashcard);
     }

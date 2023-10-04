@@ -18,7 +18,7 @@ public class FlashcardSetDto
         Color = flashcardSet.Color;
     }
 
-    public static FlashcardSetDto ToDto(FlashcardSet flashcardSet)
+    public static FlashcardSetDto toDto(FlashcardSet flashcardSet)
     {
         return new FlashcardSetDto(flashcardSet);
     }

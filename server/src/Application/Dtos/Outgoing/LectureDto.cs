@@ -17,7 +17,7 @@ public class LectureDto
         Content = lecture.Content;
     }
 
-    public static LectureDto ToDto(Lecture lecture)
+    public static LectureDto toDto(Lecture lecture)
     {
         return new LectureDto(lecture);
     }
