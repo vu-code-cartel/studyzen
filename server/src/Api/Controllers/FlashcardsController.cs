@@ -10,6 +10,7 @@ namespace StudyZen.Api.Controllers;
 public sealed class FlashcardsController : ControllerBase
 {
     private readonly IFlashcardService _flashcardService;
+
     public FlashcardsController(IFlashcardService flashcardService)
     {
         _flashcardService = flashcardService;
