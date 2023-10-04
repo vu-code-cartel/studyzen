@@ -1,6 +1,7 @@
 ﻿using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
 using StudyZen.Api.Exceptions;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace StudyZen.Api;
@@ -20,12 +21,11 @@ public static class DependencyInjection
         });
 
         services
-            .AddProblemDetails(options => { options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest); })
-            .AddControllers()
-            .AddProblemDetailsConventions()
-            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-        services
-            .AddProblemDetails(options => { options.MapToStatusCode<FailedValidationException>(StatusCodes.Status400BadRequest); })
+            .AddProblemDetails(options =>
+            {
+                options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest);
+                options.MapToStatusCode<ValidationException>(StatusCodes.Status422UnprocessableEntity);
+            })
             .AddControllers()
             .AddProblemDetailsConventions()
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
