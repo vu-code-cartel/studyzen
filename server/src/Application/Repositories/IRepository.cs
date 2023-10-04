@@ -8,5 +8,5 @@ public interface IRepository<TEntity> where TEntity : BaseEntity
     TEntity? GetById(int instanceId);
     List<TEntity> GetAll();
     bool Update(TEntity instance);
-    void Delete(int instanceId);
+    bool Delete(int instanceId);
 }

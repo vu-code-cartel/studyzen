@@ -7,7 +7,7 @@ using FluentValidation;
 namespace StudyZen.Api.Controllers;
 
 [ApiController]
-[Route("flashcards")]
+[Route("[controller]")]
 public sealed class FlashcardsController : ControllerBase
 {
     private readonly IFlashcardService _flashcardService;
@@ -43,14 +43,14 @@ public sealed class FlashcardsController : ControllerBase
     public IActionResult UpdateFlashcardById(int flashcardId, [FromBody] UpdateFlashcardDto? request)
     {
         request = request.ThrowIfRequestArgumentNull(nameof(request));
-        var updatedFlashcard = _flashcardService.UpdateFlashcard(flashcardId, request);
-        return updatedFlashcard is null ? NotFound() : Ok(updatedFlashcard);
+        var isSuccess = _flashcardService.UpdateFlashcard(flashcardId, request);
+        return isSuccess ? Ok() : BadRequest();
     }
 
     [HttpDelete("{flashcardId}")]
     public IActionResult DeleteFlashcard(int flashcardId)
     {
-        _flashcardService.DeleteFlashcard(flashcardId);
-        return NoContent();
+        var isSuccess = _flashcardService.DeleteFlashcard(flashcardId);
+        return isSuccess ? Ok() : NotFound();
     }
 }

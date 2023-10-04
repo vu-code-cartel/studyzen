@@ -33,12 +33,12 @@ public sealed class CourseService : ICourseService
         return course;
     }
 
-    public Course? UpdateCourse(int id, UpdateCourseDto dto)
+    public bool UpdateCourse(int id, UpdateCourseDto dto)
     {
         var course = _courses.GetById(id);
         if (course is null)
         {
-            return null;
+            return false;
         }
 
         _validationHandler.Validate(dto);
@@ -46,13 +46,13 @@ public sealed class CourseService : ICourseService
         course.Description = dto.Description ?? course.Description;
         _courses.Update(course);
 
-        return course;
+        return true;
     }
 
-    public void DeleteCourse(int id)
+    public bool DeleteCourse(int id)
     {
         DeleteLecturesByCourseId(id);
-        _courses.Delete(id);
+        return _courses.Delete(id);
     }
 
     public IReadOnlyCollection<Course> GetAllCourses()
