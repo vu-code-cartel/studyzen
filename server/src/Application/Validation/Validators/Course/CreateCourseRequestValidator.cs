@@ -1,10 +1,9 @@
 using FluentValidation;
 using StudyZen.Application.Dtos;
-using StudyZen.Application.Validation.Validators;
 
 namespace StudyZen.Application.Validators;
 
-public class CreateCourseRequestValidator : BaseValidator<CreateCourseDto>
+public class CreateCourseRequestValidator : AbstractValidator<CreateCourseDto>
 {
     public CreateCourseRequestValidator()
     {

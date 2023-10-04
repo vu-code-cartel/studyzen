@@ -14,9 +14,10 @@ public class ValidationHandler
     public void Validate<T>(T instance)
     {
         var validator = _serviceProvider.GetService<IValidator<T>>();
-        if (validator is not null)
+        if (validator is null)
         {
-            validator.ValidateAndThrow(instance);
+            throw new InvalidOperationException();
         }
+        validator.ValidateAndThrow(instance);
     }
 }

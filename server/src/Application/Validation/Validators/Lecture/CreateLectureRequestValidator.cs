@@ -4,7 +4,7 @@ using StudyZen.Application.Services;
 
 namespace StudyZen.Application.Validation.Validators;
 
-public class CreateLectureRequestValidator : BaseValidator<CreateLectureDto>
+public class CreateLectureRequestValidator : AbstractValidator<CreateLectureDto>
 {
     private readonly ICourseService _courseService;
     public CreateLectureRequestValidator(ICourseService courseService)

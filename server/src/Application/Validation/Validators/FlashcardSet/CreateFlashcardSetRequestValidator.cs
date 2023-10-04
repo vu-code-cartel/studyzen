@@ -1,11 +1,10 @@
 using FluentValidation;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
-using StudyZen.Application.Validation.Validators;
 
 namespace StudyZen.Application.Validators;
 
-public class CreateFlashcardSetRequestValidator : BaseValidator<CreateFlashcardSetDto>
+public class CreateFlashcardSetRequestValidator : AbstractValidator<CreateFlashcardSetDto>
 {
     private readonly ILectureService _lectureService;
     public CreateFlashcardSetRequestValidator(ILectureService lectureService)
