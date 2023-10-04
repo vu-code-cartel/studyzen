@@ -2,7 +2,6 @@
 using StudyZen.Api.Extensions;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
-using FluentValidation;
 
 namespace StudyZen.Api.Controllers;
 
