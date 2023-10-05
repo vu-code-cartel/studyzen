@@ -16,5 +16,4 @@ public record LectureDto
         Name = lecture.Name;
         Content = lecture.Content;
     }
-    
 }
