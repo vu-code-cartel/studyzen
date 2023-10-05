@@ -14,5 +14,4 @@ public record CourseDto
         Name = course.Name;
         Description = course.Description;
     }
-
 }

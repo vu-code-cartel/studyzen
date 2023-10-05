@@ -25,7 +25,7 @@ public sealed class FlashcardService : IFlashcardService
     {
        var flashcard = _flashcards.GetById(flashcardId);
        
-       return flashcard != null ? new FlashcardDto(flashcard) : null;
+       return flashcard is null ? null : new FlashcardDto(flashcard);
     }
 
     public IReadOnlyCollection<FlashcardDto> GetFlashcardsBySetId(int flashcardSetId)

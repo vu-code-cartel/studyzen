@@ -10,12 +10,11 @@ public record FlashcardSetDto
     public string Name { get; init; }
     public Color Color { get; init; }
 
-     public FlashcardSetDto(FlashcardSet flashcardSet)
+    public FlashcardSetDto(FlashcardSet flashcardSet)
     {
         Id = flashcardSet.Id;
         LectureId = flashcardSet.LectureId;
         Name = flashcardSet.Name;
         Color = flashcardSet.Color;
     }
-
 }

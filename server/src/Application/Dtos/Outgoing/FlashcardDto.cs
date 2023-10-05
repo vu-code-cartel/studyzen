@@ -16,5 +16,4 @@ public record FlashcardDto
         Question = flashcard.Question;
         Answer = flashcard.Answer;
     }
-
 }

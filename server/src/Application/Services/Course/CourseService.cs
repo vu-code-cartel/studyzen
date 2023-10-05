@@ -26,7 +26,7 @@ public sealed class CourseService : ICourseService
     public CourseDto? GetCourseById(int id)
     {
         var course = _courses.GetById(id);
-        return course != null ? new CourseDto(course) : null;
+        return course is null ? null : new CourseDto(course);
     }
 
     public bool UpdateCourse(int id, UpdateCourseDto dto)

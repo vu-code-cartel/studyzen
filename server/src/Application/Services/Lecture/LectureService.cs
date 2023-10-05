@@ -25,7 +25,7 @@ public sealed class LectureService : ILectureService
     public LectureDto? GetLectureById(int lectureId)
     {
         var lecture = _lectures.GetById(lectureId);
-        return lecture != null ? new LectureDto(lecture) : null;
+        return lecture is null ? null : new LectureDto(lecture);
     }
 
     public IReadOnlyCollection<LectureDto> GetLecturesByCourseId(int courseId)
