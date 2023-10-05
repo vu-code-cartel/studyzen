@@ -18,14 +18,14 @@ public sealed class FlashcardService : IFlashcardService
         var newFlashcard = new Flashcard(dto.FlashcardSetId, dto.Question, dto.Answer);
         _flashcards.Add(newFlashcard);
         
-        return FlashcardDto.toDto(newFlashcard);
+        return new FlashcardDto(newFlashcard);
     }
 
     public FlashcardDto? GetFlashcardById(int flashcardId)
     {
        var flashcard = _flashcards.GetById(flashcardId);
        
-       return flashcard != null ? FlashcardDto.toDto(flashcard) : null;
+       return flashcard != null ? new FlashcardDto(flashcard) : null;
     }
 
     public IReadOnlyCollection<FlashcardDto> GetFlashcardsBySetId(int flashcardSetId)
@@ -33,7 +33,7 @@ public sealed class FlashcardService : IFlashcardService
         var allFlashcards = _flashcards.GetAll();
         var setFlashcards = allFlashcards.Where(f => f.FlashcardSetId == flashcardSetId).ToList();
         
-        return setFlashcards.Select(flashcard => FlashcardDto.toDto(flashcard)).ToList();
+        return setFlashcards.Select(flashcard => new FlashcardDto(flashcard)).ToList();
     }
 
    

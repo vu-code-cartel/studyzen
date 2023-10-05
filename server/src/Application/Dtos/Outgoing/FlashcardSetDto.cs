@@ -3,12 +3,12 @@ using StudyZen.Domain.Entities;
 
 namespace StudyZen.Application.Dtos;
 
-public class FlashcardSetDto 
+public record FlashcardSetDto 
 {
-    public int Id { get; set; }
-    public int? LectureId { get; set; }
-    public string Name { get; set; }
-    public Color Color { get; set; }
+    public int Id { get; init; }
+    public int? LectureId { get; init; }
+    public string Name { get; init; }
+    public Color Color { get; init; }
 
      public FlashcardSetDto(FlashcardSet flashcardSet)
     {
@@ -16,11 +16,6 @@ public class FlashcardSetDto
         LectureId = flashcardSet.LectureId;
         Name = flashcardSet.Name;
         Color = flashcardSet.Color;
-    }
-
-    public static FlashcardSetDto toDto(FlashcardSet flashcardSet)
-    {
-        return new FlashcardSetDto(flashcardSet);
     }
 
 }

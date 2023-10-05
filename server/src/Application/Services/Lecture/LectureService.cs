@@ -19,20 +19,20 @@ public sealed class LectureService : ILectureService
     {
         var newLecture = new Lecture(dto.CourseId, dto.Name, dto.Content);
         _lectures.Add(newLecture);
-        return LectureDto.toDto(newLecture);
+        return new LectureDto(newLecture);
     }
 
     public LectureDto? GetLectureById(int lectureId)
     {
         var lecture = _lectures.GetById(lectureId);
-        return lecture != null ? LectureDto.toDto(lecture) : null;
+        return lecture != null ? new LectureDto(lecture) : null;
     }
 
     public IReadOnlyCollection<LectureDto> GetLecturesByCourseId(int courseId)
     {
         var allLectures = _lectures.GetAll();
         var courseLectures = allLectures.Where(l => l.CourseId == courseId).ToList();
-        return courseLectures.Select(lecture => LectureDto.toDto(lecture)).ToList();
+        return courseLectures.Select(lecture => new LectureDto(lecture)).ToList();
     }
 
     public bool UpdateLecture(int lectureId, UpdateLectureDto dto)

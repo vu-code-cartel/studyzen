@@ -2,11 +2,11 @@ using StudyZen.Domain.Entities;
 
 namespace StudyZen.Application.Dtos;
 
-public class CourseDto
+public record CourseDto
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
+    public int Id { get; init; }
+    public string Name { get; init; }
+    public string Description { get; init; }
 
     public CourseDto(Course course)
     {
@@ -15,8 +15,4 @@ public class CourseDto
         Description = course.Description;
     }
 
-    public static CourseDto toDto(Course course)
-    {
-        return new CourseDto(course);
-    }
 }
