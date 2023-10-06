@@ -1,13 +1,12 @@
 using StudyZen.Application.Dtos;
-using StudyZen.Domain.Entities;
 
 namespace StudyZen.Application.Services;
 
 public interface IFlashcardService
 {
-    Flashcard CreateFlashcard(CreateFlashcardDto dto);
-    Flashcard? GetFlashcardById(int flashcardId);
-    IReadOnlyCollection<Flashcard> GetFlashcardsBySetId(int flashcardSetId);
+    FlashcardDto CreateFlashcard(CreateFlashcardDto dto);
+    FlashcardDto? GetFlashcardById(int flashcardId);
+    IReadOnlyCollection<FlashcardDto> GetFlashcardsBySetId(int flashcardSetId);
     bool UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto);
     bool DeleteFlashcard(int flashcardId);
 }

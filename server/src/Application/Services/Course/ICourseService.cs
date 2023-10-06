@@ -1,13 +1,12 @@
 ﻿using StudyZen.Application.Dtos;
-using StudyZen.Domain.Entities;
 
 namespace StudyZen.Application.Services;
 
 public interface ICourseService
 {
-    Course CreateCourse(CreateCourseDto dto);
-    Course? GetCourseById(int id);
-    IReadOnlyCollection<Course> GetAllCourses();
+    CourseDto CreateCourse(CreateCourseDto dto);
+    CourseDto? GetCourseById(int id);
+    IReadOnlyCollection<CourseDto> GetAllCourses();
     bool UpdateCourse(int id, UpdateCourseDto dto);
     bool DeleteCourse(int id);
 }
