@@ -10,10 +10,12 @@ namespace StudyZen.Api.Controllers;
 public sealed class FlashcardsController : ControllerBase
 {
     private readonly IFlashcardService _flashcardService;
+    private readonly FlashcardFileImporter _flashcardFileImporter;
 
-    public FlashcardsController(IFlashcardService flashcardService)
+    public FlashcardsController(IFlashcardService flashcardService, FlashcardFileImporter flashcardFileImporter)
     {
         _flashcardService = flashcardService;
+        _flashcardFileImporter = flashcardFileImporter;
     }
 
     [HttpPost]
@@ -52,5 +54,30 @@ public sealed class FlashcardsController : ControllerBase
     {
         var isSuccess = _flashcardService.DeleteFlashcard(flashcardId);
         return isSuccess ? Ok() : NotFound();
+    }
+
+    [HttpPost]
+    [Route("import-csv")]
+    [Consumes("multipart/form-data")]
+    public IActionResult ImportFlashcardsFromCsv(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("No file uploaded.");
+        }
+
+        try
+        {
+            using (var stream = file.OpenReadStream())
+            {
+                _flashcardFileImporter.ImportFlashcardsFromCsvStream(stream);
+            }
+
+            return Ok("Flashcards imported successfully.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Error importing flashcards: {ex.Message}");
+        }
     }
 }
