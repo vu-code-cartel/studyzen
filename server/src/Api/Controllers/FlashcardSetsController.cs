@@ -32,16 +32,10 @@ public sealed class FlashcardSetsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("all")]
-    public IActionResult GetAllFlashcardSets()
+    public IActionResult GetFlashcardSets(int? lectureId)
     {
-        return Ok(_flashcardSetService.GetAllFlashcardSets());
-    }
-
-    [HttpGet]
-    public IActionResult GetFlashcardSetsByLectureId(int lectureId)
-    {
-        return Ok(_flashcardSetService.GetFlashcardSetsByLectureId(lectureId));
+        var flashcardSets = _flashcardSetService.GetFlashcardSets(lectureId);
+        return Ok(flashcardSets);
     }
 
     [HttpPatch("{flashcardSetId}")]

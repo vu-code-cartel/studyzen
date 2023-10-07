@@ -1,29 +1,32 @@
 import { Button, Group, Modal, Stack, Tabs, Text } from '@mantine/core';
-import { PageHeader } from '../components/PageHeader';
+import { PageHeader } from '../../components/PageHeader';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AppBreadcrumbs } from '../components/AppBreadcrumbs';
-import { AppRoutes, getCourseRoute, getLectureRoute } from '../common/app-routes';
-import { useGetCourse } from '../hooks/useCoursesApi';
-import { getIdFromSlug } from '../common/utils';
-import { useDeleteLecture, useGetLecture, useUpdateLecture } from '../hooks/useLecturesApi';
-import { CenteredLoader } from '../components/CenteredLoader';
-import { NotFound } from '../components/NotFound';
+import { AppBreadcrumbs } from '../../components/AppBreadcrumbs';
+import { AppRoutes, getCourseRoute, getLectureRoute } from '../../common/app-routes';
+import { useGetCourse } from '../../hooks/api/useCoursesApi';
+import { getIdFromSlug } from '../../common/utils';
+import { useDeleteLecture, useGetLecture, useUpdateLecture } from '../../hooks/api/useLecturesApi';
+import { CenteredLoader } from '../../components/CenteredLoader';
+import { NotFound } from '../../components/NotFound';
 import { useTranslation } from 'react-i18next';
 import { useDisclosure, useDocumentTitle } from '@mantine/hooks';
-import { usePageCategory } from '../hooks/usePageCategory';
-import { PageContainer } from '../components/PageContainer';
-import { ControlledRichTextEditor } from '../components/ControlledRichTextEditor';
+import { usePageCategory } from '../../hooks/usePageCategory';
+import { PageContainer } from '../../components/PageContainer';
+import { ControlledRichTextEditor } from '../../components/ControlledRichTextEditor';
 import { useState } from 'react';
-import { CourseDto, LectureDto } from '../api/dtos';
-import { useButtonVariant } from '../hooks/useButtonVariant';
-import { UpdateLectureRequest } from '../api/requests';
+import { CourseDto, LectureDto } from '../../api/dtos';
+import { useButtonVariant } from '../../hooks/useButtonVariant';
+import { UpdateLectureRequest } from '../../api/requests';
 import { Editor } from '@tiptap/react';
-import { useAppStore } from '../hooks/useAppStore';
-import { StyledList } from '../components/StyledList';
+import { useAppStore } from '../../hooks/useAppStore';
+import { StyledList } from '../../components/StyledList';
+import { useGetFlashcardSets } from '../../hooks/api/useFlashcardSetsApi';
+import { FlashcardSetList } from '../../components/FlashcardSetList';
 
 class LectureTabs {
   public static readonly Lecture = 'lecture';
   public static readonly Settings = 'settings';
+  public static readonly Flashcards = 'flashcards';
 }
 
 export const LecturePage = () => {
@@ -63,14 +66,23 @@ export const LecturePage = () => {
         defaultValue={LectureTabs.Lecture}
         placement='right'
         color='teal'
+        keepMounted={false}
       >
         <Tabs.List ml={isMobile ? 0 : 'md'} mb={isMobile ? 'md' : 0}>
           <Tabs.Tab value={LectureTabs.Lecture}>{t('Lecture.Tab.Lecture')}</Tabs.Tab>
+          <Tabs.Tab value={LectureTabs.Flashcards}>{t('Lecture.Tab.Flashcards')}</Tabs.Tab>
           <Tabs.Tab value={LectureTabs.Settings}>{t('Lecture.Tab.Settings')}</Tabs.Tab>
         </Tabs.List>
 
-        <LecturePanel course={course} lecture={lecture} />
-        <LectureSettingsPanel course={course} lecture={lecture} />
+        <Tabs.Panel value={LectureTabs.Lecture}>
+          <LecturePanel course={course} lecture={lecture} />
+        </Tabs.Panel>
+        <Tabs.Panel value={LectureTabs.Flashcards}>
+          <LectureFlashcardsPanel course={course} lecture={lecture} />
+        </Tabs.Panel>
+        <Tabs.Panel value={LectureTabs.Settings}>
+          <LectureSettingsPanel course={course} lecture={lecture} />
+        </Tabs.Panel>
       </Tabs>
     </PageContainer>
   );
@@ -105,7 +117,7 @@ const LecturePanel = (props: LecturePanelProps) => {
   };
 
   return (
-    <Tabs.Panel value={LectureTabs.Lecture}>
+    <>
       <ControlledRichTextEditor
         content={content}
         setValue={setContent}
@@ -114,12 +126,11 @@ const LecturePanel = (props: LecturePanelProps) => {
         onEditContentClick={onEditContentClick}
         onSaveChangesClick={onSaveEditorChangesClick}
       />
-    </Tabs.Panel>
+    </>
   );
 };
 
 const LectureSettingsPanel = (props: LecturePanelProps) => {
-  const buttonVariant = useButtonVariant();
   const { t } = useTranslation();
   const [isDeleteModalOpen, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
   const deleteLectureMutation = useDeleteLecture();
@@ -131,12 +142,12 @@ const LectureSettingsPanel = (props: LecturePanelProps) => {
   };
 
   return (
-    <Tabs.Panel value={LectureTabs.Settings}>
+    <>
       <StyledList
         items={[
           <Group justify='space-between'>
             <Text>{t('Lecture.Settings.DeleteLecture')}</Text>
-            <Button variant={buttonVariant} color='red' onClick={openDeleteModal}>
+            <Button variant='light' color='red' onClick={openDeleteModal}>
               {t('Lecture.Settings.Delete')}
             </Button>
           </Group>,
@@ -156,6 +167,16 @@ const LectureSettingsPanel = (props: LecturePanelProps) => {
           </Group>
         </Stack>
       </Modal>
-    </Tabs.Panel>
+    </>
   );
+};
+
+const LectureFlashcardsPanel = (props: LecturePanelProps) => {
+  const { isLoading: areFlashcardSetsLoading, data: flashcardSets } = useGetFlashcardSets(props.lecture.id);
+
+  if (areFlashcardSetsLoading) {
+    return <CenteredLoader />;
+  }
+
+  return <Stack>{flashcardSets && <FlashcardSetList flashcardSets={flashcardSets} />}</Stack>;
 };

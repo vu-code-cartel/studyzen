@@ -1,3 +1,3 @@
 namespace StudyZen.Application.Dtos;
 
-public sealed record CreateFlashcardDto(int FlashcardSetId, string Question, string Answer);
+public sealed record CreateFlashcardDto(int FlashcardSetId, string Front, string Back);

@@ -1,3 +1,17 @@
+export type UserActionStamp = {
+  user: string;
+  timestamp: Date;
+};
+
+export enum Color {
+  Default = 'Default',
+  Blue = 'Blue',
+  Green = 'Green',
+  Red = 'Red',
+  Purple = 'Purple',
+  Yellow = 'Yellow',
+}
+
 export type CourseDto = {
   id: number;
   name: string;
@@ -14,7 +28,14 @@ export type LectureDto = {
   updatedBy: UserActionStamp;
 };
 
-export type UserActionStamp = {
-  user: string;
-  timestamp: Date;
+export type FlashcardSetDto = {
+  id: number;
+  name: string;
+  color: Color;
+};
+
+export type FlashcardDto = {
+  id: number;
+  front: string;
+  back: string;
 };

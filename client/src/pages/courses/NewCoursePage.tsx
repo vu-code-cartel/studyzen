@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { PageHeader } from '../components/PageHeader';
-import { AppBreadcrumbs } from '../components/AppBreadcrumbs';
-import { AppRoutes } from '../common/app-routes';
-import { usePageCategory } from '../hooks/usePageCategory';
+import { PageHeader } from '../../components/PageHeader';
+import { AppBreadcrumbs } from '../../components/AppBreadcrumbs';
+import { AppRoutes } from '../../common/app-routes';
+import { usePageCategory } from '../../hooks/usePageCategory';
 import { useDocumentTitle } from '@mantine/hooks';
-import { useCreateCourse } from '../hooks/useCoursesApi';
+import { useCreateCourse } from '../../hooks/api/useCoursesApi';
 import { useNavigate } from 'react-router-dom';
-import { CreateCourseRequest } from '../api/requests';
-import { PageContainer } from '../components/PageContainer';
-import { CourseForm } from '../components/CourseForm';
+import { CreateCourseRequest } from '../../api/requests';
+import { PageContainer } from '../../components/PageContainer';
+import { CourseForm } from '../../components/CourseForm';
 
 export const NewCoursePage = () => {
   const { t } = useTranslation();

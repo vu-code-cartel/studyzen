@@ -66,7 +66,7 @@ export const AppFrame = () => {
           />
           <AppNavLink
             label={t('App.Nav.Flashcards')}
-            to={'#'}
+            to={AppRoutes.FlashcardSets}
             isActive={activeCategory == 'flashcards'}
             onClick={close}
           />

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using StudyZen.Application.Services;
 using StudyZen.Application.Validation;
-using StudyZen.Application.Validation.Validators;
 
 
 namespace StudyZen.Application;

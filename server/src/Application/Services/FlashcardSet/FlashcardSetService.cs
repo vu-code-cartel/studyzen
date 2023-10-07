@@ -41,7 +41,7 @@ public sealed class FlashcardSetService : IFlashcardSetService
         return allFlashcardSets.Select(flashcardSet => new FlashcardSetDto(flashcardSet)).ToList();
     }
 
-    public IReadOnlyCollection<FlashcardSetDto> GetFlashcardSetsByLectureId(int? lectureId)
+    public IReadOnlyCollection<FlashcardSetDto> GetFlashcardSets(int? lectureId)
     {
         var allFlashcardSets = _flashcardSets.GetAll();
         var lectureFlashcardSets = allFlashcardSets.Where(fs => fs.LectureId == lectureId).ToList();

@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { SERVER_URL, axiosClient } from '../api/config';
-import { CourseDto } from '../api/dtos';
-import { CreateCourseRequest, UpdateCourseRequest } from '../api/requests';
+import { SERVER_URL, axiosClient } from '../../api/config';
+import { CourseDto } from '../../api/dtos';
+import { CreateCourseRequest, UpdateCourseRequest } from '../../api/requests';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { notifications } from '@mantine/notifications';
+import { QueryKeys } from '../../api/query-keys';
 
-const COURSES_API_URL = `${SERVER_URL}/courses`;
+const COURSES_API_URL = `${SERVER_URL}/Courses`;
 
 export const useCreateCourse = () => {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ export const useCreateCourse = () => {
         color: 'teal',
       });
 
-      queryClient.invalidateQueries(['getCourses']);
+      queryClient.invalidateQueries([QueryKeys.GetCourses]);
     },
     onError: () => {
       notifications.show({
@@ -39,7 +40,7 @@ export const useCreateCourse = () => {
 export const useGetCourse = (courseId: number | null) => {
   const { t } = useTranslation();
 
-  return useQuery(['getCourse', courseId], async () => {
+  return useQuery([QueryKeys.GetCourse, courseId], async () => {
     if (!courseId) {
       return null;
     }
@@ -54,6 +55,8 @@ export const useGetCourse = (courseId: number | null) => {
         withCloseButton: true,
         color: 'red',
       });
+
+      return null;
     }
   });
 };
@@ -61,7 +64,7 @@ export const useGetCourse = (courseId: number | null) => {
 export const useGetCourses = () => {
   const { t } = useTranslation();
 
-  return useQuery(['getCourses'], {
+  return useQuery([QueryKeys.GetCourses], {
     queryFn: async () => {
       try {
         const response = await axiosClient.get<CourseDto[]>(COURSES_API_URL);
@@ -96,8 +99,8 @@ export const useUpdateCourse = () => {
         color: 'teal',
       });
 
-      queryClient.invalidateQueries(['getCourse', courseId]);
-      queryClient.invalidateQueries(['getCourses']);
+      queryClient.invalidateQueries([QueryKeys.GetCourse, courseId]);
+      queryClient.invalidateQueries([QueryKeys.GetCourses]);
     },
     onError: () => {
       notifications.show({
@@ -126,7 +129,7 @@ export const useDeleteCourse = () => {
         color: 'teal',
       });
 
-      queryClient.invalidateQueries(['getCourses']);
+      queryClient.invalidateQueries([QueryKeys.GetCourses]);
     },
     onError: () => {
       notifications.show({

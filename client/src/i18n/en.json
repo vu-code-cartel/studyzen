@@ -13,7 +13,16 @@
     "Stamp": {
       "CreatedBy": "Created by",
       "UpdatedBy": "Updated by"
-    }
+    },
+    "Color": {
+      "Default": "Default",
+      "Blue": "Blue",
+      "Green": "Green",
+      "Red": "Red",
+      "Purple": "Purple",
+      "Yellow": "Yellow"
+    },
+    "NothingFound": "Nothing found..."
   },
   "Home": {
     "DocumentTitle": "StudyZen",
@@ -99,12 +108,73 @@
     },
     "Tab": {
       "Lecture": "Lecture",
-      "Settings": "Settings"
+      "Settings": "Settings",
+      "Flashcards": "Flashcards"
     },
     "Settings": {
       "Delete": "Delete",
       "DeleteLecture": "Delete lecture",
       "DeleteConfirmPrompt": "Are you sure you want to delete the lecture '{{lectureName}}'?"
+    }
+  },
+  "FlashcardSet": {
+    "Title": {
+      "Flashcards": "Flashcards",
+      "NewFlashcardSet": "New set"
+    },
+    "DocumentTitle": {
+      "FlashcardSets": "Flashcards",
+      "FlashcardSet": "{{flashcardSetName}}",
+      "NewFlashcardSet": "New flashcard set"
+    },
+    "Action": {
+      "NewFlashcardSet": "New set",
+      "CreateFlashcardSet": "Create"
+    },
+    "Field": {
+      "Name": "Name",
+      "Color": "Color",
+      "Course": "Connected course",
+      "Lecture": "Connected lecture"
+    },
+    "Placeholder": {
+      "Name": "Name of the flashcard set",
+      "ConnectFlashcardWithCourse": "Course connected to the flashcard set (optional)",
+      "ConnectFlashcardWithLecture": "Lecture connected to the flashcard set (optional)",
+      "LoadingLectures": "Loading lectures..."
+    },
+    "Notification": {
+      "FlashcardSetCreatedSuccessfully": "The flashcard set was created successfully.",
+      "FailedToCreateFlashcardSet": "Failed to create the flashcard set.",
+      "FailedToGetFlashcardSets": "Failed to get flashcard sets.",
+      "FailedToGetFlashcardSet": "Failed to get the flashcard set.",
+      "FlashcardSetUpdatedSuccessfully": "The flashcard set was updated successfully.",
+      "FailedToUpdateFlashcardSet": "Failed to update the flashcard set.",
+      "FlashcardSetDeletedSuccessfully": "The flashcard set was deleted successfully.",
+      "FailedToDeleteFlashcardSet": "Failed to delete the flashcard set."
+    },
+    "Tab": {
+      "ViewSet": "View set",
+      "Learn": "Learn"
+    },
+    "TermsInSet": "Terms in this set",
+    "SetDoesNotContainAnyFlashcards": "The set does not contain any flashcards.",
+    "ConnectToCourseOrLecture": "Connect to course or lecture"
+  },
+  "Flashcard": {
+    "Notification": {
+      "FlashcardCreatedSuccessfully": "The flashcard was created successfully.",
+      "FailedToCreateFlashcard": "Failed to create the flashcard.",
+      "FailedToGetFlashcard": "Failed to get flashcards.",
+      "FailedToGetFlashcards": "Failed to get the flashcard.",
+      "FlashcardUpdatedSuccessfully": "The flashcard was updated successfully.",
+      "FailedToUpdateFlashcard": "Failed to update the flashcard.",
+      "FlashcardDeletedSuccessfully": "The flashcard was deleted successfully.",
+      "FailedToDeleteFlashcard": "Failed to delete the flashcard."
+    },
+    "Field": {
+      "Front": "Front",
+      "Back": "Back"
     }
   },
   "RichTextEditor": {
