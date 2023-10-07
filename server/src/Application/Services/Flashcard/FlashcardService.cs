@@ -42,7 +42,6 @@ public sealed class FlashcardService : IFlashcardService
         return setFlashcards.Select(flashcard => new FlashcardDto(flashcard)).ToList();
     }
 
-
     public bool UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto)
     {
         var flashcard = _flashcards.GetById(flashcardId);

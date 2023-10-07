@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using StudyZen.Application.Services;
 using StudyZen.Application.Validation;
 
-
 namespace StudyZen.Application;
 
 public static class DependencyInjection
