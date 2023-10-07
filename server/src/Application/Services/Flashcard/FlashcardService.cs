@@ -1,20 +1,26 @@
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
+using FluentValidation;
+using StudyZen.Application.Validation;
 
 namespace StudyZen.Application.Services;
 
 public sealed class FlashcardService : IFlashcardService
 {
     private readonly IFlashcardRepository _flashcards;
+    private readonly ValidationHandler _validationHandler;
 
-    public FlashcardService(IFlashcardRepository flashcards)
+
+    public FlashcardService(IFlashcardRepository flashcards, ValidationHandler validationHandler)
     {
         _flashcards = flashcards;
+        _validationHandler = validationHandler;
     }
 
     public FlashcardDto CreateFlashcard(CreateFlashcardDto dto)
     {
+        _validationHandler.Validate(dto);
         var newFlashcard = new Flashcard(dto.FlashcardSetId, dto.Question, dto.Answer);
         _flashcards.Add(newFlashcard);
         
@@ -45,6 +51,7 @@ public sealed class FlashcardService : IFlashcardService
             return false;
         }
 
+        _validationHandler.Validate(dto);
         flashcard.Question = dto.Question ?? flashcard.Question;
         flashcard.Answer = dto.Answer ?? flashcard.Answer;
         _flashcards.Update(flashcard);

@@ -1,6 +1,8 @@
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
+using FluentValidation;
+using StudyZen.Application.Validation;
 
 namespace StudyZen.Application.Services;
 
@@ -8,15 +10,18 @@ public sealed class FlashcardSetService : IFlashcardSetService
 {
     private readonly IFlashcardSetRepository _flashcardSets;
     private readonly IFlashcardRepository _flashcards;
+    private readonly ValidationHandler _validationHandler;
 
-    public FlashcardSetService(IFlashcardSetRepository flashcardSets, IFlashcardRepository flashcards)
+    public FlashcardSetService(IFlashcardSetRepository flashcardSets, IFlashcardRepository flashcards, ValidationHandler validationHandler)
     {
         _flashcardSets = flashcardSets;
         _flashcards = flashcards;
+        _validationHandler = validationHandler;
     }
 
     public FlashcardSetDto CreateFlashcardSet(CreateFlashcardSetDto dto)
     {
+        _validationHandler.Validate(dto);
         var newFlashcardSet = new FlashcardSet(dto.LectureId, dto.Name, dto.Color);
         _flashcardSets.Add(newFlashcardSet);
         return new FlashcardSetDto(newFlashcardSet);
@@ -51,6 +56,7 @@ public sealed class FlashcardSetService : IFlashcardSetService
             return false;
         }
 
+        _validationHandler.Validate(dto);
         flashcardSet.Name = dto.Name ?? flashcardSet.Name;
         flashcardSet.Color = dto.Color ?? flashcardSet.Color;
         _flashcardSets.Update(flashcardSet);
