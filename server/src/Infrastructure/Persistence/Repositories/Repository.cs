@@ -1,6 +1,8 @@
-﻿using Serilog;
+﻿using Microsoft.EntityFrameworkCore;
+using Serilog;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
+using StudyZen.Infrastructure.Persistence;
 using StudyZen.Infrastructure.Services;
 
 namespace StudyZen.Infrastructure.Repositories;
@@ -9,14 +11,16 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
 {
     private readonly string _filePath;
     private readonly IFileService _fileService;
+    private readonly ApplicationDbContext _dbContext;
 
-    protected Repository(string fileName, IFileService fileService)
+    protected Repository(string fileName, IFileService fileService, ApplicationDbContext dbContext)
     {
         _fileService = fileService;
         _filePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
             "StudyZen",
             $"{fileName}.json");
+        _dbContext = dbContext;
     }
 
     public void Add(TEntity instance)
