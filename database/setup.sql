@@ -15,7 +15,7 @@ ectures (
     course_id INT NOT NULL,
     FOREIGN KEY (course_id) REFERENCES courses(id),
     name VARCHAR(50) NOT NULL,
-    content VARCHAR(2000) NOT NULL,
+    content NVARCHAR NOT NULL,
     createdby_user VARCHAR(50) NOT NULL,
     createdby_date DATETIME2 NOT NULL,
     updatedby_user VARCHAR(50) NOT NULL,
