@@ -1,0 +1,15 @@
+version: "3"
+services:
+  database:
+    build:
+      context: "./database"
+      dockerfile: Dockerfile
+    image: mssql:dev
+    environment:
+      SA_PASSWORD: "${SA_PASSWORD}"
+    volumes:
+      - $APPDATA/database:/var/opt/mssql/data
+      - $APPDATA/database:/var/opt/mssql/log
+      - $APPDATA/database:/var/opt/mssql/secrets
+    ports:
+      - "1433:1433"
