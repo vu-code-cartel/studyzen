@@ -9,8 +9,7 @@ CREATE TABLE courses (
     updatedby_user VARCHAR(50) NOT NULL,
     updatedby_date DATETIME2 NOT NULL
 );
-CREATE TABLE l,
-ectures (
+CREATE TABLE lectures (
     id INT IDENTITY(1, 1) PRIMARY KEY,
     course_id INT NOT NULL,
     FOREIGN KEY (course_id) REFERENCES courses(id),
