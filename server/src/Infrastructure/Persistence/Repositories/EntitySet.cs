@@ -1,4 +1,4 @@
-﻿namespace StudyZen.Infrastructure.Repositories;
+﻿namespace StudyZen.Infrastructure.Persistence;
 
 public sealed class EntitySet<TEntity>
 {

@@ -1,9 +1,8 @@
 ﻿using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
-using StudyZen.Infrastructure.Persistence;
 using StudyZen.Infrastructure.Services;
 
-namespace StudyZen.Infrastructure.Repositories;
+namespace StudyZen.Infrastructure.Persistence;
 
 public sealed class CourseRepository : Repository<Course>, ICourseRepository
 {
