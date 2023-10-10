@@ -26,6 +26,14 @@ public sealed class FlashcardService : IFlashcardService
         return new FlashcardDto(newFlashcard);
     }
 
+    public void CreateFlashcardsCollection(List<CreateFlashcardDto> flashcardsToCreate)
+    {
+        Parallel.ForEach(flashcardsToCreate, createFlashcardDto =>
+        {
+            CreateFlashcard(createFlashcardDto);
+        });
+    }
+
     public FlashcardDto? GetFlashcardById(int flashcardId)
     {
         var flashcard = _flashcards.GetById(flashcardId);

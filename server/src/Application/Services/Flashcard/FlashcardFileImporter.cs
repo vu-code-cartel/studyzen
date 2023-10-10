@@ -19,7 +19,7 @@ namespace StudyZen.Application.Services
             {
                 using (var reader = new StreamReader(stream))
                 {
-                    var flashcardImportThreads = new List<Thread>();
+                    var flashcardsToCreate = new List<CreateFlashcardDto>();
 
                     while (!reader.EndOfStream)
                     {
@@ -38,20 +38,11 @@ namespace StudyZen.Application.Services
 
                             var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, question, answer);
 
-                            var thread = new Thread(() =>
-                            {
-                                _flashcardService.CreateFlashcard(createFlashcardDto);
-                            });
+                            flashcardsToCreate.Add(createFlashcardDto);
 
-                            flashcardImportThreads.Add(thread);
-                            thread.Start();
+                             _flashcardService.CreateFlashcardsCollection(flashcardsToCreate);
                         }
-                    }
-
-                    foreach (var thread in flashcardImportThreads)
-                    {
-                        thread.Join();
-                    }
+                    }   
                 }
             }
             catch (Exception ex)
