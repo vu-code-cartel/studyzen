@@ -59,11 +59,11 @@ public sealed class FlashcardsController : ControllerBase
     [HttpPost]
     [Route("import-csv")]
     [Consumes("multipart/form-data")]
-    public IActionResult ImportFlashcardsFromCsv(IFormFile file)
+    public IActionResult ImportFlashcardsFromCsv(IFormFile file, int flashcardSetId)
     {
         file = file.ThrowIfRequestArgumentNull(nameof(file));
 
-        file.ImportFlashcardsFromCsvStream(_flashcardFileImporter);
+        file.ImportFlashcardsFromCsvStream(_flashcardFileImporter, flashcardSetId);
 
         return Ok();
     }

@@ -12,7 +12,7 @@ namespace StudyZen.Application.Services
             _flashcardService = flashcardService;
         }
 
-       public void ImportFlashcardsFromCsvStream(Stream stream)
+       public void ImportFlashcardsFromCsvStream(Stream stream, int flashcardSetId)
         {
             try
             {
@@ -30,10 +30,10 @@ namespace StudyZen.Application.Services
 
                         var values = line.Split(',');
 
-                        if (values.Length == 3 && int.TryParse(values[0], out int flashcardSetId))
+                        if (values.Length == 2)
                         {
-                            string question = values[1];
-                            string answer = values[2];
+                            string question = values[0];
+                            string answer = values[1];
 
                             var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, question, answer);
 

@@ -6,13 +6,13 @@ namespace StudyZen.Api.Extensions
 {
     public static class FormFileExtensions
     {
-        public static void ImportFlashcardsFromCsvStream(this IFormFile file, FlashcardFileImporter importer)
+        public static void ImportFlashcardsFromCsvStream(this IFormFile file, FlashcardFileImporter importer, int flashcardSetId)
         {
             try
             {
                 using (var stream = file.OpenReadStream())
                 {
-                    importer.ImportFlashcardsFromCsvStream(stream);
+                    importer.ImportFlashcardsFromCsvStream(stream, flashcardSetId);
                 }
             }
             catch (Exception ex)
