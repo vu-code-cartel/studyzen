@@ -17,9 +17,9 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateLecture([FromBody] CreateLectureDto? request)
+    public IActionResult CreateLecture([FromBody] CreateLectureDto request)
     {
-        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        request.ThrowIfRequestArgumentNull(nameof(request));
         var createdLecture = _lectureService.CreateLecture(request);
         return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
     }
@@ -41,9 +41,9 @@ public sealed class LecturesController : ControllerBase
 
     [HttpPatch]
     [Route("{lectureId}")]
-    public IActionResult UpdateLecture(int lectureId, [FromBody] UpdateLectureDto? request)
+    public IActionResult UpdateLecture(int lectureId, [FromBody] UpdateLectureDto request)
     {
-        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        request.ThrowIfRequestArgumentNull(nameof(request));
         var isSuccess = _lectureService.UpdateLecture(lectureId, request);
         return isSuccess ? Ok() : BadRequest();
     }

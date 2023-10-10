@@ -1,7 +1,6 @@
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
-using FluentValidation;
 using StudyZen.Application.Validation;
 
 namespace StudyZen.Application.Services;
@@ -34,18 +33,16 @@ public sealed class FlashcardSetService : IFlashcardSetService
         return flashcardSet is null ? null : new FlashcardSetDto(flashcardSet);
     }
 
-    public IReadOnlyCollection<FlashcardSetDto> GetAllFlashcardSets()
-    {
-        var allFlashcardSets = _flashcardSets.GetAll();
-
-        return allFlashcardSets.Select(flashcardSet => new FlashcardSetDto(flashcardSet)).ToList();
-    }
-
     public IReadOnlyCollection<FlashcardSetDto> GetFlashcardSets(int? lectureId)
     {
-        var allFlashcardSets = _flashcardSets.GetAll();
-        var lectureFlashcardSets = allFlashcardSets.Where(fs => fs.LectureId == lectureId).ToList();
-        return lectureFlashcardSets.Select(flashcardSet => new FlashcardSetDto(flashcardSet)).ToList();
+        var flashcardSets = _flashcardSets.GetAll();
+
+        if (lectureId.HasValue)
+        {
+            flashcardSets = flashcardSets.Where(fs => fs.LectureId == lectureId).ToList();
+        }
+
+        return flashcardSets.Select(flashcardSet => new FlashcardSetDto(flashcardSet)).ToList();
     }
 
     public bool UpdateFlashcardSet(int flashCardSetId, UpdateFlashcardSetDto dto)

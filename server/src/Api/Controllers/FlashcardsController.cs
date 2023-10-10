@@ -17,9 +17,9 @@ public sealed class FlashcardsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateFlashcard([FromBody] CreateFlashcardDto? request)
+    public IActionResult CreateFlashcard([FromBody] CreateFlashcardDto request)
     {
-        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        request.ThrowIfRequestArgumentNull(nameof(request));
         var newFlashcard = _flashcardService.CreateFlashcard(request);
         return CreatedAtAction(nameof(GetFlashcard), new { flashcardId = newFlashcard.Id }, newFlashcard);
     }
@@ -40,9 +40,9 @@ public sealed class FlashcardsController : ControllerBase
 
     [HttpPatch]
     [Route("{flashcardId}")]
-    public IActionResult UpdateFlashcardById(int flashcardId, [FromBody] UpdateFlashcardDto? request)
+    public IActionResult UpdateFlashcardById(int flashcardId, [FromBody] UpdateFlashcardDto request)
     {
-        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        request.ThrowIfRequestArgumentNull(nameof(request));
         var isSuccess = _flashcardService.UpdateFlashcard(flashcardId, request);
         return isSuccess ? Ok() : BadRequest();
     }
