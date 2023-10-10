@@ -8,11 +8,6 @@ namespace StudyZen.Api.Extensions
     {
         public static void ImportFlashcardsFromCsvStream(this IFormFile file, FlashcardFileImporter importer)
         {
-            if (file == null)
-            {
-                throw new RequestArgumentNullException(nameof(file));
-            }
-
             try
             {
                 using (var stream = file.OpenReadStream())
