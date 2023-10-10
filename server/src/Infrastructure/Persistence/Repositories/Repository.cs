@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Serilog;
+﻿using Serilog;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
-using StudyZen.Infrastructure.Persistence;
 using StudyZen.Infrastructure.Services;
 
-namespace StudyZen.Infrastructure.Repositories;
+namespace StudyZen.Infrastructure.Persistence;
 
 public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
 {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StudyZen.Application.Repositories;
-using StudyZen.Infrastructure.Repositories;
 using StudyZen.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using StudyZen.Infrastructure.Persistence;
