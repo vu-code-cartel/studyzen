@@ -17,9 +17,9 @@ namespace StudyZen.Application.Services
         {
             try
             {
+                var flashcardsToCreate = new List<CreateFlashcardDto>();
                 using (var reader = new StreamReader(stream))
                 {
-                    var flashcardsToCreate = new List<CreateFlashcardDto>();
 
                     while (!reader.EndOfStream)
                     {
@@ -40,10 +40,10 @@ namespace StudyZen.Application.Services
 
                             flashcardsToCreate.Add(createFlashcardDto);
 
-                             _flashcardService.CreateFlashcardsCollection(flashcardsToCreate);
                         }
                     }   
                 }
+                 _flashcardService.CreateFlashcardsCollection(flashcardsToCreate);
             }
             catch (Exception ex)
             {
