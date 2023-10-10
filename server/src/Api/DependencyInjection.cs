@@ -1,7 +1,7 @@
-﻿using Hellang.Middleware.ProblemDetails;
+﻿using FluentValidation;
+using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
 using StudyZen.Api.Exceptions;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace StudyZen.Api;

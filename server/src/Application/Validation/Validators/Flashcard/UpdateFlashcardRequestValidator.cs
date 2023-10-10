@@ -8,17 +8,10 @@ public class UpdateFlashcardRequestValidator : AbstractValidator<UpdateFlashcard
     public UpdateFlashcardRequestValidator()
     {
         RuleFor(f => f.Front)
-            .NotEmpty()
-            .Unless(f => f.Front is null)
-            .WithMessage("Front must not be empty or whitespace!")
-            .WithMessage("Front must not be empty or whitespace!")
-            .MaximumLength(50)
-            .WithMessage("Front must not exceed 50 symbols!");
+            .FlashcardFront()
+            .Unless(f => f.Front is null);
         RuleFor(f => f.Back)
-            .NotEmpty()
-            .Unless(f => f.Back is null || f.Back.Equals(""))
-            .WithMessage("Back must not be whitespace!")
-            .MaximumLength(50)
-            .WithMessage("Back must not exceed 50 symbols!");
+            .FlashcardBack()
+            .Unless(f => f.Back is null);
     }
 }
