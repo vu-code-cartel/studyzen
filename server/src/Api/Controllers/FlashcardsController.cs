@@ -61,23 +61,11 @@ public sealed class FlashcardsController : ControllerBase
     [Consumes("multipart/form-data")]
     public IActionResult ImportFlashcardsFromCsv(IFormFile file)
     {
-        if (file == null || file.Length == 0)
-        {
-            return BadRequest("No file uploaded.");
-        }
+        file = file.ThrowIfRequestArgumentNull(nameof(file));
 
-        try
-        {
-            using (var stream = file.OpenReadStream())
-            {
-                _flashcardFileImporter.ImportFlashcardsFromCsvStream(stream);
-            }
+        file.ImportFlashcardsFromCsvStream(_flashcardFileImporter);
 
-            return Ok("Flashcards imported successfully.");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Error importing flashcards: {ex.Message}");
-        }
+        return Ok();
     }
+
 }
