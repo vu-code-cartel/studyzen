@@ -26,12 +26,17 @@ public sealed class FlashcardService : IFlashcardService
         return new FlashcardDto(newFlashcard);
     }
 
-    public void CreateFlashcardsCollection(List<CreateFlashcardDto> flashcardsToCreate)
+    public IEnumerable<FlashcardDto> CreateFlashcardsCollection(IEnumerable<CreateFlashcardDto> dtos)
     {
-        Parallel.ForEach(flashcardsToCreate, createFlashcardDto =>
+        var createdFlashcards = new List<FlashcardDto>();
+
+          foreach (var dto in dtos)
         {
-            CreateFlashcard(createFlashcardDto);
-        });
+            var newFlashcardDto = CreateFlashcard(dto);
+            createdFlashcards.Add(newFlashcardDto);
+        }
+
+        return createdFlashcards;
     }
 
     public FlashcardDto? GetFlashcardById(int flashcardId)
