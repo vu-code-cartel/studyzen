@@ -1,3 +1,3 @@
 namespace StudyZen.Application.Dtos;
 
-public sealed record UpdateFlashcardDto(string? Question, string? Answer);
+public sealed record UpdateFlashcardDto(string? Front, string? Back);

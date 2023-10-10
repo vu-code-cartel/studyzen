@@ -7,6 +7,9 @@ export class AppRoutes {
   public static readonly NewCourse = `${this.Courses}/new`;
   public static readonly Lecture = `${this.Course}/:lectureIdWithSlug`;
   public static readonly NewLecture = `${this.Course}/new-lecture`;
+  public static readonly FlashcardSets = '/flashcards';
+  public static readonly NewFlashcardSet = `${this.FlashcardSets}/new`;
+  public static readonly FlashcardSet = `${this.FlashcardSets}/:flashcardSetIdWithSlug`;
 }
 
 export const getCourseRoute = (courseId: number, courseName: string) =>
@@ -17,3 +20,6 @@ export const getLectureRoute = (courseId: number, courseName: string, lectureId:
 
 export const getNewLectureRoute = (courseId: number, courseName: string) =>
   `${getCourseRoute(courseId, courseName)}/new-lecture`;
+
+export const getFlashcardSetRoute = (flashcardSetId: number, flashcardSetName: string) =>
+  `${AppRoutes.FlashcardSets}/${flashcardSetId}-${urlSlug(flashcardSetName)}`;

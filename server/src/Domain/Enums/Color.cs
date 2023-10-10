@@ -2,7 +2,7 @@ namespace StudyZen.Domain.Enums;
 
 public enum Color
 {
-    Unset,
+    Default,
     Blue,
     Green,
     Red,

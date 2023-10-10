@@ -27,14 +27,12 @@ export const CourseForm = (props: CourseFormProps) => {
   });
 
   return (
-    <form onSubmit={form.onSubmit(props.onSubmit)} autoComplete='off'>
+    <form onSubmit={form.onSubmit(props.onSubmit)} autoComplete='off' spellCheck='false'>
       <Fieldset>
         <Stack>
           <TextInput
             label={t('Course.Field.Name')}
             withAsterisk={!props.isReadonly}
-            spellCheck='false'
-            autoCorrect='off'
             {...form.getInputProps('name')}
             readOnly={props.isReadonly}
           />
@@ -43,8 +41,6 @@ export const CourseForm = (props: CourseFormProps) => {
             autosize
             minRows={5}
             withAsterisk={!props.isReadonly}
-            spellCheck='false'
-            autoCorrect='off'
             readOnly={props.isReadonly}
             {...form.getInputProps('description')}
           />

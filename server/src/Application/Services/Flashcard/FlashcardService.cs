@@ -21,28 +21,27 @@ public sealed class FlashcardService : IFlashcardService
     public FlashcardDto CreateFlashcard(CreateFlashcardDto dto)
     {
         _validationHandler.Validate(dto);
-        var newFlashcard = new Flashcard(dto.FlashcardSetId, dto.Question, dto.Answer);
+        var newFlashcard = new Flashcard(dto.FlashcardSetId, dto.Front, dto.Back);
         _flashcards.Add(newFlashcard);
-        
+
         return new FlashcardDto(newFlashcard);
     }
 
     public FlashcardDto? GetFlashcardById(int flashcardId)
     {
-       var flashcard = _flashcards.GetById(flashcardId);
-       
-       return flashcard is null ? null : new FlashcardDto(flashcard);
+        var flashcard = _flashcards.GetById(flashcardId);
+
+        return flashcard is null ? null : new FlashcardDto(flashcard);
     }
 
     public IReadOnlyCollection<FlashcardDto> GetFlashcardsBySetId(int flashcardSetId)
     {
         var allFlashcards = _flashcards.GetAll();
         var setFlashcards = allFlashcards.Where(f => f.FlashcardSetId == flashcardSetId).ToList();
-        
+
         return setFlashcards.Select(flashcard => new FlashcardDto(flashcard)).ToList();
     }
 
-   
     public bool UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto)
     {
         var flashcard = _flashcards.GetById(flashcardId);
@@ -52,8 +51,8 @@ public sealed class FlashcardService : IFlashcardService
         }
 
         _validationHandler.Validate(dto);
-        flashcard.Question = dto.Question ?? flashcard.Question;
-        flashcard.Answer = dto.Answer ?? flashcard.Answer;
+        flashcard.Front = dto.Front ?? flashcard.Front;
+        flashcard.Back = dto.Back ?? flashcard.Back;
         _flashcards.Update(flashcard);
 
         return true;

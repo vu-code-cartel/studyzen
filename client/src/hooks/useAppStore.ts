@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { PageCategory } from '../common/types';
 
-type ColorScheme = 'light' | 'dark' | undefined;
+export type ColorScheme = 'light' | 'dark' | undefined;
 
 interface AppState {
   pageCategory: PageCategory;

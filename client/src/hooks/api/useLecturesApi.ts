@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { SERVER_URL, axiosClient } from '../api/config';
-import { LectureDto } from '../api/dtos';
-import { CreateLectureRequest, UpdateLectureRequest } from '../api/requests';
+import { SERVER_URL, axiosClient } from '../../api/config';
+import { LectureDto } from '../../api/dtos';
+import { CreateLectureRequest, UpdateLectureRequest } from '../../api/requests';
 import { notifications } from '@mantine/notifications';
-import { formatUserActionStamp } from '../common/utils';
+import { formatUserActionStamp } from '../../common/utils';
+import { QueryKeys } from '../../api/query-keys';
 
-const LECTURES_API_URL = `${SERVER_URL}/lectures`;
+const LECTURES_API_URL = `${SERVER_URL}/Lectures`;
 
 export const useCreateLecture = () => {
   const { t } = useTranslation();
@@ -24,7 +25,7 @@ export const useCreateLecture = () => {
         color: 'teal',
       });
 
-      queryClient.invalidateQueries(['getLectures', request.courseId]);
+      queryClient.invalidateQueries([QueryKeys.GetLectures, request.courseId]);
     },
     onError: () => {
       notifications.show({
@@ -40,7 +41,7 @@ export const useCreateLecture = () => {
 export const useGetLecture = (lectureId: number | null) => {
   const { t } = useTranslation();
 
-  return useQuery(['getLecture', lectureId], async () => {
+  return useQuery([QueryKeys.GetLecture, lectureId], async () => {
     if (!lectureId) {
       return null;
     }
@@ -64,7 +65,7 @@ export const useGetLecture = (lectureId: number | null) => {
 export const useGetLectures = (courseId: number | null) => {
   const { t } = useTranslation();
 
-  return useQuery(['getLectures', courseId], async () => {
+  return useQuery([QueryKeys.GetLectures, courseId], async () => {
     if (!courseId) {
       return null;
     }
@@ -111,8 +112,8 @@ export const useUpdateLecture = () => {
         color: 'teal',
       });
 
-      queryClient.invalidateQueries(['getLectures', courseId]);
-      queryClient.invalidateQueries(['getLecture', lectureId]);
+      queryClient.invalidateQueries([QueryKeys.GetLectures, courseId]);
+      queryClient.invalidateQueries([QueryKeys.GetLecture, lectureId]);
     },
     onError: () => {
       notifications.show({
@@ -142,7 +143,7 @@ export const useDeleteLecture = () => {
         color: 'teal',
       });
 
-      queryClient.invalidateQueries(['getLectures', courseId]);
+      queryClient.invalidateQueries([QueryKeys.GetLectures, courseId]);
     },
     onError: () => {
       notifications.show({

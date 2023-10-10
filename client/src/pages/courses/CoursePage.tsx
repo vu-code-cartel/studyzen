@@ -1,25 +1,25 @@
 import { Button, Grid, Group, Modal, Stack, Tabs, Text, TextInput } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AppRoutes, getCourseRoute, getLectureRoute, getNewLectureRoute } from '../common/app-routes';
-import { NotFound } from '../components/NotFound';
-import { useButtonVariant } from '../hooks/useButtonVariant';
-import { useGetLectures } from '../hooks/useLecturesApi';
-import { CenteredLoader } from '../components/CenteredLoader';
-import { useDeleteCourse, useGetCourse, useUpdateCourse } from '../hooks/useCoursesApi';
-import { getIdFromSlug } from '../common/utils';
+import { AppRoutes, getCourseRoute, getLectureRoute, getNewLectureRoute } from '../../common/app-routes';
+import { NotFound } from '../../components/NotFound';
+import { useButtonVariant } from '../../hooks/useButtonVariant';
+import { useGetLectures } from '../../hooks/api/useLecturesApi';
+import { CenteredLoader } from '../../components/CenteredLoader';
+import { useDeleteCourse, useGetCourse, useUpdateCourse } from '../../hooks/api/useCoursesApi';
+import { getIdFromSlug } from '../../common/utils';
 import { useDisclosure, useDocumentTitle } from '@mantine/hooks';
-import { usePageCategory } from '../hooks/usePageCategory';
+import { usePageCategory } from '../../hooks/usePageCategory';
 import { useEffect, useState } from 'react';
-import { CourseDto, LectureDto } from '../api/dtos';
-import { PageContainer } from '../components/PageContainer';
-import { PageHeader } from '../components/PageHeader';
-import { AppBreadcrumbs } from '../components/AppBreadcrumbs';
+import { CourseDto, LectureDto } from '../../api/dtos';
+import { PageContainer } from '../../components/PageContainer';
+import { PageHeader } from '../../components/PageHeader';
+import { AppBreadcrumbs } from '../../components/AppBreadcrumbs';
 import { t } from 'i18next';
-import { StyledList } from '../components/StyledList';
+import { StyledList } from '../../components/StyledList';
 import { formatDistanceToNow } from 'date-fns';
-import { CourseForm } from '../components/CourseForm';
-import { CreateCourseRequest, UpdateCourseRequest } from '../api/requests';
+import { CourseForm } from '../../components/CourseForm';
+import { CreateCourseRequest, UpdateCourseRequest } from '../../api/requests';
 
 class CourseTabs {
   public static readonly Lectures = 'lectures';
@@ -167,7 +167,6 @@ const AboutCoursePanel = (props: CoursePanelProps) => {
 const CourseSettingsPanel = (props: CoursePanelProps) => {
   const { t } = useTranslation();
   const [isDeleteModalOpen, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
-  const buttonVariant = useButtonVariant();
   const deleteCourseMutation = useDeleteCourse();
   const navigate = useNavigate();
 
@@ -182,7 +181,7 @@ const CourseSettingsPanel = (props: CoursePanelProps) => {
         items={[
           <Group justify='space-between'>
             <Text>{t('Course.Settings.DeleteCourse')}</Text>
-            <Button variant={buttonVariant} color='red' onClick={openDeleteModal}>
+            <Button variant='light' color='red' onClick={openDeleteModal}>
               {t('Course.Settings.Delete')}
             </Button>
           </Group>,

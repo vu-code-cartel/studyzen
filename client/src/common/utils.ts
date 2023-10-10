@@ -1,4 +1,4 @@
-import { UserActionStamp } from './../api/dtos';
+import { UserActionStamp } from '../api/dtos';
 
 export const getIdFromSlug = (idWithSlug?: string) => {
   if (!idWithSlug) {

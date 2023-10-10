@@ -1,22 +1,22 @@
 import { Button, Fieldset, Stack, TextInput } from '@mantine/core';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PageHeader } from '../components/PageHeader';
-import { AppBreadcrumbs } from '../components/AppBreadcrumbs';
-import { AppRoutes, getCourseRoute, getNewLectureRoute } from '../common/app-routes';
-import { usePageCategory } from '../hooks/usePageCategory';
-import { useButtonVariant } from '../hooks/useButtonVariant';
-import { CreateLectureRequest } from '../api/requests';
+import { PageHeader } from '../../components/PageHeader';
+import { AppBreadcrumbs } from '../../components/AppBreadcrumbs';
+import { AppRoutes, getCourseRoute, getNewLectureRoute } from '../../common/app-routes';
+import { usePageCategory } from '../../hooks/usePageCategory';
+import { useButtonVariant } from '../../hooks/useButtonVariant';
+import { CreateLectureRequest } from '../../api/requests';
 import { useTranslation } from 'react-i18next';
-import { useCreateLecture } from '../hooks/useLecturesApi';
-import { CenteredLoader } from '../components/CenteredLoader';
-import { NotFound } from '../components/NotFound';
+import { useCreateLecture } from '../../hooks/api/useLecturesApi';
+import { CenteredLoader } from '../../components/CenteredLoader';
+import { NotFound } from '../../components/NotFound';
 import { useForm } from '@mantine/form';
-import { useGetCourse } from '../hooks/useCoursesApi';
-import { getIdFromSlug } from '../common/utils';
-import { ControlledRichTextEditor } from '../components/ControlledRichTextEditor';
+import { useGetCourse } from '../../hooks/api/useCoursesApi';
+import { getIdFromSlug } from '../../common/utils';
+import { ControlledRichTextEditor } from '../../components/ControlledRichTextEditor';
 import { useDocumentTitle } from '@mantine/hooks';
-import { CourseDto } from '../api/dtos';
-import { PageContainer } from '../components/PageContainer';
+import { CourseDto } from '../../api/dtos';
+import { PageContainer } from '../../components/PageContainer';
 
 export const NewLecturePage = () => {
   const { courseIdWithSlug } = useParams();
