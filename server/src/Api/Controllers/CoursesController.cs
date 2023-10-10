@@ -17,9 +17,9 @@ public sealed class CoursesController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateCourse([FromBody] CreateCourseDto? request)
+    public IActionResult CreateCourse([FromBody] CreateCourseDto request)
     {
-        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        request.ThrowIfRequestArgumentNull(nameof(request));
         var newCourse = _courseService.CreateCourse(request);
         return CreatedAtAction(nameof(GetCourse), new { courseId = newCourse.Id }, newCourse);
     }
@@ -41,9 +41,9 @@ public sealed class CoursesController : ControllerBase
 
     [HttpPatch]
     [Route("{courseId}")]
-    public IActionResult UpdateCourse(int courseId, [FromBody] UpdateCourseDto? request)
+    public IActionResult UpdateCourse(int courseId, [FromBody] UpdateCourseDto request)
     {
-        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        request.ThrowIfRequestArgumentNull(nameof(request));
         var isSuccess = _courseService.UpdateCourse(courseId, request);
         return isSuccess ? Ok() : BadRequest();
     }

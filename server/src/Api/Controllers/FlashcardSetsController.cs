@@ -17,9 +17,9 @@ public sealed class FlashcardSetsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateFlashcardSet([FromBody] CreateFlashcardSetDto? request)
+    public IActionResult CreateFlashcardSet([FromBody] CreateFlashcardSetDto request)
     {
-        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        request.ThrowIfRequestArgumentNull(nameof(request));
         var createdFlashcardSet = _flashcardSetService.CreateFlashcardSet(request);
         return CreatedAtAction(nameof(GetFlashcardSet), new { flashcardSetId = createdFlashcardSet.Id }, createdFlashcardSet);
     }
@@ -39,9 +39,9 @@ public sealed class FlashcardSetsController : ControllerBase
     }
 
     [HttpPatch("{flashcardSetId}")]
-    public IActionResult UpdateFlashcardSetById(int flashcardSetId, [FromBody] UpdateFlashcardSetDto? request)
+    public IActionResult UpdateFlashcardSetById(int flashcardSetId, [FromBody] UpdateFlashcardSetDto request)
     {
-        request = request.ThrowIfRequestArgumentNull(nameof(request));
+        request.ThrowIfRequestArgumentNull(nameof(request));
         var isSuccess = _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
         return isSuccess ? Ok() : BadRequest();
     }

@@ -1,6 +1,5 @@
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Repositories;
-using FluentValidation;
 using StudyZen.Application.Validation;
 using StudyZen.Domain.Entities;
 
