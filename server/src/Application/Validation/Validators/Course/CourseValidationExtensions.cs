@@ -11,8 +11,6 @@ public static class CourseValidationExtensions
         return ruleBuilder
             .NotEmpty()
             .WithErrorCode(ValidationErrorCodes.MustNotBeEmpty)
-            .MinimumLength(CourseConstraints.NameMinLength)
-            .WithErrorCode(ValidationErrorCodes.TooShort)
             .MaximumLength(CourseConstraints.NameMaxLength)
             .WithErrorCode(ValidationErrorCodes.TooLong);
     }
@@ -22,8 +20,6 @@ public static class CourseValidationExtensions
         return ruleBuilder
             .NotNull()
             .WithErrorCode(ValidationErrorCodes.MustNotBeNull)
-            .MinimumLength(CourseConstraints.DescriptionMinLength)
-            .WithErrorCode(ValidationErrorCodes.TooShort)
             .MaximumLength(CourseConstraints.DescriptionMaxLength)
             .WithErrorCode(ValidationErrorCodes.TooLong);
     }

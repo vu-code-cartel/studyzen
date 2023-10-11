@@ -11,8 +11,6 @@ public static class FlashcardSetValidationExtensions
         return ruleBuilder
             .NotEmpty()
             .WithErrorCode(ValidationErrorCodes.MustNotBeEmpty)
-            .MinimumLength(FlashcardSetConstraints.NameMinLength)
-            .WithErrorCode(ValidationErrorCodes.TooShort)
             .MaximumLength(FlashcardSetConstraints.NameMaxLength)
             .WithErrorCode(ValidationErrorCodes.TooLong);
     }

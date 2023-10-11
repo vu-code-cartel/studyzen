@@ -11,8 +11,6 @@ public static class LectureValidationExtensions
         return ruleBuilder
             .NotEmpty()
             .WithErrorCode(ValidationErrorCodes.MustNotBeEmpty)
-            .MinimumLength(LectureConstraints.NameMinLength)
-            .WithErrorCode(ValidationErrorCodes.TooShort)
             .MaximumLength(LectureConstraints.NameMaxLength)
             .WithErrorCode(ValidationErrorCodes.TooLong);
     }
@@ -22,8 +20,6 @@ public static class LectureValidationExtensions
         return ruleBuilder
             .NotNull()
             .WithErrorCode(ValidationErrorCodes.MustNotBeNull)
-            .MinimumLength(LectureConstraints.ContentMinLength)
-            .WithErrorCode(ValidationErrorCodes.TooShort)
             .MaximumLength(LectureConstraints.ContentMaxLength)
             .WithErrorCode(ValidationErrorCodes.TooLong);
     }
