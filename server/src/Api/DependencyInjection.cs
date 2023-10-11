@@ -27,6 +27,7 @@ public static class DependencyInjection
                 options.MapToStatusCode<ValidationException>(StatusCodes.Status422UnprocessableEntity);
             })
             .AddControllers()
+            .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)
             .AddProblemDetailsConventions()
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 

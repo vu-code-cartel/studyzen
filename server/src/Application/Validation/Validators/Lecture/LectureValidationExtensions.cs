@@ -9,19 +9,15 @@ public static class LectureValidationExtensions
     public static IRuleBuilderOptions<T, string?> LectureName<T>(this IRuleBuilder<T, string?> ruleBuilder)
     {
         return ruleBuilder
-            .NotEmpty()
-            .WithErrorCode(ValidationErrorCodes.MustNotBeEmpty)
-            .MaximumLength(LectureConstraints.NameMaxLength)
-            .WithErrorCode(ValidationErrorCodes.TooLong);
+            .NotNullOrWhitespaceRule()
+            .MaxLengthRule(LectureConstraints.NameMaxLength);
     }
 
     public static IRuleBuilderOptions<T, string?> LectureContent<T>(this IRuleBuilder<T, string?> ruleBuilder)
     {
         return ruleBuilder
-            .NotNull()
-            .WithErrorCode(ValidationErrorCodes.MustNotBeNull)
-            .MaximumLength(LectureConstraints.ContentMaxLength)
-            .WithErrorCode(ValidationErrorCodes.TooLong);
+            .NotNullRule()
+            .MaxLengthRule(LectureConstraints.ContentMaxLength);
     }
 
     public static IRuleBuilderOptions<T, int?> OptionalLectureId<T>(this IRuleBuilder<T, int?> ruleBuilder, ILectureService lectureService)

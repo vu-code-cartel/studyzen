@@ -9,19 +9,15 @@ public static class CourseValidationExtensions
     public static IRuleBuilderOptions<T, string?> CourseName<T>(this IRuleBuilder<T, string?> ruleBuilder)
     {
         return ruleBuilder
-            .NotEmpty()
-            .WithErrorCode(ValidationErrorCodes.MustNotBeEmpty)
-            .MaximumLength(CourseConstraints.NameMaxLength)
-            .WithErrorCode(ValidationErrorCodes.TooLong);
+            .NotNullOrWhitespaceRule()
+            .MaxLengthRule(CourseConstraints.NameMaxLength);
     }
 
     public static IRuleBuilderOptions<T, string?> CourseDescription<T>(this IRuleBuilder<T, string?> ruleBuilder)
     {
         return ruleBuilder
-            .NotNull()
-            .WithErrorCode(ValidationErrorCodes.MustNotBeNull)
-            .MaximumLength(CourseConstraints.DescriptionMaxLength)
-            .WithErrorCode(ValidationErrorCodes.TooLong);
+            .NotNullRule()
+            .MaxLengthRule(CourseConstraints.DescriptionMaxLength);
     }
 
     public static IRuleBuilderOptions<T, int> CourseId<T>(this IRuleBuilder<T, int> ruleBuilder, ICourseService courseService)

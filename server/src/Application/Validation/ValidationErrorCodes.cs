@@ -2,8 +2,8 @@
 
 public static class ValidationErrorCodes
 {
-    public const string MustNotBeNull = "MustNotBeNull";
-    public const string MustNotBeEmpty = "MustNotBeEmpty";
-    public const string TooLong = "TooLong";
+    public const string Null = "Null";
+    public const string NullOrWhitespace = "NullOrWhitespace";
+    public const string MaxLength = "MaxLength";
     public const string NotFound = "NotFound";
 }
