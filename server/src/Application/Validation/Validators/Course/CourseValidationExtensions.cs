@@ -10,14 +10,14 @@ public static class CourseValidationExtensions
     {
         return ruleBuilder
             .MustNotBeNullOrWhitespace()
-            .MustNotExceedLength(CourseConstraints.NameMaxLength);
+            .LengthMustNotExceed(CourseConstraints.NameMaxLength);
     }
 
     public static IRuleBuilderOptions<T, string?> CourseDescription<T>(this IRuleBuilder<T, string?> ruleBuilder)
     {
         return ruleBuilder
             .MustNotBeNull()
-            .MustNotExceedLength(CourseConstraints.DescriptionMaxLength);
+            .LengthMustNotExceed(CourseConstraints.DescriptionMaxLength);
     }
 
     public static IRuleBuilderOptions<T, int> CourseId<T>(this IRuleBuilder<T, int> ruleBuilder, ICourseService courseService)

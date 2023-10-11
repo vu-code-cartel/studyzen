@@ -9,13 +9,13 @@ public static class FlashcardValidationExtensions
     {
         return ruleBuilder
             .MustNotBeNullOrWhitespace()
-            .MustNotExceedLength(FlashcardConstraints.FrontMaxLength);
+            .LengthMustNotExceed(FlashcardConstraints.FrontMaxLength);
     }
 
     public static IRuleBuilderOptions<T, string?> FlashcardBack<T>(this IRuleBuilder<T, string?> ruleBuilder)
     {
         return ruleBuilder
             .MustNotBeNullOrWhitespace()
-            .MustNotExceedLength(FlashcardConstraints.BackMaxLength);
+            .LengthMustNotExceed(FlashcardConstraints.BackMaxLength);
     }
 }
