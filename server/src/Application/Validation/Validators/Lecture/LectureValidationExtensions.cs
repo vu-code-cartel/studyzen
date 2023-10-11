@@ -9,15 +9,15 @@ public static class LectureValidationExtensions
     public static IRuleBuilderOptions<T, string?> LectureName<T>(this IRuleBuilder<T, string?> ruleBuilder)
     {
         return ruleBuilder
-            .NotNullOrWhitespaceRule()
-            .MaxLengthRule(LectureConstraints.NameMaxLength);
+            .MustNotBeNullOrWhitespace()
+            .MustNotExceedLength(LectureConstraints.NameMaxLength);
     }
 
     public static IRuleBuilderOptions<T, string?> LectureContent<T>(this IRuleBuilder<T, string?> ruleBuilder)
     {
         return ruleBuilder
-            .NotNullRule()
-            .MaxLengthRule(LectureConstraints.ContentMaxLength);
+            .MustNotBeNull()
+            .MustNotExceedLength(LectureConstraints.ContentMaxLength);
     }
 
     public static IRuleBuilderOptions<T, int?> OptionalLectureId<T>(this IRuleBuilder<T, int?> ruleBuilder, ILectureService lectureService)

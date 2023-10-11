@@ -9,8 +9,8 @@ public static class FlashcardSetValidationExtensions
     public static IRuleBuilderOptions<T, string?> FlashcardSetName<T>(this IRuleBuilder<T, string?> ruleBuilder)
     {
         return ruleBuilder
-            .NotNullOrWhitespaceRule()
-            .MaxLengthRule(FlashcardSetConstraints.NameMaxLength);
+            .MustNotBeNullOrWhitespace()
+            .MustNotExceedLength(FlashcardSetConstraints.NameMaxLength);
     }
 
     public static IRuleBuilderOptions<T, int> FlashcardSetId<T>(this IRuleBuilder<T, int> ruleBuilder, IFlashcardSetService flashcardSetService)
