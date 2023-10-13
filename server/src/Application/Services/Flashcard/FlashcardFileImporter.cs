@@ -3,7 +3,7 @@ using StudyZen.Application.Dtos;
 
 namespace StudyZen.Application.Services
 {
-    public class FlashcardFileImporter
+    public class FlashcardImporter
     {
         private readonly IFlashcardService _flashcardService;
 
