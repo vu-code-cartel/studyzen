@@ -50,7 +50,7 @@ namespace StudyZen.Application.Services
         private List<string> ReadCsvLinesFromStream(Stream stream)
         {
             var lines = new List<string>();
-            using (var reader = new StreamReader(stream))
+            using var reader = new StreamReader(stream);
             {
                 while (!reader.EndOfStream)
                 {
