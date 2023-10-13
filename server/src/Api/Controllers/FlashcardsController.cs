@@ -57,7 +57,7 @@ public sealed class FlashcardsController : ControllerBase
     }
 
     [HttpPost]
-    [Route("import-csv")]
+    [Route("csv")]
     [Consumes("multipart/form-data")]
     public IActionResult ImportFlashcardsFromCsv(IFormFile file, int flashcardSetId)
     {
