@@ -26,7 +26,7 @@ namespace StudyZen.Application.Services
 
                     if (values.Length == 2)
                     {
-                        string question = values[0];
+                        string front = values[0];
                         string answer = values[1];
 
                         var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, question, answer);
