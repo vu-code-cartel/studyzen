@@ -47,7 +47,7 @@ namespace StudyZen.Application.Services
             }
         }
 
-        private List<string> ReadCsvLinesFromStream(Stream stream)
+        private List<string> ReadLinesFromStream(Stream stream)
         {
             var lines = new List<string>();
             using var reader = new StreamReader(stream);
