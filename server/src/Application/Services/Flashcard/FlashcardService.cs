@@ -26,7 +26,7 @@ public sealed class FlashcardService : IFlashcardService
         return new FlashcardDto(newFlashcard);
     }
 
-    public IEnumerable<FlashcardDto> CreateFlashcardsCollection(IEnumerable<CreateFlashcardDto> dtos)
+    public IEnumerable<FlashcardDto> CreateFlashcards(IEnumerable<CreateFlashcardDto> dtos)
     {
         var createdFlashcards = new List<FlashcardDto>();
 
