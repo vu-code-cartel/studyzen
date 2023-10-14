@@ -15,9 +15,9 @@ namespace StudyZen.Api.Extensions
                     importer.ImportFlashcardsFromCsvStream(stream, flashcardSetId);
                 }
             }
-            catch (Exception ex)
+            catch (ImportFailedException)
             {
-                throw new ImportFailedException("Error importing flashcards.", ex);
+                throw; 
             }
         }
     }
