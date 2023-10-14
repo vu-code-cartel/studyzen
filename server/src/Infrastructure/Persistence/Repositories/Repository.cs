@@ -7,6 +7,11 @@ namespace StudyZen.Infrastructure.Persistence;
 
 public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
 {
+    // TODO: change these to save changes interceptors after lab 2
+    // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/interceptors
+    public Action<TEntity> OnInstanceAdded = delegate { };
+    public Action<TEntity> OnInstanceUpdated = delegate { };
+
     private readonly string _filePath;
     private readonly IFileService _fileService;
     private readonly ApplicationDbContext _dbContext;
@@ -19,6 +24,9 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
             "StudyZen",
             $"{fileName}.json");
         _dbContext = dbContext;
+
+        OnInstanceAdded += AuditableEntityInterceptor.SetCreateStamp;
+        OnInstanceUpdated += AuditableEntityInterceptor.SetUpdateStamp;
     }
 
     public void Add(TEntity instance)
@@ -26,10 +34,11 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         var entitySet = GetEntitySet();
 
         instance.Id = ++entitySet.TotalCount;
-        entitySet.Instances.Add(instance);
-        Log.Information("A new instance of {instanceType} with the id {id} was added to {filePath}.", typeof(TEntity).Name, instance.Id, _filePath);
+        OnInstanceAdded(instance);
 
-        Log.Information("Adding a new instance of '{0}' with id '{1}'", typeof(TEntity).Name, instance.Id);
+        Log.Information("Adding {0} with id {1}", typeof(TEntity).Name, instance.Id);
+        entitySet.Instances.Add(instance);
+
         _fileService.WriteToJsonFile(_filePath, entitySet);
     }
 
@@ -53,10 +62,9 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
             return false;
         }
 
-        instance.Update();
+        OnInstanceUpdated(instance);
 
         entitySet.Instances[instanceIdx] = instance;
-
         _fileService.WriteToJsonFile(_filePath, entitySet);
 
         return true;
