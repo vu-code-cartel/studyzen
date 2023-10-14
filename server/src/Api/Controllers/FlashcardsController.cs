@@ -37,7 +37,8 @@ public sealed class FlashcardsController : ControllerBase
     [HttpGet]
     public IActionResult GetFlashcardsBySetId(int flashcardSetId)
     {
-        return Ok(_flashcardService.GetFlashcardsBySetId(flashcardSetId));
+        var flashcards = _flashcardService.GetFlashcardsBySetId(flashcardSetId);
+        return Ok(flashcards);
     }
 
     [HttpPatch]
@@ -61,13 +62,12 @@ public sealed class FlashcardsController : ControllerBase
     [Consumes("multipart/form-data")]
     public IActionResult ImportFlashcardsFromCsv(IFormFile file, int flashcardSetId)
     {
-        file = file.ThrowIfRequestArgumentNull(nameof(file));
+        file.ThrowIfRequestArgumentNull(nameof(file));
 
-        var flashcardDtos = file.ImportFlashcardsFromCsvStream(_flashcardImporter, flashcardSetId);
-
-        var createdFlashcards = _flashcardService.CreateFlashcards(flashcardDtos);
+        using var stream = file.OpenReadStream();
+        var flashcardsFromFile = _flashcardImporter.ImportFlashcardsFromCsv(stream, flashcardSetId);
+        var createdFlashcards = _flashcardService.CreateFlashcards(flashcardsFromFile);
 
         return Ok(createdFlashcards);
     }
-
 }

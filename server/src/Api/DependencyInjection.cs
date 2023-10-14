@@ -25,7 +25,6 @@ public static class DependencyInjection
             {
                 options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest);
                 options.MapToStatusCode<ValidationException>(StatusCodes.Status422UnprocessableEntity);
-                options.MapToStatusCode<ImportFailedException>(StatusCodes.Status400BadRequest);
             })
             .AddControllers()
             .AddProblemDetailsConventions()
