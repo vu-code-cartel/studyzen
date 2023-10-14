@@ -3,15 +3,8 @@ using StudyZen.Application.Dtos;
 
 namespace StudyZen.Application.Services
 {
-    public class FlashcardImporter
+    public sealed class FlashcardImporter : IFlashcardImporter
     {
-        private readonly IFlashcardService _flashcardService;
-
-        public FlashcardImporter(IFlashcardService flashcardService)
-        {
-            _flashcardService = flashcardService;
-        }
-
         public IEnumerable<CreateFlashcardDto> ImportFlashcardsFromCsvStream(Stream stream, int flashcardSetId)
         {
             try
@@ -47,7 +40,7 @@ namespace StudyZen.Application.Services
             }
         }
 
-        private List<string> ReadLinesFromStream(Stream stream)
+        public List<string> ReadLinesFromStream(Stream stream)
         {
             var lines = new List<string>();
             using var reader = new StreamReader(stream);
