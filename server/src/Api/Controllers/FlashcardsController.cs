@@ -26,6 +26,20 @@ public sealed class FlashcardsController : ControllerBase
         return CreatedAtAction(nameof(GetFlashcard), new { flashcardId = newFlashcard.Id }, newFlashcard);
     }
 
+    [HttpPost]
+    [Route("csv")]
+    [Consumes("multipart/form-data")]
+    public IActionResult CreateFlashcardsFromCsv(IFormFile file, int flashcardSetId)
+    {
+        file.ThrowIfRequestArgumentNull(nameof(file));
+
+        using var stream = file.OpenReadStream();
+        var flashcardsFromFile = _flashcardImporter.ImportFlashcardsFromCsv(stream, flashcardSetId);
+        var createdFlashcards = _flashcardService.CreateFlashcards(flashcardsFromFile);
+
+        return Ok(createdFlashcards);
+    }
+
     [HttpGet]
     [Route("{flashcardId}")]
     public IActionResult GetFlashcard(int flashcardId)
@@ -55,19 +69,5 @@ public sealed class FlashcardsController : ControllerBase
     {
         var isSuccess = _flashcardService.DeleteFlashcard(flashcardId);
         return isSuccess ? Ok() : NotFound();
-    }
-
-    [HttpPost]
-    [Route("csv")]
-    [Consumes("multipart/form-data")]
-    public IActionResult ImportFlashcardsFromCsv(IFormFile file, int flashcardSetId)
-    {
-        file.ThrowIfRequestArgumentNull(nameof(file));
-
-        using var stream = file.OpenReadStream();
-        var flashcardsFromFile = _flashcardImporter.ImportFlashcardsFromCsv(stream, flashcardSetId);
-        var createdFlashcards = _flashcardService.CreateFlashcards(flashcardsFromFile);
-
-        return Ok(createdFlashcards);
     }
 }
