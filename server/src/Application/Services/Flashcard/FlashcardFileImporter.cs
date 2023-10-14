@@ -12,7 +12,7 @@ namespace StudyZen.Application.Services
             _flashcardService = flashcardService;
         }
 
-        public void ImportFlashcardsFromCsvStream(Stream stream, int flashcardSetId)
+        public IEnumerable<CreateFlashcardDto> ImportFlashcardsFromCsvStream(Stream stream, int flashcardSetId)
         {
             try
             {
@@ -34,16 +34,16 @@ namespace StudyZen.Application.Services
                         flashcardsToCreate.Add(createFlashcardDto);
                     }
                 });
-
-                
+              
                 flashcardsToCreate.CompleteAdding();
-
-                
-                var createdFlashcards = _flashcardService.CreateFlashcards(flashcardsToCreate);
+             
+                return flashcardsToCreate.GetConsumingEnumerable();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error importing flashcards: {ex.Message}");
+                
+                return Enumerable.Empty<CreateFlashcardDto>();
             }
         }
 

@@ -63,9 +63,11 @@ public sealed class FlashcardsController : ControllerBase
     {
         file = file.ThrowIfRequestArgumentNull(nameof(file));
 
-        file.ImportFlashcardsFromCsvStream(_flashcardImporter, flashcardSetId);
+        var flashcardDtos = _flashcardImporter.ImportFlashcardsFromCsvStream(file.OpenReadStream(), flashcardSetId);
 
-        return Ok();
+        var createdFlashcards = _flashcardService.CreateFlashcards(flashcardDtos);
+
+        return Ok(createdFlashcards);
     }
 
 }

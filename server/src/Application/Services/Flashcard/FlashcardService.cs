@@ -30,7 +30,7 @@ public sealed class FlashcardService : IFlashcardService
     {
         var createdFlashcards = new List<FlashcardDto>();
 
-          foreach (var dto in dtos)
+        foreach (var dto in dtos)
         {
             var newFlashcardDto = CreateFlashcard(dto);
             createdFlashcards.Add(newFlashcardDto);
