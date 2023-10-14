@@ -1,24 +1,34 @@
-using Microsoft.AspNetCore.Http;
 using StudyZen.Api.Exceptions;
 using StudyZen.Application.Services; 
+using StudyZen.Application.Dtos;
+
 
 namespace StudyZen.Api.Extensions
 {
     public static class FormFileExtensions
     {
-        public static void ImportFlashcardsFromCsvStream(this IFormFile file, FlashcardImporter importer, int flashcardSetId)
+        public static IEnumerable<CreateFlashcardDto> ImportFlashcardsFromCsvStream(this IFormFile file, IFlashcardImporter importer, int flashcardSetId)
         {
+            IEnumerable<CreateFlashcardDto> flashcards = null;
+
             try
             {
                 using (var stream = file.OpenReadStream())
                 {
-                    importer.ImportFlashcardsFromCsvStream(stream, flashcardSetId);
+                    flashcards = importer.ImportFlashcardsFromCsvStream(stream, flashcardSetId);
+
+                    if (flashcards is null)
+                    {
+                        throw new ImportFailedException("Error importing flashcards: An error occurred during import.");
+                    }
                 }
             }
-            catch (ImportFailedException)
+            catch (Exception ex)
             {
-                throw; 
+                throw new Exception("An error occurred while importing: " + ex.Message);
             }
+
+            return flashcards;
         }
     }
 }

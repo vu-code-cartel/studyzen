@@ -7,11 +7,13 @@ namespace StudyZen.Application.Services
     {
         public IEnumerable<CreateFlashcardDto> ImportFlashcardsFromCsvStream(Stream stream, int flashcardSetId)
         {
+            
+            var lines = ReadLinesFromStream(stream);         
+
             try
             {
-                var lines = ReadLinesFromStream(stream);
-
                 var flashcardsToCreate = new BlockingCollection<CreateFlashcardDto>();
+                int successfullyAddedCount = 0;
 
                 Parallel.ForEach(lines, line =>
                 {
@@ -24,19 +26,25 @@ namespace StudyZen.Application.Services
 
                         var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, front, back);
 
-                        flashcardsToCreate.Add(createFlashcardDto);
+                        if (flashcardsToCreate.TryAdd(createFlashcardDto))
+                        {
+                            successfullyAddedCount++;
+                        }
                     }
                 });
-              
+                
                 flashcardsToCreate.CompleteAdding();
-             
+
+                if (successfullyAddedCount != lines.Count)
+                {
+                    return null;
+                }
+
                 return flashcardsToCreate.GetConsumingEnumerable();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error importing flashcards: {ex.Message}");
-                
-                return Enumerable.Empty<CreateFlashcardDto>();
+                throw new Exception("An error occurred while importing: " + ex.Message);
             }
         }
 
