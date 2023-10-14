@@ -6,7 +6,7 @@ namespace StudyZen.Api.Extensions
 {
     public static class FormFileExtensions
     {
-        public static void ImportFlashcardsFromCsvStream(this IFormFile file, FlashcardFileImporter importer, int flashcardSetId)
+        public static void ImportFlashcardsFromCsvStream(this IFormFile file, FlashcardImporter importer, int flashcardSetId)
         {
             try
             {

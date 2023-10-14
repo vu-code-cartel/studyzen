@@ -10,12 +10,12 @@ namespace StudyZen.Api.Controllers;
 public sealed class FlashcardsController : ControllerBase
 {
     private readonly IFlashcardService _flashcardService;
-    private readonly FlashcardFileImporter _flashcardFileImporter;
+    private readonly FlashcardImporter _flashcardImporter;
 
-    public FlashcardsController(IFlashcardService flashcardService, FlashcardFileImporter flashcardFileImporter)
+    public FlashcardsController(IFlashcardService flashcardService, FlashcardImporter flashcardImporter)
     {
         _flashcardService = flashcardService;
-        _flashcardFileImporter = flashcardFileImporter;
+        _flashcardImporter = flashcardImporter;
     }
 
     [HttpPost]
@@ -63,7 +63,7 @@ public sealed class FlashcardsController : ControllerBase
     {
         file = file.ThrowIfRequestArgumentNull(nameof(file));
 
-        file.ImportFlashcardsFromCsvStream(_flashcardFileImporter, flashcardSetId);
+        file.ImportFlashcardsFromCsvStream(_flashcardImporter, flashcardSetId);
 
         return Ok();
     }

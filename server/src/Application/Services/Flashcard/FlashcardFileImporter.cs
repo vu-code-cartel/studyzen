@@ -7,7 +7,7 @@ namespace StudyZen.Application.Services
     {
         private readonly IFlashcardService _flashcardService;
 
-        public FlashcardFileImporter(IFlashcardService flashcardService)
+        public FlashcardImporter(IFlashcardService flashcardService)
         {
             _flashcardService = flashcardService;
         }
@@ -16,7 +16,7 @@ namespace StudyZen.Application.Services
         {
             try
             {
-                var lines = ReadCsvLinesFromStream(stream);
+                var lines = ReadLinesFromStream(stream);
 
                 var flashcardsToCreate = new BlockingCollection<CreateFlashcardDto>();
 
@@ -29,7 +29,7 @@ namespace StudyZen.Application.Services
                         string front = values[0];
                         string back = values[1];
 
-                        var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, question, answer);
+                        var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, front, back);
 
                         flashcardsToCreate.Add(createFlashcardDto);
                     }
@@ -39,7 +39,7 @@ namespace StudyZen.Application.Services
                 flashcardsToCreate.CompleteAdding();
 
                 
-                var createdFlashcards = _flashcardService.CreateFlashcardsCollection(flashcardsToCreate);
+                var createdFlashcards = _flashcardService.CreateFlashcards(flashcardsToCreate);
             }
             catch (Exception ex)
             {
