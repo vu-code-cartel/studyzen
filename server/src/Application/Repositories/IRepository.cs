@@ -4,9 +4,9 @@ namespace StudyZen.Application.Repositories;
 
 public interface IRepository<TEntity> where TEntity : BaseEntity
 {
-    void Add(TEntity instance);
-    TEntity? GetById(int instanceId);
-    List<TEntity> GetAll();
-    bool Update(TEntity instance);
-    bool Delete(int instanceId);
+    Task Add(TEntity instance);
+    Task<TEntity?> GetById(int instanceId);
+    Task<List<TEntity>> GetAll();
+    Task<bool> Update(TEntity instance);
+    Task<bool> Delete(int instanceId);
 }
