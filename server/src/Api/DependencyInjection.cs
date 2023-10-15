@@ -1,7 +1,7 @@
-﻿using Hellang.Middleware.ProblemDetails;
+﻿using FluentValidation;
+using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
 using StudyZen.Api.Exceptions;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace StudyZen.Api;
@@ -27,6 +27,7 @@ public static class DependencyInjection
                 options.MapToStatusCode<ValidationException>(StatusCodes.Status422UnprocessableEntity);
             })
             .AddControllers()
+            .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)
             .AddProblemDetailsConventions()
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
