@@ -17,33 +17,32 @@ public sealed class FlashcardService : IFlashcardService
         _validationHandler = validationHandler;
     }
 
-    public FlashcardDto CreateFlashcard(CreateFlashcardDto dto)
+    public async Task<FlashcardDto> CreateFlashcard(CreateFlashcardDto dto)
     {
         _validationHandler.Validate(dto);
         var newFlashcard = new Flashcard(dto.FlashcardSetId, dto.Front, dto.Back);
-        _flashcards.Add(newFlashcard);
+        await _flashcards.Add(newFlashcard);
 
         return new FlashcardDto(newFlashcard);
     }
 
-    public FlashcardDto? GetFlashcardById(int flashcardId)
+    public async Task<FlashcardDto?> GetFlashcardById(int flashcardId)
     {
-        var flashcard = _flashcards.GetById(flashcardId);
+        var flashcard = await _flashcards.GetById(flashcardId);
 
         return flashcard is null ? null : new FlashcardDto(flashcard);
     }
 
-    public IReadOnlyCollection<FlashcardDto> GetFlashcardsBySetId(int flashcardSetId)
+    public async Task<IReadOnlyCollection<FlashcardDto>> GetFlashcardsBySetId(int flashcardSetId)
     {
-        var allFlashcards = _flashcards.GetAll();
-        var setFlashcards = allFlashcards.Where(f => f.FlashcardSetId == flashcardSetId).ToList();
+        var setFlashcards = await _flashcards.GetFlashcardsBySetId(flashcardSetId);
 
         return setFlashcards.Select(flashcard => new FlashcardDto(flashcard)).ToList();
     }
 
-    public bool UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto)
+    public async Task<bool> UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto)
     {
-        var flashcard = _flashcards.GetById(flashcardId);
+        var flashcard = await _flashcards.GetById(flashcardId);
         if (flashcard is null)
         {
             return false;
@@ -52,13 +51,13 @@ public sealed class FlashcardService : IFlashcardService
         _validationHandler.Validate(dto);
         flashcard.Front = dto.Front ?? flashcard.Front;
         flashcard.Back = dto.Back ?? flashcard.Back;
-        _flashcards.Update(flashcard);
+        await _flashcards.Update(flashcard);
 
         return true;
     }
 
-    public bool DeleteFlashcard(int flashcardId)
+    public async Task<bool> DeleteFlashcard(int flashcardId)
     {
-        return _flashcards.Delete(flashcardId);
+        return await _flashcards.Delete(flashcardId);
     }
 }

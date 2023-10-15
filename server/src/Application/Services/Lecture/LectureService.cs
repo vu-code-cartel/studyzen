@@ -8,40 +8,38 @@ namespace StudyZen.Application.Services;
 public sealed class LectureService : ILectureService
 {
     private readonly ILectureRepository _lectures;
-    private readonly IFlashcardSetRepository _flashcardSets;
     private readonly ValidationHandler _validationHandler;
 
-    public LectureService(ILectureRepository lectures, IFlashcardSetRepository flashcardSets, ValidationHandler validationHandler)
+    public LectureService(ILectureRepository lectures, ValidationHandler validationHandler)
     {
         _lectures = lectures;
-        _flashcardSets = flashcardSets;
         _validationHandler = validationHandler;
     }
 
-    public LectureDto CreateLecture(CreateLectureDto dto)
+    public async Task<LectureDto> CreateLecture(CreateLectureDto dto)
     {
         _validationHandler.Validate(dto);
         var newLecture = new Lecture(dto.CourseId, dto.Name, dto.Content);
-        _lectures.Add(newLecture);
+        await _lectures.Add(newLecture);
         return new LectureDto(newLecture);
     }
 
-    public LectureDto? GetLectureById(int lectureId)
+    public async Task<LectureDto?> GetLectureById(int lectureId)
     {
-        var lecture = _lectures.GetById(lectureId);
+        var lecture = await _lectures.GetById(lectureId);
         return lecture is null ? null : new LectureDto(lecture);
     }
 
-    public IReadOnlyCollection<LectureDto> GetLecturesByCourseId(int courseId)
+    public async Task<IReadOnlyCollection<LectureDto>> GetLecturesByCourseId(int courseId)
     {
-        var allLectures = _lectures.GetAll();
-        var courseLectures = allLectures.Where(l => l.CourseId == courseId).ToList();
+        var courseLectures = await _lectures.GetLecturesByCourseId(courseId);
         return courseLectures.Select(lecture => new LectureDto(lecture)).ToList();
+
     }
 
-    public bool UpdateLecture(int lectureId, UpdateLectureDto dto)
+    public async Task<bool> UpdateLecture(int lectureId, UpdateLectureDto dto)
     {
-        var lecture = _lectures.GetById(lectureId);
+        var lecture = await _lectures.GetById(lectureId);
         if (lecture is null)
         {
             return false;
@@ -50,26 +48,13 @@ public sealed class LectureService : ILectureService
         _validationHandler.Validate(dto);
         lecture.Name = dto.Name ?? lecture.Name;
         lecture.Content = dto.Content ?? lecture.Content;
-        _lectures.Update(lecture);
+        await _lectures.Update(lecture);
 
         return true;
     }
 
-    public bool DeleteLecture(int lectureId)
+    public async Task<bool> DeleteLecture(int lectureId)
     {
-        DeleteFlashcardSetsFromLecture(lectureId);
-        return _lectures.Delete(lectureId);
-    }
-
-    private void DeleteFlashcardSetsFromLecture(int lectureId)
-    {
-        var allFlashcardSets = _flashcardSets.GetAll();
-        var lectureFlashcardSets = allFlashcardSets.Where(fs => fs.LectureId == lectureId);
-
-        foreach (var lectureFlashcardSet in lectureFlashcardSets)
-        {
-            lectureFlashcardSet.LectureId = null;
-            _flashcardSets.Update(lectureFlashcardSet);
-        }
+        return await _lectures.Delete(lectureId);
     }
 }

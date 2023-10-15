@@ -8,34 +8,32 @@ namespace StudyZen.Application.Services;
 public sealed class FlashcardSetService : IFlashcardSetService
 {
     private readonly IFlashcardSetRepository _flashcardSets;
-    private readonly IFlashcardRepository _flashcards;
     private readonly ValidationHandler _validationHandler;
 
-    public FlashcardSetService(IFlashcardSetRepository flashcardSets, IFlashcardRepository flashcards, ValidationHandler validationHandler)
+    public FlashcardSetService(IFlashcardSetRepository flashcardSets, ValidationHandler validationHandler)
     {
         _flashcardSets = flashcardSets;
-        _flashcards = flashcards;
         _validationHandler = validationHandler;
     }
 
-    public FlashcardSetDto CreateFlashcardSet(CreateFlashcardSetDto dto)
+    public async Task<FlashcardSetDto> CreateFlashcardSet(CreateFlashcardSetDto dto)
     {
         _validationHandler.Validate(dto);
         var newFlashcardSet = new FlashcardSet(dto.LectureId, dto.Name, dto.Color);
-        _flashcardSets.Add(newFlashcardSet);
+        await _flashcardSets.Add(newFlashcardSet);
         return new FlashcardSetDto(newFlashcardSet);
     }
 
-    public FlashcardSetDto? GetFlashcardSetById(int flashcardSetId)
+    public async Task<FlashcardSetDto?> GetFlashcardSetById(int flashcardSetId)
     {
-        var flashcardSet = _flashcardSets.GetById(flashcardSetId);
+        var flashcardSet = await _flashcardSets.GetById(flashcardSetId);
 
         return flashcardSet is null ? null : new FlashcardSetDto(flashcardSet);
     }
 
-    public IReadOnlyCollection<FlashcardSetDto> GetFlashcardSets(int? lectureId)
+    public async Task<IReadOnlyCollection<FlashcardSetDto>> GetFlashcardSets(int? lectureId)
     {
-        var flashcardSets = _flashcardSets.GetAll();
+        var flashcardSets = await _flashcardSets.GetAll();
 
         if (lectureId.HasValue)
         {
@@ -45,9 +43,9 @@ public sealed class FlashcardSetService : IFlashcardSetService
         return flashcardSets.Select(flashcardSet => new FlashcardSetDto(flashcardSet)).ToList();
     }
 
-    public bool UpdateFlashcardSet(int flashCardSetId, UpdateFlashcardSetDto dto)
+    public async Task<bool> UpdateFlashcardSet(int flashCardSetId, UpdateFlashcardSetDto dto)
     {
-        var flashcardSet = _flashcardSets.GetById(flashCardSetId);
+        var flashcardSet = await _flashcardSets.GetById(flashCardSetId);
         if (flashcardSet is null)
         {
             return false;
@@ -56,25 +54,14 @@ public sealed class FlashcardSetService : IFlashcardSetService
         _validationHandler.Validate(dto);
         flashcardSet.Name = dto.Name ?? flashcardSet.Name;
         flashcardSet.Color = dto.Color ?? flashcardSet.Color;
-        _flashcardSets.Update(flashcardSet);
+        await _flashcardSets.Update(flashcardSet);
 
         return true;
     }
 
-    public bool DeleteFlashcardSet(int flashcardSetId)
+    public async Task<bool> DeleteFlashcardSet(int flashcardSetId)
     {
-        DeleteFlashcardsBySetId(flashcardSetId);
-        return _flashcardSets.Delete(flashcardSetId);
+        return await _flashcardSets.Delete(flashcardSetId);
     }
 
-    private void DeleteFlashcardsBySetId(int flashcardSetId)
-    {
-        var allFlashcards = _flashcards.GetAll();
-        var setFlashcards = allFlashcards.Where(f => f.FlashcardSetId == flashcardSetId);
-
-        foreach (var setFlashcard in setFlashcards)
-        {
-            _flashcards.Delete(setFlashcard.Id);
-        }
-    }
 }
