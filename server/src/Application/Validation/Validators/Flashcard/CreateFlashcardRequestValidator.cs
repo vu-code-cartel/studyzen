@@ -12,7 +12,5 @@ public class CreateFlashcardRequestValidator : AbstractValidator<CreateFlashcard
             .FlashcardFront();
         RuleFor(f => f.Back)
             .FlashcardBack();
-        RuleFor(f => f.FlashcardSetId)
-            .FlashcardSetId(flashcardSetService);
     }
 }

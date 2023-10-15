@@ -12,7 +12,5 @@ public class CreateLectureRequestValidator : AbstractValidator<CreateLectureDto>
             .LectureName();
         RuleFor(l => l.Content)
             .LectureContent();
-        RuleFor(l => l.CourseId)
-            .CourseId(courseService);
     }
 }
