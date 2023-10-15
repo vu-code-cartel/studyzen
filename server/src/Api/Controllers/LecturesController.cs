@@ -17,42 +17,42 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateLecture([FromBody] CreateLectureDto request)
+    public async Task<IActionResult> CreateLecture([FromBody] CreateLectureDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
-        var createdLecture = _lectureService.CreateLecture(request);
+        var createdLecture = await _lectureService.CreateLecture(request);
         return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
     }
 
     [HttpGet]
-    public IActionResult GetLecturesByCourseId(int courseId)
+    public async Task<IActionResult> GetLecturesByCourseId(int courseId)
     {
-        var courseLectures = _lectureService.GetLecturesByCourseId(courseId);
+        var courseLectures = await _lectureService.GetLecturesByCourseId(courseId);
         return Ok(courseLectures);
     }
 
     [HttpGet]
     [Route("{lectureId}")]
-    public IActionResult GetLecture(int lectureId)
+    public async Task<IActionResult> GetLecture(int lectureId)
     {
-        var lecture = _lectureService.GetLectureById(lectureId);
+        var lecture = await _lectureService.GetLectureById(lectureId);
         return lecture is null ? NotFound() : Ok(lecture);
     }
 
     [HttpPatch]
     [Route("{lectureId}")]
-    public IActionResult UpdateLecture(int lectureId, [FromBody] UpdateLectureDto request)
+    public async Task<IActionResult> UpdateLecture(int lectureId, [FromBody] UpdateLectureDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
-        var isSuccess = _lectureService.UpdateLecture(lectureId, request);
+        var isSuccess = await _lectureService.UpdateLecture(lectureId, request);
         return isSuccess ? Ok() : BadRequest();
     }
 
     [HttpDelete]
     [Route("{lectureId}")]
-    public IActionResult DeleteLecture(int lectureId)
+    public async Task<IActionResult> DeleteLecture(int lectureId)
     {
-        var isSuccess = _lectureService.DeleteLecture(lectureId);
+        var isSuccess = await _lectureService.DeleteLecture(lectureId);
         return isSuccess ? Ok() : NotFound();
     }
 }
