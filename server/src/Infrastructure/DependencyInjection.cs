@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StudyZen.Application.Repositories;
-using StudyZen.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using StudyZen.Infrastructure.Persistence;
 using Microsoft.Extensions.Configuration;
@@ -17,8 +16,6 @@ public static class DependencyInjection
         services.AddScoped<ILectureRepository, LectureRepository>();
         services.AddScoped<IFlashcardRepository, FlashcardRepository>();
         services.AddScoped<IFlashcardSetRepository, FlashcardSetRepository>();
-
-        services.AddSingleton<IFileService, FileService>();
 
         return services;
     }
