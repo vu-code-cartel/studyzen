@@ -1,12 +1,20 @@
 ﻿using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
-using StudyZen.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudyZen.Infrastructure.Persistence;
 
 public sealed class LectureRepository : Repository<Lecture>, ILectureRepository
 {
-    public LectureRepository(IFileService fileService, ApplicationDbContext dbContext) : base("lectures", fileService, dbContext)
+    public LectureRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
+    }
+    public async Task<List<Lecture>> GetLecturesByCourseId(int courseId)
+    {
+        var lectures = await _dbContext.Lectures
+                                           .Where(l => l.CourseId == courseId)
+                                           .ToListAsync();
+
+        return lectures;
     }
 }
