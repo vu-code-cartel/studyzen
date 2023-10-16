@@ -10,10 +10,12 @@ namespace StudyZen.Api.Controllers;
 public sealed class FlashcardsController : ControllerBase
 {
     private readonly IFlashcardService _flashcardService;
+    private readonly IFlashcardImporter _flashcardImporter;
 
-    public FlashcardsController(IFlashcardService flashcardService)
+    public FlashcardsController(IFlashcardService flashcardService, IFlashcardImporter flashcardImporter)
     {
         _flashcardService = flashcardService;
+        _flashcardImporter = flashcardImporter;
     }
 
     [HttpPost]
@@ -22,6 +24,20 @@ public sealed class FlashcardsController : ControllerBase
         request.ThrowIfRequestArgumentNull(nameof(request));
         var newFlashcard = _flashcardService.CreateFlashcard(request);
         return CreatedAtAction(nameof(GetFlashcard), new { flashcardId = newFlashcard.Id }, newFlashcard);
+    }
+
+    [HttpPost]
+    [Route("csv")]
+    [Consumes("multipart/form-data")]
+    public IActionResult CreateFlashcardsFromCsv(IFormFile file, int flashcardSetId)
+    {
+        file.ThrowIfRequestArgumentNull(nameof(file));
+
+        using var stream = file.OpenReadStream();
+        var flashcardsFromFile = _flashcardImporter.ImportFlashcardsFromCsv(stream, flashcardSetId);
+        var createdFlashcards = _flashcardService.CreateFlashcards(flashcardsFromFile);
+
+        return Ok(createdFlashcards);
     }
 
     [HttpGet]
@@ -35,7 +51,8 @@ public sealed class FlashcardsController : ControllerBase
     [HttpGet]
     public IActionResult GetFlashcardsBySetId(int flashcardSetId)
     {
-        return Ok(_flashcardService.GetFlashcardsBySetId(flashcardSetId));
+        var flashcards = _flashcardService.GetFlashcardsBySetId(flashcardSetId);
+        return Ok(flashcards);
     }
 
     [HttpPatch]
