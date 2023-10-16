@@ -41,7 +41,9 @@ public sealed class CourseService : ICourseService
         _validationHandler.Validate(dto);
         course.Name = dto.Name ?? course.Name;
         course.Description = dto.Description ?? course.Description;
-        return await _courses.Update(course);
+        _courses.Update(course);
+
+        return true;
     }
 
     public async Task<bool> DeleteCourse(int id)

@@ -43,13 +43,12 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         return await _dbContext.Set<TEntity>().ToListAsync();
     }
 
-    public async Task<bool> Update(TEntity instance)
+    public async void Update(TEntity instance)
     {
         OnInstanceUpdated(instance);
 
         _dbContext.Update(instance);
         await _dbContext.SaveChangesAsync();
-        return true;
     }
 
     public async Task<bool> Delete(int instanceId)
