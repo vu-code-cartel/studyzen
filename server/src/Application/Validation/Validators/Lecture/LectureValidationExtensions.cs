@@ -23,7 +23,9 @@ public static class LectureValidationExtensions
     public static IRuleBuilderOptions<T, int?> OptionalLectureId<T>(this IRuleBuilder<T, int?> ruleBuilder, ILectureService lectureService)
     {
         return ruleBuilder
-            .Must(id => !id.HasValue || lectureService.GetLectureById(id.Value) is not null)
+            .MustAsync(async (id, cancellationToken) =>
+                !id.HasValue || (await lectureService.GetLectureById(id.Value)) is not null)
             .WithErrorCode(ValidationErrorCodes.NotFound);
     }
+
 }
