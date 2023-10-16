@@ -12,7 +12,7 @@ public sealed class Course : BaseEntity
     [StringLength(CourseConstraints.DescriptionMaxLength)]
     public string Description { get; set; }
 
-    public ICollection<Lecture> Lectures { get; set; } = new List<Lecture>();
+    public List<Lecture> Lectures { get; set; } = new();
 
     public Course(string name, string description) : base(default)
     {

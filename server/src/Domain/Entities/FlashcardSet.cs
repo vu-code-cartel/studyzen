@@ -19,7 +19,7 @@ public sealed class FlashcardSet : BaseEntity
     [Required]
     public Color Color { get; set; }
 
-    public ICollection<Flashcard> Flashcards = new List<Flashcard>();
+    public List<Flashcard> Flashcards { get; set; } = new();
 
     public FlashcardSet(int? lectureId, string name, Color color) : base(default)
     {

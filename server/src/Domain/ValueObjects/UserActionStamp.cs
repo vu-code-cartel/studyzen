@@ -10,12 +10,12 @@ public record UserActionStamp
     public string User { get; set; }
 
     [Required]
-    public DateTime TimeStamp { get; set; }
+    public DateTime Timestamp { get; set; }
 
 
-    public UserActionStamp(string user, DateTime timeStamp)
+    public UserActionStamp(string user, DateTime timestamp)
     {
         User = user;
-        TimeStamp = timeStamp;
+        Timestamp = timestamp;
     }
 }

@@ -22,7 +22,7 @@ public sealed class Lecture : BaseEntity
     [StringLength(LectureConstraints.ContentMaxLength)]
     public string Content { get; set; }
 
-    public ICollection<FlashcardSet> FlashcardSets = new List<FlashcardSet>();
+    public List<FlashcardSet> FlashcardSets { get; set; } = new();
 
     public Lecture(int courseId, string name, string content) : base(default)
     {
