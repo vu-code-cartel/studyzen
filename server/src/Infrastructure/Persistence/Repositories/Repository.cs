@@ -30,7 +30,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         {
             OnInstanceAdded(instance);
 
-            await _dbContext.Set<TEntity>().AddAsync(instance);
+            _dbContext.Set<TEntity>().Add(instance);
             await _dbContext.SaveChangesAsync();
         }
         catch (DbUpdateException ex) when ((ex.InnerException as SqlException)?.Number == 547)
