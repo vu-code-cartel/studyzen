@@ -12,11 +12,8 @@ public class LectureTests
     {
         var actualLecture = new Lecture(courseId, name, content);
 
-        actualLecture.Id.Should().Be(default);
         actualLecture.CourseId.Should().Be(courseId);
         actualLecture.Name.Should().Be(name);
         actualLecture.Content.Should().Be(content);
-        actualLecture.CreatedBy.Should().Be(null);
-        actualLecture.UpdatedBy.Should().Be(null);
     }
 }

@@ -13,10 +13,7 @@ public class FlashcardTests
         var actualFlashcard = new Flashcard(flashcardSetId, front, back);
 
         actualFlashcard.FlashcardSetId.Should().Be(flashcardSetId);
-        actualFlashcard.FlashcardSetId.Should().Be(flashcardSetId);
         actualFlashcard.Front.Should().Be(front);
         actualFlashcard.Back.Should().Be(back);
-        actualFlashcard.CreatedBy.Should().Be(null);
-        actualFlashcard.UpdatedBy.Should().Be(null);
     }
 }

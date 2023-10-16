@@ -13,11 +13,8 @@ public class FlashcardSetTests
     {
         var actualFlashcardSet = new FlashcardSet(lectureId, name, color);
 
-        actualFlashcardSet.Id.Should().Be(default);
         actualFlashcardSet.LectureId.Should().Be(lectureId);
         actualFlashcardSet.Name.Should().Be(name);
         actualFlashcardSet.Color.Should().Be(color);
-        actualFlashcardSet.CreatedBy.Should().Be(null);
-        actualFlashcardSet.UpdatedBy.Should().Be(null);
     }
 }

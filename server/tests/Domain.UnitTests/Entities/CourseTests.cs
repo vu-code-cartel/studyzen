@@ -12,10 +12,7 @@ public class CourseTests
     {
         var actualCourse = new Course(name, description);
 
-        actualCourse.Id.Should().Be(default);
         actualCourse.Name.Should().Be(name);
         actualCourse.Description.Should().Be(description);
-        actualCourse.CreatedBy.Should().Be(null);
-        actualCourse.UpdatedBy.Should().Be(null);
     }
 }

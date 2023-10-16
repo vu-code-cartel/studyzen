@@ -16,7 +16,7 @@ public class BaseEntityTests
 
     [Test]
     [AutoData]
-    public void Constructor_Called_InstanceCreated(int id, UserActionStamp? createdBy, UserActionStamp? updatedBy)
+    public void Constructor_Called_InstanceCreated(int id, UserActionStamp createdBy, UserActionStamp updatedBy)
     {
         var entity = new BaseEntityWrapper(id)
         {
