@@ -18,7 +18,7 @@ public sealed class FlashcardSetService : IFlashcardSetService
 
     public async Task<FlashcardSetDto> CreateFlashcardSet(CreateFlashcardSetDto dto)
     {
-        _validationHandler.Validate(dto);
+        await _validationHandler.ValidateAsync(dto);
         var newFlashcardSet = new FlashcardSet(dto.LectureId, dto.Name, dto.Color);
         await _flashcardSets.Add(newFlashcardSet);
         return new FlashcardSetDto(newFlashcardSet);

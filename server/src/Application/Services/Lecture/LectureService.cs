@@ -18,7 +18,7 @@ public sealed class LectureService : ILectureService
 
     public async Task<LectureDto> CreateLecture(CreateLectureDto dto)
     {
-        _validationHandler.Validate(dto);
+        await _validationHandler.ValidateAsync(dto);
         var newLecture = new Lecture(dto.CourseId, dto.Name, dto.Content);
         await _lectures.Add(newLecture);
         return new LectureDto(newLecture);

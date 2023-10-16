@@ -19,7 +19,7 @@ public sealed class FlashcardService : IFlashcardService
 
     public async Task<FlashcardDto> CreateFlashcard(CreateFlashcardDto dto)
     {
-        _validationHandler.Validate(dto);
+        await _validationHandler.ValidateAsync(dto);
         var newFlashcard = new Flashcard(dto.FlashcardSetId, dto.Front, dto.Back);
         await _flashcards.Add(newFlashcard);
 

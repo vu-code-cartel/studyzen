@@ -11,7 +11,6 @@ public class ValidationHandler
     {
         _serviceProvider = serviceProvider;
     }
-
     public void Validate<T>(T instance)
     {
         var validator = _serviceProvider.GetService<IValidator<T>>();
@@ -21,5 +20,16 @@ public class ValidationHandler
         }
 
         validator.ValidateAndThrow(instance);
+    }
+
+    public async Task ValidateAsync<T>(T instance)
+    {
+        var validator = _serviceProvider.GetService<IValidator<T>>();
+        if (validator is null)
+        {
+            throw new InvalidOperationException($"Validator for '{typeof(T).Name}' is not registered.");
+        }
+
+        await validator.ValidateAndThrowAsync(instance);
     }
 }
