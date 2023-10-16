@@ -60,7 +60,7 @@ namespace StudyZen.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LectureId = table.Column<int>(type: "int", nullable: true),
+                    LectureId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Color = table.Column<int>(type: "int", nullable: false),
                     CreatedBy_User = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -76,7 +76,7 @@ namespace StudyZen.Infrastructure.Migrations
                         column: x => x.LectureId,
                         principalTable: "Lectures",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

@@ -12,7 +12,7 @@ using StudyZen.Infrastructure.Persistence;
 namespace StudyZen.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231015192940_InitialCreate")]
+    [Migration("20231016170037_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -88,6 +88,7 @@ namespace StudyZen.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("LectureId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -181,7 +182,7 @@ namespace StudyZen.Infrastructure.Migrations
 
             modelBuilder.Entity("StudyZen.Domain.Entities.Flashcard", b =>
                 {
-                    b.HasOne("StudyZen.Domain.Entities.FlashcardSet", null)
+                    b.HasOne("StudyZen.Domain.Entities.FlashcardSet", "FlashcardSet")
                         .WithMany()
                         .HasForeignKey("FlashcardSetId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -230,16 +231,19 @@ namespace StudyZen.Infrastructure.Migrations
                     b.Navigation("CreatedBy")
                         .IsRequired();
 
+                    b.Navigation("FlashcardSet");
+
                     b.Navigation("UpdatedBy")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("StudyZen.Domain.Entities.FlashcardSet", b =>
                 {
-                    b.HasOne("StudyZen.Domain.Entities.Lecture", null)
+                    b.HasOne("StudyZen.Domain.Entities.Lecture", "Lecture")
                         .WithMany()
                         .HasForeignKey("LectureId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.OwnsOne("StudyZen.Domain.ValueObjects.UserActionStamp", "CreatedBy", b1 =>
                         {
@@ -284,14 +288,16 @@ namespace StudyZen.Infrastructure.Migrations
                     b.Navigation("CreatedBy")
                         .IsRequired();
 
+                    b.Navigation("Lecture");
+
                     b.Navigation("UpdatedBy")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("StudyZen.Domain.Entities.Lecture", b =>
                 {
-                    b.HasOne("StudyZen.Domain.Entities.Course", null)
-                        .WithMany()
+                    b.HasOne("StudyZen.Domain.Entities.Course", "Course")
+                        .WithMany("Lectures")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -336,11 +342,18 @@ namespace StudyZen.Infrastructure.Migrations
                                 .HasForeignKey("LectureId");
                         });
 
+                    b.Navigation("Course");
+
                     b.Navigation("CreatedBy")
                         .IsRequired();
 
                     b.Navigation("UpdatedBy")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.Course", b =>
+                {
+                    b.Navigation("Lectures");
                 });
 #pragma warning restore 612, 618
         }
