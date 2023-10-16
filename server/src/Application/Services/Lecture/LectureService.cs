@@ -45,7 +45,7 @@ public sealed class LectureService : ILectureService
             return false;
         }
 
-        _validationHandler.Validate(dto);
+        await _validationHandler.ValidateAsync(dto);
         lecture.Name = dto.Name ?? lecture.Name;
         lecture.Content = dto.Content ?? lecture.Content;
         _lectures.Update(lecture);

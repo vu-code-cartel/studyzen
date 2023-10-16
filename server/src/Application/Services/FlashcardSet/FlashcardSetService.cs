@@ -51,7 +51,7 @@ public sealed class FlashcardSetService : IFlashcardSetService
             return false;
         }
 
-        _validationHandler.Validate(dto);
+        await _validationHandler.ValidateAsync(dto);
         flashcardSet.Name = dto.Name ?? flashcardSet.Name;
         flashcardSet.Color = dto.Color ?? flashcardSet.Color;
         _flashcardSets.Update(flashcardSet);

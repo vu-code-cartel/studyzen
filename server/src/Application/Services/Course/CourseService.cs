@@ -18,7 +18,7 @@ public sealed class CourseService : ICourseService
 
     public async Task<CourseDto> CreateCourse(CreateCourseDto dto)
     {
-        _validationHandler.Validate(dto);
+        await _validationHandler.ValidateAsync(dto);
         var newCourse = new Course(dto.Name, dto.Description);
         await _courses.Add(newCourse);
         return new CourseDto(newCourse);
@@ -38,7 +38,7 @@ public sealed class CourseService : ICourseService
             return false;
         }
 
-        _validationHandler.Validate(dto);
+        await _validationHandler.ValidateAsync(dto);
         course.Name = dto.Name ?? course.Name;
         course.Description = dto.Description ?? course.Description;
         _courses.Update(course);
