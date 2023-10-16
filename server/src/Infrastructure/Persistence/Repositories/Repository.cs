@@ -57,8 +57,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         {
             OnInstanceUpdated(instance);
 
-            _dbContext.Set<TEntity>().Attach(instance);
-            _dbContext.Entry(instance).State = EntityState.Modified;
+            _dbContext.Update(instance);
             await _dbContext.SaveChangesAsync();
             return true;
         }
