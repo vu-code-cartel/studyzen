@@ -43,7 +43,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         return await _dbContext.Set<TEntity>().ToListAsync();
     }
 
-    public async void Update(TEntity instance)
+    public async Task Update(TEntity instance)
     {
         OnInstanceUpdated(instance);
 

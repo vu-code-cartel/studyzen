@@ -41,7 +41,7 @@ public sealed class CourseService : ICourseService
         await _validationHandler.ValidateAsync(dto);
         course.Name = dto.Name ?? course.Name;
         course.Description = dto.Description ?? course.Description;
-        _courses.Update(course);
+        await _courses.Update(course);
 
         return true;
     }

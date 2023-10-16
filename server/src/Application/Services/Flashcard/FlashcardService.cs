@@ -51,7 +51,7 @@ public sealed class FlashcardService : IFlashcardService
         await _validationHandler.ValidateAsync(dto);
         flashcard.Front = dto.Front ?? flashcard.Front;
         flashcard.Back = dto.Back ?? flashcard.Back;
-        _flashcards.Update(flashcard);
+        await _flashcards.Update(flashcard);
 
         return true;
     }
