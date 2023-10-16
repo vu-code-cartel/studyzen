@@ -12,9 +12,5 @@ public class FlashcardEntityTypeConfiguration : IEntityTypeConfiguration<Flashca
             .WithMany()
             .HasForeignKey(f => f.FlashcardSetId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.OwnsOne(f => f.CreatedBy);
-
-        builder.OwnsOne(f => f.UpdatedBy);
     }
 }

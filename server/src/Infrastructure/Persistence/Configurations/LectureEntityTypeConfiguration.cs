@@ -13,9 +13,5 @@ public class LectureEntityTypeConfiguration : IEntityTypeConfiguration<Lecture>
             .HasForeignKey(l => l.CourseId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.OwnsOne(l => l.CreatedBy);
-
-        builder.OwnsOne(l => l.UpdatedBy);
     }
 }

@@ -12,9 +12,5 @@ public class FlashcardSetEntityTypeConfiguration : IEntityTypeConfiguration<Flas
             .WithMany()
             .HasForeignKey(fs => fs.LectureId)
             .OnDelete(DeleteBehavior.SetNull);
-
-        builder.OwnsOne(e => e.CreatedBy);
-
-        builder.OwnsOne(e => e.UpdatedBy);
     }
 }

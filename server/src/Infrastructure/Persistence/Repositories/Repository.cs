@@ -26,18 +26,10 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
 
     public async Task Add(TEntity instance)
     {
-        try
-        {
-            OnInstanceAdded(instance);
+        OnInstanceAdded(instance);
 
-            _dbContext.Set<TEntity>().Add(instance);
-            await _dbContext.SaveChangesAsync();
-        }
-        catch (DbUpdateException ex) when ((ex.InnerException as SqlException)?.Number == 547)
-        {
-            throw new ValidationException("FK volation");
-        }
-
+        _dbContext.Set<TEntity>().Add(instance);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task<TEntity?> GetById(int instanceId)
@@ -51,20 +43,13 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         return await _dbContext.Set<TEntity>().ToListAsync();
     }
 
-    public async Task<bool> Update(TEntity instance)
+    public async void Update(TEntity instance)
     {
-        try
-        {
-            OnInstanceUpdated(instance);
+        OnInstanceUpdated(instance);
 
-            _dbContext.Update(instance);
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
-        catch (DbUpdateException)
-        {
-            return false;
-        }
+        _dbContext.Update(instance);
+        await _dbContext.SaveChangesAsync();
+
     }
 
     public async Task<bool> Delete(int instanceId)
