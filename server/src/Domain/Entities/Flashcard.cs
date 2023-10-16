@@ -7,7 +7,12 @@ namespace StudyZen.Domain.Entities;
 
 public sealed class Flashcard : BaseEntity
 {
+    [Required]
     public int FlashcardSetId { get; set; }
+
+    [Required]
+    [ForeignKey(nameof(FlashcardSetId))]
+    public FlashcardSet FlashcardSet { get; set; } = null!;
 
     [Required]
     [StringLength(FlashcardConstraints.FrontMaxLength)]
