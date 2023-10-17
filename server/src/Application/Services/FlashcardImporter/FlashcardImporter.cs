@@ -1,14 +1,25 @@
 using FluentValidation;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Extensions;
+using StudyZen.Application.Validation;
 using System.Collections.Concurrent;
+using StudyZen.Application.ValueObjects;
 
 namespace StudyZen.Application.Services;
 
 public sealed class FlashcardImporter : IFlashcardImporter
 {
-    public IReadOnlyCollection<CreateFlashcardDto> ImportFlashcardsFromCsv(Stream stream, int flashcardSetId)
+    private readonly ValidationHandler _validationHandler;
+
+    public FlashcardImporter(ValidationHandler validationHandler)
     {
+        _validationHandler = validationHandler;
+    }
+
+    public IReadOnlyCollection<CreateFlashcardDto> ImportFlashcardsFromCsv(Stream stream, int flashcardSetId, FileMetadata fileMetadata)
+    {
+        _validationHandler.Validate(fileMetadata);
+
         var lines = stream.ReadLines();
         var importedFlashcards = new BlockingCollection<CreateFlashcardDto>();
 
