@@ -24,8 +24,13 @@ public sealed class FlashcardService : IFlashcardService
         await _flashcards.Add(newFlashcard);
 
         return new FlashcardDto(newFlashcard);
+     }
+     
+    public IReadOnlyCollection<FlashcardDto> CreateFlashcards(IEnumerable<CreateFlashcardDto> dtos)
+    {
+        return dtos.Select(CreateFlashcard).ToList();
     }
-
+    
     public async Task<FlashcardDto?> GetFlashcardById(int flashcardId)
     {
         var flashcard = await _flashcards.GetById(flashcardId);
