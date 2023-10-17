@@ -3,6 +3,7 @@ using StudyZen.Application.Dtos;
 using StudyZen.Application.Extensions;
 using StudyZen.Application.Validation;
 using System.Collections.Concurrent;
+using StudyZen.Application.ValueObjects;
 
 namespace StudyZen.Application.Services;
 
