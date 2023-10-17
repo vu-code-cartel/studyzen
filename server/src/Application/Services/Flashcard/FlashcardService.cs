@@ -24,13 +24,15 @@ public sealed class FlashcardService : IFlashcardService
         await _flashcards.Add(newFlashcard);
 
         return new FlashcardDto(newFlashcard);
-     }
-     
-    public IReadOnlyCollection<FlashcardDto> CreateFlashcards(IEnumerable<CreateFlashcardDto> dtos)
-    {
-        return dtos.Select(CreateFlashcard).ToList();
     }
-    
+
+    public async Task<IReadOnlyCollection<FlashcardDto>> CreateFlashcards(IEnumerable<CreateFlashcardDto> dtos)
+    {
+        var tasks = dtos.Select(dto => CreateFlashcard(dto));
+        var results = await Task.WhenAll(tasks);
+        return results;
+    }
+
     public async Task<FlashcardDto?> GetFlashcardById(int flashcardId)
     {
         var flashcard = await _flashcards.GetById(flashcardId);

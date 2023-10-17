@@ -5,5 +5,5 @@ namespace StudyZen.Application.Services;
 
 public interface IFlashcardImporter
 {
-    IReadOnlyCollection<CreateFlashcardDto> ImportFlashcardsFromCsv(Stream stream, int flashcardSetId, FileMetadata fileMetadata);
+    Task<IReadOnlyCollection<CreateFlashcardDto>> ImportFlashcardsFromCsv(Stream stream, int flashcardSetId, FileMetadata fileMetadata);
 }
