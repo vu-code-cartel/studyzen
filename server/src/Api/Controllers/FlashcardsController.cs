@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
+using StudyZen.Application.FileMetadata;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
 
