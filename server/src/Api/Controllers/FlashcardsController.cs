@@ -29,13 +29,13 @@ public sealed class FlashcardsController : ControllerBase
     [HttpPost]
     [Route("csv")]
     [Consumes("multipart/form-data")]
-    public IActionResult CreateFlashcardsFromCsv(IFormFile file, int flashcardSetId)
+    public async Task<IActionResult> CreateFlashcardsFromCsv(IFormFile file, int flashcardSetId)
     {
         file.ThrowIfRequestArgumentNull(nameof(file));
 
         using var stream = file.OpenReadStream();
         var flashcardsFromFile = _flashcardImporter.ImportFlashcardsFromCsv(stream, flashcardSetId);
-        var createdFlashcards = _flashcardService.CreateFlashcards(flashcardsFromFile);
+        var createdFlashcards = await _flashcardService.CreateFlashcards(flashcardsFromFile);
 
         return Ok(createdFlashcards);
     }
