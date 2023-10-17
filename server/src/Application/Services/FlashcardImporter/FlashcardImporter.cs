@@ -16,9 +16,9 @@ public sealed class FlashcardImporter : IFlashcardImporter
         _validationHandler = validationHandler;
     }
 
-    public IReadOnlyCollection<CreateFlashcardDto> ImportFlashcardsFromCsv(Stream stream, int flashcardSetId, FileMetadata fileMetadata)
+    public async Task<IReadOnlyCollection<CreateFlashcardDto>> ImportFlashcardsFromCsv(Stream stream, int flashcardSetId, FileMetadata fileMetadata)
     {
-        _validationHandler.Validate(fileMetadata);
+        await _validationHandler.ValidateAsync(fileMetadata);
 
         var lines = stream.ReadLines();
         var importedFlashcards = new BlockingCollection<CreateFlashcardDto>();
