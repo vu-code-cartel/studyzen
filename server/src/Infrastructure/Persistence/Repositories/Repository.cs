@@ -1,7 +1,9 @@
-﻿using Serilog;
-using StudyZen.Application.Repositories;
+﻿using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
-using StudyZen.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+using FluentValidation;
+
 
 namespace StudyZen.Infrastructure.Persistence;
 
@@ -12,98 +14,53 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
     public Action<TEntity> OnInstanceAdded = delegate { };
     public Action<TEntity> OnInstanceUpdated = delegate { };
 
-    private readonly string _filePath;
-    private readonly IFileService _fileService;
-    private readonly ApplicationDbContext _dbContext;
+    protected readonly ApplicationDbContext _dbContext;
 
-    protected Repository(string fileName, IFileService fileService, ApplicationDbContext dbContext)
+    protected Repository(ApplicationDbContext dbContext)
     {
-        _fileService = fileService;
-        _filePath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "StudyZen",
-            $"{fileName}.json");
         _dbContext = dbContext;
 
         OnInstanceAdded += AuditableEntityInterceptor.SetCreateStamp;
         OnInstanceUpdated += AuditableEntityInterceptor.SetUpdateStamp;
     }
 
-    public void Add(TEntity instance)
+    public async Task Add(TEntity instance)
     {
-        var entitySet = GetEntitySet();
-
-        instance.Id = ++entitySet.TotalCount;
         OnInstanceAdded(instance);
 
-        Log.Information("Adding {0} with id {1}", typeof(TEntity).Name, instance.Id);
-        entitySet.Instances.Add(instance);
-
-        _fileService.WriteToJsonFile(_filePath, entitySet);
+        _dbContext.Set<TEntity>().Add(instance);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public TEntity? GetById(int instanceId)
+    public async Task<TEntity?> GetById(int instanceId)
     {
-        return GetAll().FirstOrDefault(i => i.Id == instanceId);
+        var instance = await _dbContext.Set<TEntity>().FindAsync(instanceId);
+        return instance;
     }
 
-    public List<TEntity> GetAll()
+    public async Task<List<TEntity>> GetAll()
     {
-        return GetEntitySet().Instances;
+        return await _dbContext.Set<TEntity>().ToListAsync();
     }
 
-    public bool Update(TEntity instance)
+    public async Task Update(TEntity instance)
     {
-        var entitySet = GetEntitySet();
-
-        var instanceIdx = entitySet.Instances.FindIndex(i => i.Id == instance.Id);
-        if (instanceIdx < 0)
-        {
-            return false;
-        }
-
         OnInstanceUpdated(instance);
 
-        entitySet.Instances[instanceIdx] = instance;
-        _fileService.WriteToJsonFile(_filePath, entitySet);
-
-        return true;
+        _dbContext.Update(instance);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public bool Delete(int instanceId)
+    public async Task<bool> Delete(int instanceId)
     {
-        var entitySet = GetEntitySet();
-
-        var instance = entitySet.Instances.FirstOrDefault(i => i.Id == instanceId);
+        var instance = await _dbContext.Set<TEntity>().FindAsync(instanceId);
         if (instance is null)
         {
             return false;
         }
-
-        entitySet.Instances.Remove(instance);
-
-        _fileService.WriteToJsonFile(_filePath, entitySet);
-
+        _dbContext.Set<TEntity>().Remove(instance);
+        await _dbContext.SaveChangesAsync();
         return true;
     }
 
-    private EntitySet<TEntity> GetEntitySet()
-    {
-        EnsureFileCreated();
-
-        var entitySet = _fileService.ReadFromJsonFile<EntitySet<TEntity>>(_filePath) ?? new EntitySet<TEntity>();
-
-        return entitySet;
-    }
-
-    private void EnsureFileCreated()
-    {
-        Directory.CreateDirectory(Path.GetDirectoryName(_filePath)!);
-
-        if (!File.Exists(_filePath))
-        {
-            File.Create(_filePath).Close();
-            Log.Information("File {path} was created", _filePath);
-        }
-    }
 }

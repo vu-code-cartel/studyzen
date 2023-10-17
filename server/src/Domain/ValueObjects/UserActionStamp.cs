@@ -1,3 +1,21 @@
-namespace StudyZen.Domain.ValueObjects;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
-public record UserActionStamp(string User, DateTime Timestamp);
+
+namespace StudyZen.Domain.ValueObjects;
+[Owned]
+public record UserActionStamp
+{
+    [Required]
+    public string User { get; set; }
+
+    [Required]
+    public DateTime Timestamp { get; set; }
+
+
+    public UserActionStamp(string user, DateTime timestamp)
+    {
+        User = user;
+        Timestamp = timestamp;
+    }
+}
