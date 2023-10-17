@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<ILectureRepository, LectureRepository>();
         services.AddScoped<IFlashcardRepository, FlashcardRepository>();
         services.AddScoped<IFlashcardSetRepository, FlashcardSetRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }

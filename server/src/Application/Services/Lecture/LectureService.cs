@@ -1,4 +1,5 @@
 using StudyZen.Application.Dtos;
+using StudyZen.Application.Extensions;
 using StudyZen.Application.Repositories;
 using StudyZen.Application.Validation;
 using StudyZen.Domain.Entities;
@@ -7,54 +8,74 @@ namespace StudyZen.Application.Services;
 
 public sealed class LectureService : ILectureService
 {
-    private readonly ILectureRepository _lectures;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ValidationHandler _validationHandler;
 
-    public LectureService(ILectureRepository lectures, ValidationHandler validationHandler)
+    public LectureService(IUnitOfWork unitOfWork, ValidationHandler validationHandler)
     {
-        _lectures = lectures;
+        _unitOfWork = unitOfWork;
         _validationHandler = validationHandler;
     }
 
     public async Task<LectureDto> CreateLecture(CreateLectureDto dto)
     {
         await _validationHandler.ValidateAsync(dto);
+
         var newLecture = new Lecture(dto.CourseId, dto.Name, dto.Content);
-        await _lectures.Add(newLecture);
-        return new LectureDto(newLecture);
+
+        _unitOfWork.Lectures.Add(newLecture);
+        await _unitOfWork.SaveChanges();
+
+        return newLecture.ToDto();
     }
 
     public async Task<LectureDto?> GetLectureById(int lectureId)
     {
-        var lecture = await _lectures.GetById(lectureId);
-        return lecture is null ? null : new LectureDto(lecture);
+        var lecture = await _unitOfWork.Lectures.GetById(lectureId);
+        return lecture?.ToDto();
     }
 
     public async Task<IReadOnlyCollection<LectureDto>> GetLecturesByCourseId(int courseId)
     {
-        var courseLectures = await _lectures.GetLecturesByCourseId(courseId);
-        return courseLectures.Select(lecture => new LectureDto(lecture)).ToList();
+        var course = await _unitOfWork.Courses.GetById(courseId, c => c.Lectures);
+        if (course is null)
+        {
+            return new List<LectureDto>(); // TODO: return error
+        }
 
+        return course.Lectures.ToDtos();
     }
 
     public async Task<bool> UpdateLecture(int lectureId, UpdateLectureDto dto)
     {
-        var lecture = await _lectures.GetById(lectureId);
+        await _validationHandler.ValidateAsync(dto);
+
+        var lecture = await _unitOfWork.Lectures.GetById(lectureId);
         if (lecture is null)
         {
             return false;
         }
 
-        await _validationHandler.ValidateAsync(dto);
         lecture.Name = dto.Name ?? lecture.Name;
         lecture.Content = dto.Content ?? lecture.Content;
-        await _lectures.Update(lecture);
+
+        _unitOfWork.Lectures.Update(lecture);
+        await _unitOfWork.SaveChanges();
 
         return true;
     }
 
     public async Task<bool> DeleteLecture(int lectureId)
     {
-        return await _lectures.Delete(lectureId);
+        var lecture = await _unitOfWork.Lectures.GetById(lectureId);
+        if (lecture is null)
+        {
+            return false;
+        }
+
+        _unitOfWork.Lectures.Delete(lecture);
+        await _unitOfWork.SaveChanges();
+
+        return true;
     }
 }

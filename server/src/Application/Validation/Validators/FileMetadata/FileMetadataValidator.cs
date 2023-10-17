@@ -1,14 +1,14 @@
 using FluentValidation;
+using StudyZen.Application.Dtos;
 using StudyZen.Application.Validation;
-using StudyZen.Application.ValueObjects;
 
 public class FileMetadataValidator : AbstractValidator<FileMetadata>
 {
     public FileMetadataValidator()
     {
-        RuleFor(f => f.FileSize)
+        RuleFor(f => f.Size)
             .FileSize();
-        RuleFor(f => f.FileName)
+        RuleFor(f => f.Name)
             .FileName();
     }
 }

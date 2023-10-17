@@ -1,12 +1,13 @@
-﻿using StudyZen.Domain.Entities;
+﻿using System.Linq.Expressions;
+using StudyZen.Domain.Entities;
 
 namespace StudyZen.Application.Repositories;
 
 public interface IRepository<TEntity> where TEntity : BaseEntity
 {
-    Task Add(TEntity instance);
-    Task<TEntity?> GetById(int instanceId);
+    void Add(params TEntity[] instances);
+    Task<TEntity?> GetById(int instanceId, params Expression<Func<TEntity, object>>[] including);
     Task<List<TEntity>> GetAll();
-    Task Update(TEntity instance);
-    Task<bool> Delete(int instanceId);
+    void Update(TEntity instance);
+    void Delete(TEntity instance);
 }

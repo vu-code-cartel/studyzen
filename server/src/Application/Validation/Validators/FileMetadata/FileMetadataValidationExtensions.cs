@@ -21,8 +21,8 @@ public static class FileMetadataValidationExtensions
             .Must(IsCsvFile).WithMessage("Only CSV files are allowed");
     }
 
-    static bool IsCsvFile(string? fileName)
+    private static bool IsCsvFile(string? fileName)
     {
-        return string.IsNullOrWhiteSpace(fileName) ? false : Regex.IsMatch(fileName, @"\.csv$", RegexOptions.IgnoreCase);
+        return !string.IsNullOrWhiteSpace(fileName) && Regex.IsMatch(fileName, @"\.csv$", RegexOptions.IgnoreCase);
     }
 }

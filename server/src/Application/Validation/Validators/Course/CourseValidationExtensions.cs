@@ -23,9 +23,8 @@ public static class CourseValidationExtensions
     public static IRuleBuilderOptions<T, int> CourseId<T>(this IRuleBuilder<T, int> ruleBuilder, ICourseService courseService)
     {
         return ruleBuilder
-            .MustAsync(async (id, cancellationToken) =>
-                (await courseService.GetCourseById(id)) is not null)
+            .MustAsync(async (id, _) =>
+                await courseService.GetCourseById(id) is not null)
             .WithErrorCode(ValidationErrorCodes.NotFound);
     }
-
 }

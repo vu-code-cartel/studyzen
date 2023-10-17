@@ -5,14 +5,20 @@ namespace StudyZen.Infrastructure.Persistence;
 
 public static class AuditableEntityInterceptor
 {
-    public static void SetCreateStamp(IAuditable instance)
+    public static void SetCreateStamp(object instance)
     {
-        instance.CreatedBy = new UserActionStamp(Environment.UserName, DateTime.UtcNow);
-        SetUpdateStamp(instance);
+        if (instance is IAuditable auditable)
+        {
+            auditable.CreatedBy = new UserActionStamp(Environment.UserName, DateTime.UtcNow);
+            auditable.UpdatedBy = auditable.CreatedBy with { };
+        }
     }
 
-    public static void SetUpdateStamp(IAuditable instance)
+    public static void SetUpdateStamp(object instance)
     {
-        instance.UpdatedBy = new UserActionStamp(Environment.UserName, DateTime.UtcNow);
+        if (instance is IAuditable auditable)
+        {
+            auditable.UpdatedBy = new UserActionStamp(Environment.UserName, DateTime.UtcNow);
+        }
     }
 }

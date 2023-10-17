@@ -1,4 +1,5 @@
 using StudyZen.Application.Dtos;
+using StudyZen.Application.Extensions;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
 using StudyZen.Application.Validation;
@@ -7,61 +8,80 @@ namespace StudyZen.Application.Services;
 
 public sealed class FlashcardSetService : IFlashcardSetService
 {
-    private readonly IFlashcardSetRepository _flashcardSets;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ValidationHandler _validationHandler;
 
-    public FlashcardSetService(IFlashcardSetRepository flashcardSets, ValidationHandler validationHandler)
+    public FlashcardSetService(IUnitOfWork unitOfWork, ValidationHandler validationHandler)
     {
-        _flashcardSets = flashcardSets;
+        _unitOfWork = unitOfWork;
         _validationHandler = validationHandler;
     }
 
     public async Task<FlashcardSetDto> CreateFlashcardSet(CreateFlashcardSetDto dto)
     {
         await _validationHandler.ValidateAsync(dto);
+
         var newFlashcardSet = new FlashcardSet(dto.LectureId, dto.Name, dto.Color);
-        await _flashcardSets.Add(newFlashcardSet);
-        return new FlashcardSetDto(newFlashcardSet);
+
+        _unitOfWork.FlashcardSets.Add(newFlashcardSet);
+        await _unitOfWork.SaveChanges();
+
+        return newFlashcardSet.ToDto();
     }
 
     public async Task<FlashcardSetDto?> GetFlashcardSetById(int flashcardSetId)
     {
-        var flashcardSet = await _flashcardSets.GetById(flashcardSetId);
-
-        return flashcardSet is null ? null : new FlashcardSetDto(flashcardSet);
+        var flashcardSet = await _unitOfWork.FlashcardSets.GetById(flashcardSetId);
+        return flashcardSet?.ToDto();
     }
 
     public async Task<IReadOnlyCollection<FlashcardSetDto>> GetFlashcardSets(int? lectureId)
     {
-        var flashcardSets = await _flashcardSets.GetAll();
-
         if (lectureId.HasValue)
         {
-            flashcardSets = flashcardSets.Where(fs => fs.LectureId == lectureId).ToList();
+            var lecture = await _unitOfWork.Lectures.GetById(lectureId.Value, l => l.FlashcardSets);
+            if (lecture is null)
+            {
+                return new List<FlashcardSetDto>(); // TODO: return error
+            }
+
+            return lecture.FlashcardSets.ToDtos();
         }
 
-        return flashcardSets.Select(flashcardSet => new FlashcardSetDto(flashcardSet)).ToList();
+        var allFlashcardSets = await _unitOfWork.FlashcardSets.GetAll();
+        return allFlashcardSets.ToDtos();
     }
 
     public async Task<bool> UpdateFlashcardSet(int flashCardSetId, UpdateFlashcardSetDto dto)
     {
-        var flashcardSet = await _flashcardSets.GetById(flashCardSetId);
+        await _validationHandler.ValidateAsync(dto);
+
+        var flashcardSet = await _unitOfWork.FlashcardSets.GetById(flashCardSetId);
         if (flashcardSet is null)
         {
             return false;
         }
 
-        await _validationHandler.ValidateAsync(dto);
         flashcardSet.Name = dto.Name ?? flashcardSet.Name;
         flashcardSet.Color = dto.Color ?? flashcardSet.Color;
-        await _flashcardSets.Update(flashcardSet);
+
+        _unitOfWork.FlashcardSets.Update(flashcardSet);
+        await _unitOfWork.SaveChanges();
 
         return true;
     }
 
     public async Task<bool> DeleteFlashcardSet(int flashcardSetId)
     {
-        return await _flashcardSets.Delete(flashcardSetId);
-    }
+        var flashcardSet = await _unitOfWork.FlashcardSets.GetById(flashcardSetId);
+        if (flashcardSet is null)
+        {
+            return false;
+        }
 
+        _unitOfWork.FlashcardSets.Delete(flashcardSet);
+        await _unitOfWork.SaveChanges();
+
+        return true;
+    }
 }

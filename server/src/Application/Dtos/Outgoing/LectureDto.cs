@@ -3,22 +3,10 @@ using StudyZen.Domain.ValueObjects;
 
 namespace StudyZen.Application.Dtos;
 
-public record LectureDto
-{
-    public int Id { get; init; }
-    public int CourseId { get; init; }
-    public string Name { get; init; }
-    public string Content { get; init; }
-    public UserActionStamp CreatedBy { get; init; }
-    public UserActionStamp UpdatedBy { get; init; }
-
-    public LectureDto(Lecture lecture)
-    {
-        Id = lecture.Id;
-        CourseId = lecture.CourseId;
-        Name = lecture.Name;
-        Content = lecture.Content;
-        CreatedBy = lecture.CreatedBy;
-        UpdatedBy = lecture.UpdatedBy;
-    }
-}
+public sealed record LectureDto(
+    int Id,
+    int CourseId,
+    string Name,
+    string Content,
+    UserActionStamp CreatedBy,
+    UserActionStamp UpdatedBy);
