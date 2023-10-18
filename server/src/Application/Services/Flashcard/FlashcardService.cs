@@ -28,8 +28,14 @@ public sealed class FlashcardService : IFlashcardService
 
     public async Task<IReadOnlyCollection<FlashcardDto>> CreateFlashcards(IEnumerable<CreateFlashcardDto> dtos)
     {
-        var tasks = dtos.Select(dto => CreateFlashcard(dto));
-        var results = await Task.WhenAll(tasks);
+        var results = new List<FlashcardDto>();
+
+        foreach (var dto in dtos)
+        {
+            var result = await CreateFlashcard(dto);
+            results.Add(result);
+        }
+
         return results;
     }
 

@@ -20,12 +20,7 @@ public static class FileMetadataValidationExtensions
             .NotEmpty()
             .Must(IsCsvFile).WithMessage("Only CSV files are allowed");
     }
-    public static IRuleBuilderOptions<T, string?> FileType<T>(this IRuleBuilder<T, string?> ruleBuilder)
-    {
-        return ruleBuilder
-            .Equal("text/csv")
-            .WithMessage("mime type must be text/csv"); ;
-    }
+
     static bool IsCsvFile(string? fileName)
     {
         return string.IsNullOrWhiteSpace(fileName) ? false : Regex.IsMatch(fileName, @"\.csv$", RegexOptions.IgnoreCase);

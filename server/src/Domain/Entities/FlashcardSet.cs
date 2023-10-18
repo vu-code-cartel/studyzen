@@ -10,7 +10,7 @@ public sealed class FlashcardSet : BaseEntity
     public int? LectureId { get; set; }
 
     [ForeignKey(nameof(LectureId))]
-    public Lecture Lecture { get; set; } = null!;
+    public Lecture? Lecture { get; set; } = null;
 
     [Required]
     [StringLength(FlashcardSetConstraints.NameMaxLength)]
