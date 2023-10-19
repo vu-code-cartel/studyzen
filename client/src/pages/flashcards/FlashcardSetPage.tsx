@@ -4,21 +4,36 @@ import { PageContainer } from '../../components/PageContainer';
 import { PageHeader } from '../../components/PageHeader';
 import { usePageCategory } from '../../hooks/usePageCategory';
 import { AppRoutes, getFlashcardSetRoute } from '../../common/app-routes';
-import { useCreateFlashcard, useGetFlashcards } from '../../hooks/api/useFlashcardsApi';
+import { useCreateFlashcard, useGetFlashcards, useImportFlashcards } from '../../hooks/api/useFlashcardsApi';
 import { useParams } from 'react-router-dom';
 import { getIdFromSlug } from '../../common/utils';
 import { CenteredLoader } from '../../components/CenteredLoader';
 import { NotFound } from '../../components/NotFound';
 import { useGetFlashcardSet } from '../../hooks/api/useFlashcardSetsApi';
-import { ActionIcon, Card, Center, Fieldset, Grid, Group, Stack, Tabs, Text, TextInput } from '@mantine/core';
+import {
+  ActionIcon,
+  Button,
+  Card,
+  Center,
+  Divider,
+  Fieldset,
+  FileInput,
+  Grid,
+  Group,
+  Stack,
+  Tabs,
+  Text,
+  TextInput,
+} from '@mantine/core';
 import { IconChevronLeft, IconChevronRight, IconPlus } from '@tabler/icons-react';
-import { CreateFlashcardRequest } from '../../api/requests';
+import { CreateFlashcardRequest, FlashcardsImportDto } from '../../api/requests';
 import { FlashcardDto, FlashcardSetDto } from '../../api/dtos';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { FlippableFlashcard } from '../../components/FlippableFlashcard';
 import { useAppStore } from '../../hooks/useAppStore';
 import { useDocumentTitle } from '@mantine/hooks';
+import { useButtonVariant } from '../../hooks/useButtonVariant';
 
 class FlashcardSetTabs {
   public static readonly ViewSet = 'view-set';
@@ -78,51 +93,96 @@ interface FlashcardSetPanelProps {
 
 const ViewSetPanel = (props: FlashcardSetPanelProps) => {
   const createFlashcard = useCreateFlashcard();
+  const importFlashcards = useImportFlashcards();
   const isMobile = useAppStore((state) => state.isMobile);
   const { t } = useTranslation();
-  const form = useForm<CreateFlashcardRequest>({
+  const buttonVariant = useButtonVariant();
+  const createFlashcardForm = useForm<CreateFlashcardRequest>({
     initialValues: {
-      flashcardSetId: 0,
+      flashcardSetId: props.flashcardSet.id,
       front: '',
       back: '',
     },
     validate: {},
   });
+  const importFlashcardsForm = useForm<{ file: File | null }>({
+    initialValues: {
+      file: null,
+    },
+    validate: {
+      file: (file) => (file ? null : t('Flashcard.Validation.ImportFileNotSelected')),
+    },
+  });
 
-  const onCreateFlashcardClick = async (request: CreateFlashcardRequest, flashcardSet: FlashcardSetDto) => {
-    request.flashcardSetId = flashcardSet.id;
+  const onCreateFlashcardClick = async (request: CreateFlashcardRequest) => {
     await createFlashcard.mutateAsync(request);
+  };
+
+  const onImportFlashcardsClick = async ({ file }: { file: File | null }) => {
+    if (!file) {
+      return;
+    }
+
+    const dto: FlashcardsImportDto = {
+      flashcardSetId: props.flashcardSet.id,
+      file: file,
+    };
+
+    await importFlashcards.mutateAsync(dto);
+    importFlashcardsForm.setValues({ file: null });
   };
 
   return (
     <Stack>
       <Text fw={600}>{t('FlashcardSet.TermsInSet')}</Text>
-      <form
-        onSubmit={form.onSubmit((values) => onCreateFlashcardClick(values, props.flashcardSet))}
-        autoComplete='off'
-        spellCheck='false'
-      >
-        <Fieldset m={0} p='md'>
-          <Stack gap='sm'>
-            <Grid>
-              <Grid.Col span={isMobile ? 12 : 6}>
-                <TextInput label={t('Flashcard.Field.Front')} withAsterisk {...form.getInputProps('front')} />
-              </Grid.Col>
-              <Grid.Col span={isMobile ? 12 : 6}>
-                <TextInput label={t('Flashcard.Field.Back')} withAsterisk {...form.getInputProps('back')} />
-              </Grid.Col>
-            </Grid>
+      <Fieldset m={0} p='md' legend='Add terms'>
+        <Stack>
+          <form onSubmit={createFlashcardForm.onSubmit(onCreateFlashcardClick)} autoComplete='off' spellCheck='false'>
+            <Stack gap='sm'>
+              <Grid>
+                <Grid.Col span={isMobile ? 12 : 6}>
+                  <TextInput
+                    label={t('Flashcard.Field.Front')}
+                    withAsterisk
+                    {...createFlashcardForm.getInputProps('front')}
+                  />
+                </Grid.Col>
+                <Grid.Col span={isMobile ? 12 : 6}>
+                  <TextInput
+                    label={t('Flashcard.Field.Back')}
+                    withAsterisk
+                    {...createFlashcardForm.getInputProps('back')}
+                  />
+                </Grid.Col>
+              </Grid>
 
-            <Group justify='end'>
-              <Group gap='xs'>
-                <ActionIcon variant='light' color='teal' type='submit'>
-                  <IconPlus stroke={1.5} width='70%' height='70%' />
-                </ActionIcon>
+              <Group justify='end'>
+                <Group gap='xs'>
+                  <ActionIcon variant='light' color='teal' type='submit'>
+                    <IconPlus stroke={1.5} width='70%' height='70%' />
+                  </ActionIcon>
+                </Group>
               </Group>
-            </Group>
-          </Stack>
-        </Fieldset>
-      </form>
+            </Stack>
+          </form>
+          <Divider />
+          <form onSubmit={importFlashcardsForm.onSubmit(onImportFlashcardsClick)}>
+            <Stack gap='sm'>
+              <FileInput
+                label={t('Flashcard.Field.ImportFromFile')}
+                placeholder={t('Flashcard.Placeholder.SelectFile')}
+                accept='.csv'
+                {...importFlashcardsForm.getInputProps('file')}
+              />
+              <Group justify='end'>
+                <Button variant={buttonVariant} fullWidth={isMobile} type='submit'>
+                  {t('Flashcard.Action.Import')}
+                </Button>
+              </Group>
+            </Stack>
+          </form>
+        </Stack>
+      </Fieldset>
 
       {props.flashcards.map((flashcard) => (
         <Card withBorder key={flashcard.id}>

@@ -1,3 +1,4 @@
+import { FlashcardsImportDto } from './../../api/requests';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { SERVER_URL, axiosClient } from '../../api/config';
@@ -29,6 +30,42 @@ export const useCreateFlashcard = () => {
     onError: () => {
       notifications.show({
         message: t('Flashcard.Notification.FailedToCreateFlashcard'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'red',
+      });
+    },
+  });
+};
+
+export const useImportFlashcards = () => {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  return useMutation({
+    mutationFn: async (request: FlashcardsImportDto) => {
+      const formData = new FormData();
+      formData.append('file', request.file);
+
+      await axiosClient.post(`${FLASHCARDS_API_URL}/csv?flashcardSetId=${request.flashcardSetId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    },
+    onSuccess: (_, request) => {
+      notifications.show({
+        message: t('Flashcard.Notification.FlashcardsImportedSuccessfully'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'teal',
+      });
+
+      queryClient.invalidateQueries([QueryKeys.GetFlashcards, request.flashcardSetId]);
+    },
+    onError: () => {
+      notifications.show({
+        message: t('Flashcard.Notification.FailedToImportFlashcards'),
         withBorder: true,
         withCloseButton: true,
         color: 'red',
