@@ -28,17 +28,19 @@ public sealed class FlashcardService : IFlashcardService
         return new FlashcardDto(newFlashcard);
     }
 
-    public async Task<IReadOnlyCollection<FlashcardDto>> CreateFlashcards(IEnumerable<CreateFlashcardDto> dtos)
+    public async Task<IReadOnlyCollection<FlashcardDto>> CreateFlashcards(IReadOnlyCollection<CreateFlashcardDto> dtos)
     {
-        var results = new List<FlashcardDto>();
-
+        var flashcards = new List<Flashcard>(dtos.Count);
         foreach (var dto in dtos)
         {
-            var result = await CreateFlashcard(dto);
-            results.Add(result);
+            await _validationHandler.ValidateAsync(dto);
+            flashcards.Add(new Flashcard(dto.FlashcardSetId, dto.Front, dto.Back));
         }
 
-        return results;
+        _unitOfWork.Flashcards.AddRange(flashcards);
+        await _unitOfWork.SaveChanges();
+
+        return flashcards.Select(f => new FlashcardDto(f)).ToList();
     }
 
     public async Task<FlashcardDto?> GetFlashcardById(int flashcardId)

@@ -19,6 +19,11 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         DbSet.Add(instance);
     }
 
+    public void AddRange(IEnumerable<TEntity> instances)
+    {
+        DbSet.AddRange(instances);
+    }
+
     public async Task<TEntity?> GetById(int instanceId)
     {
         return await DbSet.FindAsync(instanceId);

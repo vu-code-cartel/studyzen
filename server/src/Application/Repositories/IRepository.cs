@@ -6,6 +6,7 @@ namespace StudyZen.Application.Repositories;
 public interface IRepository<TEntity> where TEntity : BaseEntity
 {
     void Add(TEntity instance);
+    void AddRange(IEnumerable<TEntity> instances);
     Task<TEntity?> GetById(int instanceId);
 
     Task<List<TEntity>> Get(
