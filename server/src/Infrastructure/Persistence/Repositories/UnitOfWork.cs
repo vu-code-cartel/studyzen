@@ -3,7 +3,7 @@ using StudyZen.Application.Repositories;
 
 namespace StudyZen.Infrastructure.Persistence;
 
-public class UnitOfWork : IUnitOfWork, IDisposable
+public sealed class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _dbContext;
     private bool _disposed;
@@ -57,20 +57,12 @@ public class UnitOfWork : IUnitOfWork, IDisposable
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposed)
+        if (_disposed)
         {
-            if (disposing)
-            {
-                _dbContext.Dispose();
-            }
+            return;
         }
 
+        _dbContext.Dispose();
         _disposed = true;
     }
 }

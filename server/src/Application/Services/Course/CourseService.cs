@@ -34,6 +34,12 @@ public sealed class CourseService : ICourseService
         return course is null ? null : new CourseDto(course);
     }
 
+    public async Task<IReadOnlyCollection<CourseDto>> GetAllCourses()
+    {
+        var allCourses = await _unitOfWork.Courses.Get();
+        return allCourses.Select(course => new CourseDto(course)).ToList();
+    }
+
     public async Task<bool> UpdateCourse(int id, UpdateCourseDto dto)
     {
         var course = await _unitOfWork.Courses.GetById(id);
@@ -61,11 +67,5 @@ public sealed class CourseService : ICourseService
         }
 
         return isSuccess;
-    }
-
-    public async Task<IReadOnlyCollection<CourseDto>> GetAllCourses()
-    {
-        var allCourses = await _unitOfWork.Courses.Get();
-        return allCourses.Select(course => new CourseDto(course)).ToList();
     }
 }

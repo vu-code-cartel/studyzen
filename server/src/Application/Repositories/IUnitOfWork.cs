@@ -1,6 +1,6 @@
 ﻿namespace StudyZen.Application.Repositories;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IDisposable
 {
     ICourseRepository Courses { get; }
     ILectureRepository Lectures { get; }
