@@ -38,6 +38,11 @@ export type CreateFlashcardRequest = {
   back: string;
 };
 
+export type FlashcardsImportDto = {
+  flashcardSetId: number;
+  file: File;
+};
+
 export type UpdateFlashcardDto = {
   front?: string;
   back?: string;

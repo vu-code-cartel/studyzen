@@ -165,6 +165,8 @@
     "Notification": {
       "FlashcardCreatedSuccessfully": "The flashcard was created successfully.",
       "FailedToCreateFlashcard": "Failed to create the flashcard.",
+      "FlashcardsImportedSuccessfully": "Flashcards were imported successfully.",
+      "FailedToImportFlashcards": "Failed to import flashcards.",
       "FailedToGetFlashcard": "Failed to get flashcards.",
       "FailedToGetFlashcards": "Failed to get the flashcard.",
       "FlashcardUpdatedSuccessfully": "The flashcard was updated successfully.",
@@ -174,7 +176,17 @@
     },
     "Field": {
       "Front": "Front",
-      "Back": "Back"
+      "Back": "Back",
+      "ImportFromFile": "Import from file"
+    },
+    "Placeholder": {
+      "SelectFile": "Click to select file"
+    },
+    "Action": {
+      "Import": "Import"
+    },
+    "Validation": {
+      "ImportFileNotSelected": "Please select a file to import"
     }
   },
   "RichTextEditor": {
