@@ -8,7 +8,8 @@ namespace StudyZen.Api.Extensions;
 
 public static class ProblemDetailsOptionsExtensions
 {
-    public static void MapFluentValidationException(this Hellang.Middleware.ProblemDetails.ProblemDetailsOptions options)
+    public static void MapFluentValidationException(
+        this Hellang.Middleware.ProblemDetails.ProblemDetailsOptions options)
     {
         options.Map<ValidationException>((ctx, ex) =>
         {
@@ -39,44 +40,47 @@ public static class ProblemDetailsOptionsExtensions
     /// </summary>
     /// <param name="validationFailures">Validation errors.</param>
     /// <returns>Validation errors as JSON object.</returns>
-    private static IDictionary<string, object> FormatValidationErrors(IEnumerable<ValidationFailure> validationFailures)
+    private static IDictionary<string, object> FormatValidationErrors(
+        IEnumerable<ValidationFailure> validationFailures)
     {
         var errors = new Dictionary<string, object>();
 
         foreach (var failure in validationFailures)
         {
-            var currentLayer = errors;
-            var propertyNames = failure.PropertyName.Split('.');
-
-            if (propertyNames.Length > 1)
-            {
-                for (var i = 0; i < propertyNames.Length - 1; i++)
-                {
-                    var propertyName = JsonNamingPolicy.CamelCase.ConvertName(propertyNames[i]);
-
-                    var nextLayerExists = currentLayer.TryGetValue(propertyName, out var nextLayer);
-                    if (!nextLayerExists || nextLayer is null)
-                    {
-                        nextLayer = new Dictionary<string, object>();
-                        currentLayer.Add(propertyName, nextLayer);
-                    }
-
-                    currentLayer = (Dictionary<string, object>)nextLayer;
-                }
-            }
-
-            var lastPropertyName = JsonNamingPolicy.CamelCase.ConvertName(propertyNames.Last());
-            var errorListExists = currentLayer.TryGetValue(lastPropertyName, out var errorList);
-            if (errorListExists && errorList is not null)
-            {
-                ((List<string>)errorList).Add(failure.ErrorCode);
-            }
-            else
-            {
-                currentLayer.Add(lastPropertyName, new List<string> { failure.ErrorCode });
-            }
+            var propertyNames = failure.PropertyName.Split('.').ToList();
+            var errorList = CreateLayersByPropertyNames(propertyNames, errors);
+            errorList.Add(failure.ErrorCode);
         }
 
         return errors;
+    }
+
+    private static IList<string> CreateLayersByPropertyNames(
+        IList<string> propertyNames,
+        IDictionary<string, object> currentLayer)
+    {
+        foreach (var name in propertyNames.SkipLast(1))
+        {
+            var propertyName = JsonNamingPolicy.CamelCase.ConvertName(name);
+
+            var nextLayerExists = currentLayer.TryGetValue(propertyName, out var nextLayer);
+            if (!nextLayerExists || nextLayer is null)
+            {
+                nextLayer = new Dictionary<string, object>();
+                currentLayer.Add(propertyName, nextLayer);
+            }
+
+            currentLayer = (Dictionary<string, object>)nextLayer;
+        }
+
+        var lastPropertyName = JsonNamingPolicy.CamelCase.ConvertName(propertyNames.Last());
+        var errorListExists = currentLayer.TryGetValue(lastPropertyName, out var errorList);
+        if (!errorListExists || errorList is null)
+        {
+            errorList = new List<string>();
+            currentLayer.Add(lastPropertyName, errorList);
+        }
+
+        return (List<string>)errorList;
     }
 }
