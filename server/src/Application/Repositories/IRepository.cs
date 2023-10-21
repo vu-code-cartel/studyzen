@@ -12,7 +12,7 @@ public interface IRepository<TEntity> where TEntity : BaseEntity
         int instanceId,
         params Expression<Func<TEntity, object>>[] includes);
 
-    Task<TEntity> GetByIdOrThrow(
+    Task<TEntity> GetByIdChecked(
         int instanceId,
         params Expression<Func<TEntity, object>>[] includes);
 
@@ -26,5 +26,5 @@ public interface IRepository<TEntity> where TEntity : BaseEntity
 
     void Update(TEntity instance);
     void Delete(TEntity instance);
-    Task DeleteByIdOrThrow(int instanceId);
+    Task DeleteByIdChecked(int instanceId);
 }

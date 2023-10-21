@@ -45,7 +45,7 @@ public sealed class FlashcardService : IFlashcardService
 
     public async Task<FlashcardDto> GetFlashcardById(int flashcardId)
     {
-        var flashcard = await _unitOfWork.Flashcards.GetByIdOrThrow(flashcardId);
+        var flashcard = await _unitOfWork.Flashcards.GetByIdChecked(flashcardId);
         return new FlashcardDto(flashcard);
     }
 
@@ -59,7 +59,7 @@ public sealed class FlashcardService : IFlashcardService
     {
         await _validationHandler.ValidateAsync(dto);
 
-        var flashcard = await _unitOfWork.Flashcards.GetByIdOrThrow(flashcardId);
+        var flashcard = await _unitOfWork.Flashcards.GetByIdChecked(flashcardId);
 
         flashcard.Front = dto.Front ?? flashcard.Front;
         flashcard.Back = dto.Back ?? flashcard.Back;
@@ -69,7 +69,7 @@ public sealed class FlashcardService : IFlashcardService
 
     public async Task DeleteFlashcard(int flashcardId)
     {
-        await _unitOfWork.Flashcards.DeleteByIdOrThrow(flashcardId);
+        await _unitOfWork.Flashcards.DeleteByIdChecked(flashcardId);
         await _unitOfWork.SaveChanges();
     }
 }

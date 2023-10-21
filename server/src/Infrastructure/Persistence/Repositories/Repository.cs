@@ -38,7 +38,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         return await query.FirstOrDefaultAsync(i => i.Id == instanceId);
     }
 
-    public async Task<TEntity> GetByIdOrThrow(
+    public async Task<TEntity> GetByIdChecked(
         int instanceId,
         params Expression<Func<TEntity, object>>[] includes)
     {
@@ -98,9 +98,9 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         DbSet.Remove(instance);
     }
 
-    public async Task DeleteByIdOrThrow(int instanceId)
+    public async Task DeleteByIdChecked(int instanceId)
     {
-        var instance = await GetByIdOrThrow(instanceId);
+        var instance = await GetByIdChecked(instanceId);
         Delete(instance);
     }
 }

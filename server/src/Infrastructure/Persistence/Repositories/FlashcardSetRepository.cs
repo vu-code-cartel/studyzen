@@ -11,7 +11,7 @@ public sealed class FlashcardSetRepository : Repository<FlashcardSet>, IFlashcar
 
     public async Task<List<Flashcard>> GetFlashcardsBySet(int flashcardSetId)
     {
-        var flashcardSet = await GetByIdOrThrow(
+        var flashcardSet = await GetByIdChecked(
             flashcardSetId,
             fs => fs.Flashcards);
 

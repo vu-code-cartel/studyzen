@@ -30,7 +30,7 @@ public sealed class LectureService : ILectureService
 
     public async Task<LectureDto> GetLectureById(int lectureId)
     {
-        var lecture = await _unitOfWork.Lectures.GetByIdOrThrow(lectureId);
+        var lecture = await _unitOfWork.Lectures.GetByIdChecked(lectureId);
         return new LectureDto(lecture);
     }
 
@@ -44,7 +44,7 @@ public sealed class LectureService : ILectureService
     {
         await _validationHandler.ValidateAsync(dto);
 
-        var lecture = await _unitOfWork.Lectures.GetByIdOrThrow(lectureId);
+        var lecture = await _unitOfWork.Lectures.GetByIdChecked(lectureId);
 
         lecture.Name = dto.Name ?? lecture.Name;
         lecture.Content = dto.Content ?? lecture.Content;
@@ -54,7 +54,7 @@ public sealed class LectureService : ILectureService
 
     public async Task DeleteLecture(int lectureId)
     {
-        await _unitOfWork.Lectures.DeleteByIdOrThrow(lectureId);
+        await _unitOfWork.Lectures.DeleteByIdChecked(lectureId);
         await _unitOfWork.SaveChanges();
     }
 }

@@ -11,7 +11,7 @@ public sealed class CourseRepository : Repository<Course>, ICourseRepository
 
     public async Task<List<Lecture>> GetLecturesByCourse(int courseId)
     {
-        var course = await GetByIdOrThrow(
+        var course = await GetByIdChecked(
             courseId,
             c => c.Lectures);
 
