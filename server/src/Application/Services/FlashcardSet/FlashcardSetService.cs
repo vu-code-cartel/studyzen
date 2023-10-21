@@ -30,7 +30,7 @@ public sealed class FlashcardSetService : IFlashcardSetService
 
     public async Task<FlashcardSetDto> GetFlashcardSetById(int flashcardSetId)
     {
-        var flashcardSet = await _unitOfWork.FlashcardSets.GetByIdOrThrow(flashcardSetId);
+        var flashcardSet = await _unitOfWork.FlashcardSets.GetByIdChecked(flashcardSetId);
         return new FlashcardSetDto(flashcardSet);
     }
 
@@ -50,7 +50,7 @@ public sealed class FlashcardSetService : IFlashcardSetService
     {
         await _validationHandler.ValidateAsync(dto);
 
-        var flashcardSet = await _unitOfWork.FlashcardSets.GetByIdOrThrow(flashCardSetId);
+        var flashcardSet = await _unitOfWork.FlashcardSets.GetByIdChecked(flashCardSetId);
 
         flashcardSet.Name = dto.Name ?? flashcardSet.Name;
         flashcardSet.Color = dto.Color ?? flashcardSet.Color;
@@ -60,7 +60,7 @@ public sealed class FlashcardSetService : IFlashcardSetService
 
     public async Task DeleteFlashcardSet(int flashcardSetId)
     {
-        await _unitOfWork.FlashcardSets.DeleteByIdOrThrow(flashcardSetId);
+        await _unitOfWork.FlashcardSets.DeleteByIdChecked(flashcardSetId);
         await _unitOfWork.SaveChanges();
     }
 }

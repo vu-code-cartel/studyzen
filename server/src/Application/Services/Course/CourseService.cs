@@ -30,7 +30,7 @@ public sealed class CourseService : ICourseService
 
     public async Task<CourseDto> GetCourseById(int id)
     {
-        var course = await _unitOfWork.Courses.GetByIdOrThrow(id);
+        var course = await _unitOfWork.Courses.GetByIdChecked(id);
         return new CourseDto(course);
     }
 
@@ -44,7 +44,7 @@ public sealed class CourseService : ICourseService
     {
         await _validationHandler.ValidateAsync(dto);
 
-        var course = await _unitOfWork.Courses.GetByIdOrThrow(id);
+        var course = await _unitOfWork.Courses.GetByIdChecked(id);
 
         course.Name = dto.Name ?? course.Name;
         course.Description = dto.Description ?? course.Description;
@@ -54,7 +54,7 @@ public sealed class CourseService : ICourseService
 
     public async Task DeleteCourse(int id)
     {
-        await _unitOfWork.Courses.DeleteByIdOrThrow(id);
+        await _unitOfWork.Courses.DeleteByIdChecked(id);
         await _unitOfWork.SaveChanges();
     }
 }
