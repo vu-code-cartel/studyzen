@@ -1,66 +1,91 @@
-﻿using StudyZen.Application.Repositories;
-using StudyZen.Domain.Entities;
+﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.SqlClient;
-using FluentValidation;
-
+using StudyZen.Application.Repositories;
+using StudyZen.Domain.Entities;
 
 namespace StudyZen.Infrastructure.Persistence;
 
 public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
 {
-    // TODO: change these to save changes interceptors after lab 2
-    // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/interceptors
-    public Action<TEntity> OnInstanceAdded = delegate { };
-    public Action<TEntity> OnInstanceUpdated = delegate { };
-
-    protected readonly ApplicationDbContext _dbContext;
+    protected readonly DbSet<TEntity> DbSet;
 
     protected Repository(ApplicationDbContext dbContext)
     {
-        _dbContext = dbContext;
-
-        OnInstanceAdded += AuditableEntityInterceptor.SetCreateStamp;
-        OnInstanceUpdated += AuditableEntityInterceptor.SetUpdateStamp;
+        DbSet = dbContext.Set<TEntity>();
     }
 
-    public async Task Add(TEntity instance)
+    public void Add(TEntity instance)
     {
-        OnInstanceAdded(instance);
+        DbSet.Add(instance);
+    }
 
-        _dbContext.Set<TEntity>().Add(instance);
-        await _dbContext.SaveChangesAsync();
+    public void AddRange(IEnumerable<TEntity> instances)
+    {
+        DbSet.AddRange(instances);
     }
 
     public async Task<TEntity?> GetById(int instanceId)
     {
-        var instance = await _dbContext.Set<TEntity>().FindAsync(instanceId);
-        return instance;
+        return await DbSet.FindAsync(instanceId);
     }
 
-    public async Task<List<TEntity>> GetAll()
+    public async Task<List<TEntity>> Get(
+        Expression<Func<TEntity, bool>>? filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        int skip = 0,
+        int take = int.MaxValue,
+        bool disableTracking = true,
+        params Expression<Func<TEntity, object>>[] includes)
     {
-        return await _dbContext.Set<TEntity>().ToListAsync();
+        var query = DbSet.AsQueryable();
+
+        if (filter is not null)
+        {
+            query = query.Where(filter);
+        }
+
+        if (skip > 0)
+        {
+            query = query.Skip(skip);
+        }
+
+        if (take >= 0)
+        {
+            query = query.Take(take);
+        }
+
+        if (disableTracking)
+        {
+            query = query.AsNoTracking();
+        }
+
+        includes
+            .ToList()
+            .ForEach(i => query = query.Include(i));
+
+        if (orderBy is not null)
+        {
+            return await orderBy(query).ToListAsync();
+        }
+
+        return await query.ToListAsync();
     }
 
-    public async Task Update(TEntity instance)
+    public void Update(TEntity instance)
     {
-        OnInstanceUpdated(instance);
-
-        _dbContext.Update(instance);
-        await _dbContext.SaveChangesAsync();
+        DbSet.Update(instance);
     }
 
     public async Task<bool> Delete(int instanceId)
     {
-        var instance = await _dbContext.Set<TEntity>().FindAsync(instanceId);
+        var instance = await DbSet.FindAsync(instanceId);
         if (instance is null)
         {
             return false;
         }
-        _dbContext.Set<TEntity>().Remove(instance);
-        await _dbContext.SaveChangesAsync();
+
+        DbSet.Remove(instance);
+
         return true;
     }
-
 }

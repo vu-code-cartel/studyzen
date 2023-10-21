@@ -7,70 +7,82 @@ namespace StudyZen.Application.Services;
 
 public sealed class FlashcardService : IFlashcardService
 {
-    private readonly IFlashcardRepository _flashcards;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ValidationHandler _validationHandler;
 
-
-    public FlashcardService(IFlashcardRepository flashcards, ValidationHandler validationHandler)
+    public FlashcardService(IUnitOfWork unitOfWork, ValidationHandler validationHandler)
     {
-        _flashcards = flashcards;
+        _unitOfWork = unitOfWork;
         _validationHandler = validationHandler;
     }
 
     public async Task<FlashcardDto> CreateFlashcard(CreateFlashcardDto dto)
     {
         await _validationHandler.ValidateAsync(dto);
+
         var newFlashcard = new Flashcard(dto.FlashcardSetId, dto.Front, dto.Back);
-        await _flashcards.Add(newFlashcard);
+
+        _unitOfWork.Flashcards.Add(newFlashcard);
+        await _unitOfWork.SaveChanges();
 
         return new FlashcardDto(newFlashcard);
     }
 
-    public async Task<IReadOnlyCollection<FlashcardDto>> CreateFlashcards(IEnumerable<CreateFlashcardDto> dtos)
+    public async Task<IReadOnlyCollection<FlashcardDto>> CreateFlashcards(IReadOnlyCollection<CreateFlashcardDto> dtos)
     {
-        var results = new List<FlashcardDto>();
-
+        var flashcards = new List<Flashcard>(dtos.Count);
         foreach (var dto in dtos)
         {
-            var result = await CreateFlashcard(dto);
-            results.Add(result);
+            await _validationHandler.ValidateAsync(dto);
+            flashcards.Add(new Flashcard(dto.FlashcardSetId, dto.Front, dto.Back));
         }
 
-        return results;
+        _unitOfWork.Flashcards.AddRange(flashcards);
+        await _unitOfWork.SaveChanges();
+
+        return flashcards.Select(f => new FlashcardDto(f)).ToList();
     }
 
     public async Task<FlashcardDto?> GetFlashcardById(int flashcardId)
     {
-        var flashcard = await _flashcards.GetById(flashcardId);
+        var flashcard = await _unitOfWork.Flashcards.GetById(flashcardId);
 
         return flashcard is null ? null : new FlashcardDto(flashcard);
     }
 
     public async Task<IReadOnlyCollection<FlashcardDto>> GetFlashcardsBySetId(int flashcardSetId)
     {
-        var setFlashcards = await _flashcards.GetFlashcardsBySetId(flashcardSetId);
+        var setFlashcards = await _unitOfWork.Flashcards.GetFlashcardsBySetId(flashcardSetId);
 
         return setFlashcards.Select(flashcard => new FlashcardDto(flashcard)).ToList();
     }
 
     public async Task<bool> UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto)
     {
-        var flashcard = await _flashcards.GetById(flashcardId);
+        var flashcard = await _unitOfWork.Flashcards.GetById(flashcardId);
         if (flashcard is null)
         {
             return false;
         }
 
         await _validationHandler.ValidateAsync(dto);
+
         flashcard.Front = dto.Front ?? flashcard.Front;
         flashcard.Back = dto.Back ?? flashcard.Back;
-        await _flashcards.Update(flashcard);
+
+        await _unitOfWork.SaveChanges();
 
         return true;
     }
 
     public async Task<bool> DeleteFlashcard(int flashcardId)
     {
-        return await _flashcards.Delete(flashcardId);
+        var isSuccess = await _unitOfWork.Flashcards.Delete(flashcardId);
+        if (isSuccess)
+        {
+            await _unitOfWork.SaveChanges();
+        }
+
+        return isSuccess;
     }
 }
