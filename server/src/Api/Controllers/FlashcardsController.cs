@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
-using StudyZen.Application.ValueObjects;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
 
@@ -34,10 +33,9 @@ public sealed class FlashcardsController : ControllerBase
     {
         file.ThrowIfRequestArgumentNull(nameof(file));
 
-        var fileMetadata = new FileMetadata(file.FileName, file.ContentType, file.Length);
-
         await using var stream = file.OpenReadStream();
 
+        var fileMetadata = new FileMetadata(file.FileName, file.Length);
         var flashcardsFromFile = await _flashcardImporter.ImportFlashcardsFromCsv(stream, flashcardSetId, fileMetadata);
         var createdFlashcards = await _flashcardService.CreateFlashcards(flashcardsFromFile);
 
