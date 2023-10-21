@@ -37,7 +37,7 @@ public static class DependencyInjection
                     return isDevEnv.Value;
                 };
                 options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest);
-                options.MapFluentValidationException();
+                options.MapValidationException();
             })
             .AddControllers()
             .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)

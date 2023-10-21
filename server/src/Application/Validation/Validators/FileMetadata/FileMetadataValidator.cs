@@ -1,6 +1,7 @@
 using FluentValidation;
-using StudyZen.Application.Validation;
-using StudyZen.Application.ValueObjects;
+using StudyZen.Application.Dtos;
+
+namespace StudyZen.Application.Validation;
 
 public class FileMetadataValidator : AbstractValidator<FileMetadata>
 {
