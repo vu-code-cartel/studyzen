@@ -16,8 +16,6 @@ public static class FileMetadataValidationExtensions
     {
         return ruleBuilder
             .MustNotBeNullOrWhitespace()
-            .NotNull()
-            .NotEmpty()
             .Must(IsCsvFile)
             .WithErrorCode(ValidationErrorCodes.InvalidFileFormat);
     }
