@@ -28,10 +28,10 @@ public sealed class CourseService : ICourseService
         return new CourseDto(newCourse);
     }
 
-    public async Task<CourseDto?> GetCourseById(int id)
+    public async Task<CourseDto> GetCourseById(int id)
     {
-        var course = await _unitOfWork.Courses.GetById(id);
-        return course is null ? null : new CourseDto(course);
+        var course = await _unitOfWork.Courses.GetByIdOrThrow(id);
+        return new CourseDto(course);
     }
 
     public async Task<IReadOnlyCollection<CourseDto>> GetAllCourses()
@@ -40,32 +40,21 @@ public sealed class CourseService : ICourseService
         return allCourses.Select(course => new CourseDto(course)).ToList();
     }
 
-    public async Task<bool> UpdateCourse(int id, UpdateCourseDto dto)
+    public async Task UpdateCourse(int id, UpdateCourseDto dto)
     {
-        var course = await _unitOfWork.Courses.GetById(id);
-        if (course is null)
-        {
-            return false;
-        }
-
         await _validationHandler.ValidateAsync(dto);
+
+        var course = await _unitOfWork.Courses.GetByIdOrThrow(id);
 
         course.Name = dto.Name ?? course.Name;
         course.Description = dto.Description ?? course.Description;
 
         await _unitOfWork.SaveChanges();
-
-        return true;
     }
 
-    public async Task<bool> DeleteCourse(int id)
+    public async Task DeleteCourse(int id)
     {
-        var isSuccess = await _unitOfWork.Courses.Delete(id);
-        if (isSuccess)
-        {
-            await _unitOfWork.SaveChanges();
-        }
-
-        return isSuccess;
+        await _unitOfWork.Courses.DeleteByIdOrThrow(id);
+        await _unitOfWork.SaveChanges();
     }
 }

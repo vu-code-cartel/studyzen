@@ -9,9 +9,4 @@ public sealed class FlashcardRepository : Repository<Flashcard>, IFlashcardRepos
     public FlashcardRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
     }
-
-    public async Task<List<Flashcard>> GetFlashcardsBySetId(int setId)
-    {
-        return await Get(f => f.FlashcardSetId == setId);
-    }
 }

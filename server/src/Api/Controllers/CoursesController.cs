@@ -29,7 +29,7 @@ public sealed class CoursesController : ControllerBase
     public async Task<IActionResult> GetCourse(int courseId)
     {
         var course = await _courseService.GetCourseById(courseId);
-        return course is null ? NotFound() : Ok(course);
+        return Ok(course);
     }
 
     [HttpGet]
@@ -44,15 +44,15 @@ public sealed class CoursesController : ControllerBase
     public async Task<IActionResult> UpdateCourse(int courseId, [FromBody] UpdateCourseDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
-        var isSuccess = await _courseService.UpdateCourse(courseId, request);
-        return isSuccess ? Ok() : BadRequest();
+        await _courseService.UpdateCourse(courseId, request);
+        return Ok();
     }
 
     [HttpDelete]
     [Route("{courseId}")]
     public async Task<IActionResult> DeleteCourse(int courseId)
     {
-        var isSuccess = await _courseService.DeleteCourse(courseId);
-        return isSuccess ? Ok() : NotFound();
+        await _courseService.DeleteCourse(courseId);
+        return Ok();
     }
 }

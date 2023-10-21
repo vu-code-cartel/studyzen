@@ -6,8 +6,8 @@ public interface IFlashcardService
 {
     Task<FlashcardDto> CreateFlashcard(CreateFlashcardDto dto);
     Task<IReadOnlyCollection<FlashcardDto>> CreateFlashcards(IReadOnlyCollection<CreateFlashcardDto> dtos);
-    Task<FlashcardDto?> GetFlashcardById(int flashcardId);
+    Task<FlashcardDto> GetFlashcardById(int flashcardId);
     Task<IReadOnlyCollection<FlashcardDto>> GetFlashcardsBySetId(int flashcardSetId);
-    Task<bool> UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto);
-    Task<bool> DeleteFlashcard(int flashcardId);
+    Task UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto);
+    Task DeleteFlashcard(int flashcardId);
 }

@@ -3,6 +3,7 @@ using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
 using StudyZen.Api.Exceptions;
 using System.Text.Json.Serialization;
+using StudyZen.Application.Exceptions;
 
 namespace StudyZen.Api;
 
@@ -25,6 +26,7 @@ public static class DependencyInjection
             {
                 options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest);
                 options.MapToStatusCode<ValidationException>(StatusCodes.Status422UnprocessableEntity);
+                options.MapToStatusCode<InstanceNotFoundException>(StatusCodes.Status422UnprocessableEntity);
             })
             .AddControllers()
             .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)

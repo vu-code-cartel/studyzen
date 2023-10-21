@@ -7,7 +7,14 @@ public interface IRepository<TEntity> where TEntity : BaseEntity
 {
     void Add(TEntity instance);
     void AddRange(IEnumerable<TEntity> instances);
-    Task<TEntity?> GetById(int instanceId);
+
+    Task<TEntity?> GetById(
+        int instanceId,
+        params Expression<Func<TEntity, object>>[] includes);
+
+    Task<TEntity> GetByIdOrThrow(
+        int instanceId,
+        params Expression<Func<TEntity, object>>[] includes);
 
     Task<List<TEntity>> Get(
         Expression<Func<TEntity, bool>>? filter = null,
@@ -18,5 +25,6 @@ public interface IRepository<TEntity> where TEntity : BaseEntity
         params Expression<Func<TEntity, object>>[] includes);
 
     void Update(TEntity instance);
-    Task<bool> Delete(int instanceId);
+    void Delete(TEntity instance);
+    Task DeleteByIdOrThrow(int instanceId);
 }

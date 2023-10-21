@@ -28,7 +28,7 @@ public sealed class FlashcardSetsController : ControllerBase
     public async Task<IActionResult> GetFlashcardSet(int flashcardSetId)
     {
         var flashcardSet = await _flashcardSetService.GetFlashcardSetById(flashcardSetId);
-        return flashcardSet == null ? NotFound() : Ok(flashcardSet);
+        return Ok(flashcardSet);
     }
 
     [HttpGet]
@@ -42,14 +42,14 @@ public sealed class FlashcardSetsController : ControllerBase
     public async Task<IActionResult> UpdateFlashcardSetById(int flashcardSetId, [FromBody] UpdateFlashcardSetDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
-        var isSuccess = await _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
-        return isSuccess ? Ok() : BadRequest();
+        await _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
+        return Ok();
     }
 
     [HttpDelete("{flashcardSetId}")]
     public async Task<IActionResult> DeleteFlashcardSet(int flashcardSetId)
     {
-        var isSuccess = await _flashcardSetService.DeleteFlashcardSet(flashcardSetId);
-        return isSuccess ? Ok() : NotFound();
+        await _flashcardSetService.DeleteFlashcardSet(flashcardSetId);
+        return Ok();
     }
 }

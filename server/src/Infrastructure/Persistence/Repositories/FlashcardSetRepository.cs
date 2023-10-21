@@ -8,4 +8,13 @@ public sealed class FlashcardSetRepository : Repository<FlashcardSet>, IFlashcar
     public FlashcardSetRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
     }
+
+    public async Task<List<Flashcard>> GetFlashcardsBySet(int flashcardSetId)
+    {
+        var flashcardSet = await GetByIdOrThrow(
+            flashcardSetId,
+            fs => fs.Flashcards);
+
+        return flashcardSet.Flashcards;
+    }
 }
