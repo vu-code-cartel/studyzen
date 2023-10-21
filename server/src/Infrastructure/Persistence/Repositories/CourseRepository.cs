@@ -8,4 +8,13 @@ public sealed class CourseRepository : Repository<Course>, ICourseRepository
     public CourseRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
     }
+
+    public async Task<List<Lecture>> GetLecturesByCourse(int courseId)
+    {
+        var course = await GetByIdOrThrow(
+            courseId,
+            c => c.Lectures);
+
+        return course.Lectures;
+    }
 }
