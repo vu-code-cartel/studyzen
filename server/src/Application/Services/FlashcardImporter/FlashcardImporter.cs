@@ -22,21 +22,39 @@ public sealed class FlashcardImporter : IFlashcardImporter
 
         var lines = stream.ReadLines();
         var importedFlashcards = new BlockingCollection<CreateFlashcardDto>();
+        var threadList = new List<Thread>();
+        var lockObject = new object(); 
 
-        Parallel.ForEach(lines, line =>
+        foreach (var line in lines)
         {
-            var values = line.Split(',');
-            if (values.Length != 2)
+            var localLine = line; 
+
+            var thread = new Thread(() =>
             {
-                throw new ValidationException($"CSV file must only contain flashcard front and back values. Invalid values: {string.Join(',', values)}");
-            }
+                var values = localLine.Split(',');
+                if (values.Length != 2)
+                {
+                    throw new ValidationException($"CSV file must only contain flashcard front and back values. Invalid values: {string.Join(',', values)}");
+                }
 
-            var front = values[0];
-            var back = values[1];
-            var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, front, back);
+                var front = values[0];
+                var back = values[1];
+                var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, front, back);
 
-            importedFlashcards.Add(createFlashcardDto);
-        });
+                lock (lockObject)
+                {
+                    importedFlashcards.Add(createFlashcardDto);
+                }
+            });
+
+            threadList.Add(thread);
+            thread.Start();
+        }
+
+        foreach (var thread in threadList)
+        {
+            thread.Join();
+        }
 
         importedFlashcards.CompleteAdding();
 
