@@ -78,26 +78,14 @@ public sealed class FlashcardImporter : IFlashcardImporter
 
     private IEnumerable<IEnumerable<string>> PartitionBatch(IEnumerable<string> source, int numberOfBatches)
     {
-        var batch = new List<string>();
+       
         int batchSize = source.Count() / numberOfBatches;
-        int currentBatchSize = 0;
+        int skipCount = 0;
 
-        foreach (var item in source)
+        while (skipCount < source.Count())
         {
-            batch.Add(item);
-            currentBatchSize++;
-
-            if (currentBatchSize >= batchSize)
-            {
-                yield return batch;
-                batch = new List<string>();
-                currentBatchSize = 0;
-            }
-        }
-
-        if (batch.Count > 0)
-        {
-            yield return batch;
-        }
+            yield return source.Skip(skipCount).Take(batchSize);
+            skipCount += batchSize;
+        }     
     }
 }
