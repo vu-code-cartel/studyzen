@@ -22,10 +22,7 @@ public sealed class FlashcardImporter : IFlashcardImporter
 
         var lines = stream.ReadLines();
         var importedFlashcards = new BlockingCollection<CreateFlashcardDto>();
-
-        int batchSize = 10; 
-        var batches = PartitionBatch(lines, batchSize);
-
+        var batches = PartitionBatch(lines, 3); 
         var threadList = new List<Thread>();
 
         foreach (var batch in batches)
@@ -62,16 +59,22 @@ public sealed class FlashcardImporter : IFlashcardImporter
         return importedFlashcards.GetConsumingEnumerable().ToList();
     }
 
-    private IEnumerable<IEnumerable<string>> PartitionBatch(IEnumerable<string> source, int batchSize)
+    private IEnumerable<IEnumerable<string>> PartitionBatch(IEnumerable<string> source, int numberOfBatches)
     {
         var batch = new List<string>();
+        int batchSize = source.Count() / numberOfBatches;
+        int currentBatchSize = 0;
+
         foreach (var item in source)
         {
             batch.Add(item);
-            if (batch.Count == batchSize)
+            currentBatchSize++;
+
+            if (currentBatchSize >= batchSize)
             {
                 yield return batch;
                 batch = new List<string>();
+                currentBatchSize = 0;
             }
         }
 
