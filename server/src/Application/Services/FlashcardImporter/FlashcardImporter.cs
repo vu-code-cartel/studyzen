@@ -16,33 +16,34 @@ public sealed class FlashcardImporter : IFlashcardImporter
         _validationHandler = validationHandler;
     }
 
-    public async Task<IReadOnlyCollection<CreateFlashcardDto>> ImportFlashcardsFromCsv(Stream stream, int flashcardSetId, FileMetadata fileMetadata)
+   public async Task<IReadOnlyCollection<CreateFlashcardDto>> ImportFlashcardsFromCsv(Stream stream, int flashcardSetId, FileMetadata fileMetadata)
     {
         await _validationHandler.ValidateAsync(fileMetadata);
 
         var lines = stream.ReadLines();
         var importedFlashcards = new BlockingCollection<CreateFlashcardDto>();
+
+        int batchSize = 10; 
+        var batches = PartitionBatch(lines, batchSize);
+
         var threadList = new List<Thread>();
-        var lockObject = new object(); 
 
-        foreach (var line in lines)
+        foreach (var batch in batches)
         {
-            var localLine = line; 
-
             var thread = new Thread(() =>
             {
-                var values = localLine.Split(',');
-                if (values.Length != 2)
+                foreach (var line in batch)
                 {
-                    throw new ValidationException($"CSV file must only contain flashcard front and back values. Invalid values: {string.Join(',', values)}");
-                }
+                    var values = line.Split(',');
+                    if (values.Length != 2)
+                    {
+                        throw new ValidationException($"CSV file must only contain flashcard front and back values. Invalid values: {string.Join(',', values)}");
+                    }
 
-                var front = values[0];
-                var back = values[1];
-                var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, front, back);
+                    var front = values[0];
+                    var back = values[1];
+                    var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, front, back);
 
-                lock (lockObject)
-                {
                     importedFlashcards.Add(createFlashcardDto);
                 }
             });
@@ -59,5 +60,24 @@ public sealed class FlashcardImporter : IFlashcardImporter
         importedFlashcards.CompleteAdding();
 
         return importedFlashcards.GetConsumingEnumerable().ToList();
+    }
+
+    private IEnumerable<IEnumerable<string>> PartitionBatch(IEnumerable<string> source, int batchSize)
+    {
+        var batch = new List<string>();
+        foreach (var item in source)
+        {
+            batch.Add(item);
+            if (batch.Count == batchSize)
+            {
+                yield return batch;
+                batch = new List<string>();
+            }
+        }
+
+        if (batch.Count > 0)
+        {
+            yield return batch;
+        }
     }
 }
