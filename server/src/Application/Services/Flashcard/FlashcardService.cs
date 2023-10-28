@@ -43,46 +43,33 @@ public sealed class FlashcardService : IFlashcardService
         return flashcards.Select(f => new FlashcardDto(f)).ToList();
     }
 
-    public async Task<FlashcardDto?> GetFlashcardById(int flashcardId)
+    public async Task<FlashcardDto> GetFlashcardById(int flashcardId)
     {
-        var flashcard = await _unitOfWork.Flashcards.GetById(flashcardId);
-
-        return flashcard is null ? null : new FlashcardDto(flashcard);
+        var flashcard = await _unitOfWork.Flashcards.GetByIdChecked(flashcardId);
+        return new FlashcardDto(flashcard);
     }
 
     public async Task<IReadOnlyCollection<FlashcardDto>> GetFlashcardsBySetId(int flashcardSetId)
     {
-        var setFlashcards = await _unitOfWork.Flashcards.GetFlashcardsBySetId(flashcardSetId);
-
-        return setFlashcards.Select(flashcard => new FlashcardDto(flashcard)).ToList();
+        var flashcards = await _unitOfWork.FlashcardSets.GetFlashcardsBySet(flashcardSetId);
+        return flashcards.Select(flashcard => new FlashcardDto(flashcard)).ToList();
     }
 
-    public async Task<bool> UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto)
+    public async Task UpdateFlashcard(int flashcardId, UpdateFlashcardDto dto)
     {
-        var flashcard = await _unitOfWork.Flashcards.GetById(flashcardId);
-        if (flashcard is null)
-        {
-            return false;
-        }
-
         await _validationHandler.ValidateAsync(dto);
+
+        var flashcard = await _unitOfWork.Flashcards.GetByIdChecked(flashcardId);
 
         flashcard.Front = dto.Front ?? flashcard.Front;
         flashcard.Back = dto.Back ?? flashcard.Back;
 
         await _unitOfWork.SaveChanges();
-
-        return true;
     }
 
-    public async Task<bool> DeleteFlashcard(int flashcardId)
+    public async Task DeleteFlashcard(int flashcardId)
     {
-        var isSuccess = await _unitOfWork.Flashcards.Delete(flashcardId);
-        if (isSuccess)
-        {
-            await _unitOfWork.SaveChanges();
-        }
-
-        return isSuccess;
+        await _unitOfWork.Flashcards.DeleteByIdChecked(flashcardId);
+        await _unitOfWork.SaveChanges();
     }
 }

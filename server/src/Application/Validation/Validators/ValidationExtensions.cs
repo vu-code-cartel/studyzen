@@ -19,6 +19,20 @@ public static class ValidationExtensions
             .WithErrorCode(ValidationErrorCodes.NullOrWhitespace);
     }
 
+    public static IRuleBuilderOptions<T, long> MustBeGreaterThan<T>(this IRuleBuilder<T, long> ruleBuilder, long comparedValue)
+    {
+        return ruleBuilder
+            .GreaterThan(comparedValue)
+            .WithErrorCode(ValidationErrorCodes.TooSmall);
+    }
+
+    public static IRuleBuilderOptions<T, long> MustBeLessThan<T>(this IRuleBuilder<T, long> ruleBuilder, long comparedValue)
+    {
+        return ruleBuilder
+            .LessThan(comparedValue)
+            .WithErrorCode(ValidationErrorCodes.TooLarge);
+    }
+
     public static IRuleBuilderOptions<T, string?> LengthMustNotExceed<T>(this IRuleBuilder<T, string?> ruleBuilder, int maxLength)
     {
         return ruleBuilder

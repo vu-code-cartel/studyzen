@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using StudyZen.Application.Exceptions;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
 
@@ -24,9 +25,25 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         DbSet.AddRange(instances);
     }
 
-    public async Task<TEntity?> GetById(int instanceId)
+    public async Task<TEntity?> GetById(
+        int instanceId,
+        params Expression<Func<TEntity, object>>[] includes)
     {
-        return await DbSet.FindAsync(instanceId);
+        var query = DbSet.AsQueryable();
+
+        includes
+            .ToList()
+            .ForEach(i => query = query.Include(i));
+
+        return await query.FirstOrDefaultAsync(i => i.Id == instanceId);
+    }
+
+    public async Task<TEntity> GetByIdChecked(
+        int instanceId,
+        params Expression<Func<TEntity, object>>[] includes)
+    {
+        var instance = await GetById(instanceId, includes);
+        return instance ?? throw new InstanceNotFoundException(typeof(TEntity).Name, instanceId);
     }
 
     public async Task<List<TEntity>> Get(
@@ -76,16 +93,14 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         DbSet.Update(instance);
     }
 
-    public async Task<bool> Delete(int instanceId)
+    public void Delete(TEntity instance)
     {
-        var instance = await DbSet.FindAsync(instanceId);
-        if (instance is null)
-        {
-            return false;
-        }
-
         DbSet.Remove(instance);
+    }
 
-        return true;
+    public async Task DeleteByIdChecked(int instanceId)
+    {
+        var instance = await GetByIdChecked(instanceId);
+        Delete(instance);
     }
 }

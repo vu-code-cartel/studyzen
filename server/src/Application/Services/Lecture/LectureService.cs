@@ -28,44 +28,33 @@ public sealed class LectureService : ILectureService
         return new LectureDto(newLecture);
     }
 
-    public async Task<LectureDto?> GetLectureById(int lectureId)
+    public async Task<LectureDto> GetLectureById(int lectureId)
     {
-        var lecture = await _unitOfWork.Lectures.GetById(lectureId);
-        return lecture is null ? null : new LectureDto(lecture);
+        var lecture = await _unitOfWork.Lectures.GetByIdChecked(lectureId);
+        return new LectureDto(lecture);
     }
 
     public async Task<IReadOnlyCollection<LectureDto>> GetLecturesByCourseId(int courseId)
     {
-        var courseLectures = await _unitOfWork.Lectures.GetLecturesByCourseId(courseId);
-        return courseLectures.Select(lecture => new LectureDto(lecture)).ToList();
+        var lectures = await _unitOfWork.Courses.GetLecturesByCourse(courseId);
+        return lectures.Select(l => new LectureDto(l)).ToList();
     }
 
-    public async Task<bool> UpdateLecture(int lectureId, UpdateLectureDto dto)
+    public async Task UpdateLecture(int lectureId, UpdateLectureDto dto)
     {
-        var lecture = await _unitOfWork.Lectures.GetById(lectureId);
-        if (lecture is null)
-        {
-            return false;
-        }
-
         await _validationHandler.ValidateAsync(dto);
+
+        var lecture = await _unitOfWork.Lectures.GetByIdChecked(lectureId);
 
         lecture.Name = dto.Name ?? lecture.Name;
         lecture.Content = dto.Content ?? lecture.Content;
 
         await _unitOfWork.SaveChanges();
-
-        return true;
     }
 
-    public async Task<bool> DeleteLecture(int lectureId)
+    public async Task DeleteLecture(int lectureId)
     {
-        var isSuccess = await _unitOfWork.Lectures.Delete(lectureId);
-        if (isSuccess)
-        {
-            await _unitOfWork.SaveChanges();
-        }
-
-        return isSuccess;
+        await _unitOfWork.Lectures.DeleteByIdChecked(lectureId);
+        await _unitOfWork.SaveChanges();
     }
 }

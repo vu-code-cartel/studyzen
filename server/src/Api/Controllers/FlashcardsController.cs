@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
-using StudyZen.Application.ValueObjects;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
 
@@ -34,10 +33,9 @@ public sealed class FlashcardsController : ControllerBase
     {
         file.ThrowIfRequestArgumentNull(nameof(file));
 
-        var fileMetadata = new FileMetadata(file.FileName, file.ContentType, file.Length);
+        await using var stream = file.OpenReadStream();
 
-        using var stream = file.OpenReadStream();
-
+        var fileMetadata = new FileMetadata(file.FileName, file.Length);
         var flashcardsFromFile = await _flashcardImporter.ImportFlashcardsFromCsv(stream, flashcardSetId, fileMetadata);
         var createdFlashcards = await _flashcardService.CreateFlashcards(flashcardsFromFile);
 
@@ -49,13 +47,14 @@ public sealed class FlashcardsController : ControllerBase
     public async Task<IActionResult> GetFlashcard(int flashcardId)
     {
         var flashcard = await _flashcardService.GetFlashcardById(flashcardId);
-        return flashcard is null ? NotFound() : Ok(flashcard);
+        return Ok(flashcard);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetFlashcardsBySetId(int flashcardSetId)
     {
-        return Ok(await _flashcardService.GetFlashcardsBySetId(flashcardSetId));
+        var flashcards = await _flashcardService.GetFlashcardsBySetId(flashcardSetId);
+        return Ok(flashcards);
     }
 
     [HttpPatch]
@@ -63,14 +62,14 @@ public sealed class FlashcardsController : ControllerBase
     public async Task<IActionResult> UpdateFlashcardById(int flashcardId, [FromBody] UpdateFlashcardDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
-        var isSuccess = await _flashcardService.UpdateFlashcard(flashcardId, request);
-        return isSuccess ? Ok() : BadRequest();
+        await _flashcardService.UpdateFlashcard(flashcardId, request);
+        return Ok();
     }
 
     [HttpDelete("{flashcardId}")]
     public async Task<IActionResult> DeleteFlashcard(int flashcardId)
     {
-        var isSuccess = await _flashcardService.DeleteFlashcard(flashcardId);
-        return isSuccess ? Ok() : NotFound();
+        await _flashcardService.DeleteFlashcard(flashcardId);
+        return Ok();
     }
 }

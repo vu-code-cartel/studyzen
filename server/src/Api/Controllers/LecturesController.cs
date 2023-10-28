@@ -36,7 +36,7 @@ public sealed class LecturesController : ControllerBase
     public async Task<IActionResult> GetLecture(int lectureId)
     {
         var lecture = await _lectureService.GetLectureById(lectureId);
-        return lecture is null ? NotFound() : Ok(lecture);
+        return Ok(lecture);
     }
 
     [HttpPatch]
@@ -44,15 +44,15 @@ public sealed class LecturesController : ControllerBase
     public async Task<IActionResult> UpdateLecture(int lectureId, [FromBody] UpdateLectureDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
-        var isSuccess = await _lectureService.UpdateLecture(lectureId, request);
-        return isSuccess ? Ok() : BadRequest();
+        await _lectureService.UpdateLecture(lectureId, request);
+        return Ok();
     }
 
     [HttpDelete]
     [Route("{lectureId}")]
     public async Task<IActionResult> DeleteLecture(int lectureId)
     {
-        var isSuccess = await _lectureService.DeleteLecture(lectureId);
-        return isSuccess ? Ok() : NotFound();
+        await _lectureService.DeleteLecture(lectureId);
+        return Ok();
     }
 }
