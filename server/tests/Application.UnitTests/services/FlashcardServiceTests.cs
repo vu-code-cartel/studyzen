@@ -5,6 +5,7 @@ using StudyZen.Application.Dtos;
 using StudyZen.Application.Validation;
 using StudyZen.Domain.Entities;
 using FluentValidation;
+using StudyZen.Application.Exceptions;
 
 namespace StudyZen.tests.Application.UnitTests;
 
@@ -55,7 +56,7 @@ public class FlashcardServiceTests
     }
 
     [Test]
-    public void CreateFlashcard_ValidationFailure_ThrowsException()
+    public void CreateFlashcard_ValidationFailure_ThrowsValidationException()
     {
         var createFlashcardDto = new CreateFlashcardDto(0, "", "");
 
@@ -71,7 +72,7 @@ public class FlashcardServiceTests
         int flashcardId = 1;
         var flashcard = new Flashcard(flashcardId, "front", "back");
 
-        _unitOfWorkMock.Setup(u => u.Flashcards.GetById(flashcardId)).ReturnsAsync(flashcard);
+        _unitOfWorkMock.Setup(u => u.Flashcards.GetByIdChecked(flashcardId)).ReturnsAsync(flashcard);
 
         var result = await _flashcardService.GetFlashcardById(flashcardId);
 
@@ -80,44 +81,53 @@ public class FlashcardServiceTests
     }
 
     [Test]
-    public async Task GetFlashcardById_FlashcardDoesNotExist_ReturnsNull()
+    public void GetFlashcardById_FlashcardDoesNotExist_ThrowsInstanceNotFoundException()
     {
         int flashcardId = 1;
 
-        _unitOfWorkMock.Setup(u => u.Flashcards.GetById(flashcardId)).ReturnsAsync(default(Flashcard));
+        _unitOfWorkMock.Setup(u => u.Flashcards.GetByIdChecked(flashcardId))
+                       .ThrowsAsync(new InstanceNotFoundException("Flashcard", flashcardId));
 
-        var result = await _flashcardService.GetFlashcardById(flashcardId);
+        InstanceNotFoundException exception = Assert.ThrowsAsync<InstanceNotFoundException>(
+            async () => await _flashcardService.GetFlashcardById(flashcardId));
 
-        Assert.IsNull(result);
+        Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'Flashcard' by id {flashcardId}"));
     }
 
     [Test]
-    public async Task UpdateFlashcard_FlashcardExistsAndValidationPasses_ReturnsTrue()
+    public async Task UpdateFlashcard_FlashcardExistsAndValidationPasses_UpdatesFlashcardDetails()
     {
         var flashcardId = 1;
         var updateFlashcardDto = new UpdateFlashcardDto("new_front", "new_back");
         var flashcard = new Flashcard(flashcardId, "front", "back");
 
-        _unitOfWorkMock.Setup(u => u.Flashcards.GetById(flashcardId)).ReturnsAsync(flashcard);
+        _unitOfWorkMock.Setup(u => u.Flashcards.GetByIdChecked(flashcardId)).ReturnsAsync(flashcard);
         _validationHandlerMock.Setup(v => v.ValidateAsync(updateFlashcardDto)).Returns(Task.CompletedTask);
+
         _unitOfWorkMock.Setup(u => u.SaveChanges()).ReturnsAsync(1);
 
-        var result = await _flashcardService.UpdateFlashcard(flashcardId, updateFlashcardDto);
+        await _flashcardService.UpdateFlashcard(flashcardId, updateFlashcardDto);
 
-        Assert.IsTrue(result);
+        _unitOfWorkMock.Verify(u => u.SaveChanges(), Times.Once);
+
+        Assert.That(flashcard.Front, Is.EqualTo("new_front"));
+        Assert.That(flashcard.Back, Is.EqualTo("new_back"));
     }
 
     [Test]
-    public async Task UpdateFlashcard_FlashcardDoesNotExist_ReturnsFalse()
+    public void UpdateFlashcard_FlashcardDoesNotExist_ThrowsInstanceNotFoundException()
     {
         var flashcardId = 1;
         var updateFlashcardDto = new UpdateFlashcardDto("new_front", "new_back");
 
-        _unitOfWorkMock.Setup(u => u.Flashcards.GetById(flashcardId)).ReturnsAsync(default(Flashcard));
+        _unitOfWorkMock.Setup(u => u.Flashcards.GetByIdChecked(flashcardId))
+                      .Throws(new InstanceNotFoundException("Flashcard", flashcardId));
 
-        var result = await _flashcardService.UpdateFlashcard(flashcardId, updateFlashcardDto);
+        InstanceNotFoundException exception = Assert.ThrowsAsync<InstanceNotFoundException>(
+            async () => await _flashcardService.UpdateFlashcard(flashcardId, updateFlashcardDto)
+        );
 
-        Assert.IsFalse(result);
+        Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'Flashcard' by id {flashcardId}"));
     }
 
     [Test]
@@ -135,28 +145,31 @@ public class FlashcardServiceTests
     }
 
     [Test]
-    public async Task DeleteFlashcard_FlashcardExists_ReturnsTrue()
+    public async Task DeleteFlashcard_FlashcardExists_MethodsAreCalled()
     {
         int flashcardId = 1;
 
-        _unitOfWorkMock.Setup(u => u.Flashcards.Delete(flashcardId)).ReturnsAsync(true);
+        _unitOfWorkMock.Setup(u => u.Flashcards.DeleteByIdChecked(flashcardId)).Returns(Task.CompletedTask);
         _unitOfWorkMock.Setup(u => u.SaveChanges()).ReturnsAsync(1);
 
-        var result = await _flashcardService.DeleteFlashcard(flashcardId);
+        await _flashcardService.DeleteFlashcard(flashcardId);
 
-        Assert.IsTrue(result);
+        _unitOfWorkMock.Verify(u => u.Flashcards.DeleteByIdChecked(flashcardId), Times.Once);
+        _unitOfWorkMock.Verify(u => u.SaveChanges(), Times.Once);
     }
 
     [Test]
-    public async Task DeleteFlashcard_FlashcardDoesNotExist_ReturnsFalse()
+    public void DeleteFlashcard_FlashcardDoesNotExist_ThrowsInstanceNotFoundException()
     {
         int flashcardId = 1;
 
-        _unitOfWorkMock.Setup(u => u.Flashcards.Delete(flashcardId)).ReturnsAsync(false);
+        _unitOfWorkMock.Setup(u => u.Flashcards.DeleteByIdChecked(flashcardId))
+                                   .Throws(new InstanceNotFoundException("Flashcard", flashcardId));
 
-        var result = await _flashcardService.DeleteFlashcard(flashcardId);
+        InstanceNotFoundException exception = Assert.ThrowsAsync<InstanceNotFoundException>(
+                async () => await _flashcardService.DeleteFlashcard(flashcardId));
 
-        Assert.IsFalse(result);
+        Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'Flashcard' by id {flashcardId}"));
     }
 
     [Test]
@@ -166,27 +179,40 @@ public class FlashcardServiceTests
         var flashcards = new List<Flashcard>
     {
         new Flashcard(1, "front1", "back1"),
-        new Flashcard(2, "front2", "back2")
+        new Flashcard(1, "front2", "back2")
     };
 
-        _unitOfWorkMock.Setup(u => u.Flashcards.GetFlashcardsBySetId(flashcardSetId)).ReturnsAsync(flashcards);
+        _unitOfWorkMock.Setup(u => u.FlashcardSets.GetFlashcardsBySet(flashcardSetId)).ReturnsAsync(flashcards);
 
         var result = await _flashcardService.GetFlashcardsBySetId(flashcardSetId);
 
         Assert.IsNotEmpty(result);
         Assert.That(flashcards.Count, Is.EqualTo(result.Count));
+
+
+        for (int i = 0; i < flashcards.Count; i++)
+        {
+            var resultFlashcard = result.ElementAt(i);
+
+            Assert.That(flashcards[i].Id, Is.EqualTo(resultFlashcard.Id));
+            Assert.That(flashcards[i].Front, Is.EqualTo(resultFlashcard.Front));
+            Assert.That(flashcards[i].Back, Is.EqualTo(resultFlashcard.Back));
+        }
     }
 
     [Test]
-    public async Task GetFlashcardsBySetId_NoFlashcardsExist_ReturnsEmptyCollection()
+    public void GetFlashcardsBySetId_FlashcardSetDoesNotExist_ThrowsInstanceNotFoundException()
     {
         int flashcardSetId = 1;
 
-        _unitOfWorkMock.Setup(u => u.Flashcards.GetFlashcardsBySetId(flashcardSetId)).ReturnsAsync(new List<Flashcard>());
+        _unitOfWorkMock.Setup(u => u.FlashcardSets.GetFlashcardsBySet(flashcardSetId))
+                                   .Throws(new InstanceNotFoundException("FlashcardSet", flashcardSetId));
 
-        var result = await _flashcardService.GetFlashcardsBySetId(flashcardSetId);
+        InstanceNotFoundException exception = Assert.ThrowsAsync<InstanceNotFoundException>(
+            async () => await _flashcardService.GetFlashcardsBySetId(flashcardSetId)
+        );
 
-        Assert.IsEmpty(result);
+        Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'FlashcardSet' by id {flashcardSetId}"));
     }
 
     [Test]
@@ -210,7 +236,7 @@ public class FlashcardServiceTests
     }
 
     [Test]
-    public void CreateFlashcards_ValidationFailure_ThrowsException()
+    public void CreateFlashcards_ValidationFailure_ThrowsValidationException()
     {
         var dtos = new List<CreateFlashcardDto>
         {
@@ -218,7 +244,7 @@ public class FlashcardServiceTests
         };
 
         _validationHandlerMock.Setup(v => v.ValidateAsync(It.IsAny<CreateFlashcardDto>()))
-                              .ThrowsAsync(new ValidationException("validation error"));
+                              .ThrowsAsync(new ValidationException("Validation error"));
 
         Assert.ThrowsAsync<ValidationException>(() => _flashcardService.CreateFlashcards(dtos));
     }
