@@ -7,7 +7,7 @@ using StudyZen.Domain.Entities;
 using FluentValidation;
 using StudyZen.Application.Exceptions;
 
-namespace StudyZen.tests.Application.UnitTests;
+namespace StudyZen.Application.UnitTests.Services;
 
 [TestFixture]
 public class FlashcardServiceTests

@@ -2,6 +2,8 @@ using FluentValidation.TestHelper;
 using StudyZen.Domain.Constraints;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Validation;
+namespace StudyZen.Application.UnitTests.Validation;
+
 
 [TestFixture]
 public class UpdateCourseRequestValidatorTests
