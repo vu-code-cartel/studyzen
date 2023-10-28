@@ -29,8 +29,6 @@ public class CourseServiceTests
             .Returns(new object());
 
         _validationHandlerMock = new Mock<ValidationHandler>(serviceProviderMock.Object);
-        _validationHandlerMock.Setup(v => v.ValidateAsync(It.IsAny<CreateCourseDto>()))
-                              .Returns(Task.CompletedTask);
 
         _unitOfWorkMock.Setup(u => u.Courses).Returns(_courseRepositoryMock.Object);
 
@@ -86,9 +84,10 @@ public class CourseServiceTests
         _unitOfWorkMock.Setup(u => u.Courses.GetByIdChecked(courseId))
                        .ThrowsAsync(new InstanceNotFoundException("Course", courseId));
 
-        InstanceNotFoundException ex = Assert.ThrowsAsync<InstanceNotFoundException>(async () => await _courseService.GetCourseById(courseId));
+        InstanceNotFoundException exception = Assert.ThrowsAsync<InstanceNotFoundException>(
+            async () => await _courseService.GetCourseById(courseId));
 
-        Assert.That(ex.Message, Is.EqualTo($"Could not find an instance of 'Course' by id {courseId}"));
+        Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'Course' by id {courseId}"));
     }
 
     [Test]
