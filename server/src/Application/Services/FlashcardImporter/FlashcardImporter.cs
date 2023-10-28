@@ -39,24 +39,53 @@ public sealed class FlashcardImporter : IFlashcardImporter
         int flashcardSetId)
     {
         var importedFlashcards = new BlockingCollection<CreateFlashcardDto>();
+        var batches = PartitionBatch(lines, 3); 
+        var threadList = new List<Thread>();
 
-        Parallel.ForEach(lines, line =>
+        foreach (var batch in batches)
         {
-            var values = line.Split(',');
-            if (values.Length != 2)
+            var thread = new Thread(() =>
             {
-                throw new IncorrectArgumentCountException("FileContent");
-            }
+                foreach (var line in batch)
+                {
+                    var values = line.Split(',');
+                    if (values.Length != 2)
+                    {
+                        throw new IncorrectArgumentCountException("FileContent");
+                    }
 
-            var front = values[0];
-            var back = values[1];
-            var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, front, back);
+                    var front = values[0];
+                    var back = values[1];
+                    var createFlashcardDto = new CreateFlashcardDto(flashcardSetId, front, back);
 
-            importedFlashcards.Add(createFlashcardDto);
-        });
+                    importedFlashcards.Add(createFlashcardDto);
+                }
+            });
+
+            threadList.Add(thread);
+            thread.Start();
+        }
+
+        foreach (var thread in threadList)
+        {
+            thread.Join();
+        }
 
         importedFlashcards.CompleteAdding();
 
         return importedFlashcards.GetConsumingEnumerable().ToList();
+    }
+
+    private IEnumerable<IEnumerable<string>> PartitionBatch(IEnumerable<string> source, int numberOfBatches)
+    {
+       
+        int batchSize = source.Count() / numberOfBatches;
+        int skipCount = 0;
+
+        while (skipCount < source.Count())
+        {
+            yield return source.Skip(skipCount).Take(batchSize);
+            skipCount += batchSize;
+        }     
     }
 }
