@@ -3,6 +3,8 @@ using StudyZen.Application.Exceptions;
 using StudyZen.Domain.Entities;
 using StudyZen.Infrastructure.Persistence;
 
+namespace StudyZen.Infrastructure.UnitTests.Repositories;
+
 [TestFixture]
 public class RepositoryTests
 {

@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using StudyZen.Domain.Entities;
 using StudyZen.Infrastructure.Persistence;
 
+namespace StudyZen.Infrastructure.UnitTests.Repositories;
+
 [TestFixture]
 public class LectureRepositoryTests
 {
