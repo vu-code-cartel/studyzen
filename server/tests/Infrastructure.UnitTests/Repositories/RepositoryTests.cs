@@ -41,6 +41,18 @@ public class RepositoryTests
 
         _dbContext = new TestApplicationDbContext(options);
         _repository = new RepositoryWrapper(_dbContext);
+
+        AddTestData();
+    }
+
+    public void AddTestData()
+    {
+        var entityId = 1;
+
+        var entity = new BaseEntityWrapper(entityId);
+
+        _repository.Add(entity);
+        _dbContext.SaveChanges();
     }
 
     [TearDown]
@@ -54,12 +66,7 @@ public class RepositoryTests
     {
         var entityId = 1;
 
-        var entity = new BaseEntityWrapper(entityId);
-
-        _repository.Add(entity);
-        _dbContext.SaveChanges();
-
-        var retrievedEntity = _dbContext.Set<BaseEntityWrapper>().Find(entity.Id);
+        var retrievedEntity = _dbContext.Set<BaseEntityWrapper>().Find(entityId);
         Assert.IsNotNull(retrievedEntity);
     }
 
@@ -68,7 +75,6 @@ public class RepositoryTests
     {
         var entities = new List<BaseEntityWrapper>
     {
-        new BaseEntityWrapper(1),
         new BaseEntityWrapper(2),
         new BaseEntityWrapper(3)
     };
@@ -89,20 +95,16 @@ public class RepositoryTests
     {
         var entityId = 1;
 
-        var entity = new BaseEntityWrapper(entityId);
-        _dbContext.Add(entity);
-        await _dbContext.SaveChangesAsync();
-
-        var retrievedEntity = await _repository.GetById(entity.Id);
+        var retrievedEntity = await _repository.GetById(entityId);
 
         Assert.IsNotNull(retrievedEntity);
-        Assert.That(retrievedEntity.Id, Is.EqualTo(entity.Id));
+        Assert.That(retrievedEntity.Id, Is.EqualTo(entityId));
     }
 
     [Test]
     public async Task GetById_InvalidId_ReturnsNull()
     {
-        var entityId = 1;
+        var entityId = 0;
 
         var retrievedEntity = await _repository.GetById(entityId);
 
@@ -113,20 +115,16 @@ public class RepositoryTests
     public async Task GetByIdChecked_EntityExists_ReturnsEntity()
     {
         var entityId = 1;
-        var entity = new BaseEntityWrapper(entityId);
-        _dbContext.Add(entity);
-        await _dbContext.SaveChangesAsync();
-
-        var retrievedEntity = await _repository.GetByIdChecked(entity.Id);
+        var retrievedEntity = await _repository.GetByIdChecked(entityId);
 
         Assert.IsNotNull(retrievedEntity);
-        Assert.That(retrievedEntity.Id, Is.EqualTo(entity.Id));
+        Assert.That(retrievedEntity.Id, Is.EqualTo(entityId));
     }
 
     [Test]
     public void GetByIdChecked_EntityDoesNotExist_ThrowsInstanceNotFoundException()
     {
-        var entityId = 1;
+        var entityId = 0;
         var exception = Assert.ThrowsAsync<InstanceNotFoundException>(async () => await _repository.GetByIdChecked(entityId));
         Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'BaseEntityWrapper' by id {entityId}"));
     }
@@ -134,7 +132,7 @@ public class RepositoryTests
     [Test]
     public void Delete_EntityExists_EntityRemoved()
     {
-        var entityId = 1;
+        var entityId = 2;
         var entity = new BaseEntityWrapper(entityId);
         _dbContext.Add(entity);
         _dbContext.SaveChanges();
@@ -142,7 +140,7 @@ public class RepositoryTests
         _repository.Delete(entity);
         _dbContext.SaveChanges();
 
-        var deletedEntity = _dbContext.Find<BaseEntityWrapper>(1);
+        var deletedEntity = _dbContext.Find<BaseEntityWrapper>(2);
         Assert.IsNull(deletedEntity);
     }
 
@@ -150,9 +148,6 @@ public class RepositoryTests
     public async Task DeleteByIdChecked_EntityExists_EntityRemoved()
     {
         var entityId = 1;
-        var entity = new BaseEntityWrapper(entityId);
-        _dbContext.Add(entity);
-        await _dbContext.SaveChangesAsync();
 
         await _repository.DeleteByIdChecked(entityId);
         await _dbContext.SaveChangesAsync();
@@ -164,7 +159,7 @@ public class RepositoryTests
     [Test]
     public void DeleteByIdChecked_EntityDoesNotExist_ThrowsInstanceNotFoundException()
     {
-        var entityId = 1;
+        var entityId = 0;
 
         var exception = Assert.ThrowsAsync<InstanceNotFoundException>(async () => await _repository.DeleteByIdChecked(entityId));
         Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'BaseEntityWrapper' by id {entityId}"));
