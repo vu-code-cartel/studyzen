@@ -11,7 +11,7 @@ public class ValidationHandler
     {
         _serviceProvider = serviceProvider;
     }
-    public async Task ValidateAsync<T>(T instance)
+    public virtual async Task ValidateAsync<T>(T instance)
     {
         var validator = _serviceProvider.GetService<IValidator<T>>();
         if (validator is null)
