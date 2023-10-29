@@ -20,6 +20,22 @@ public class CourseRepositoryTests
 
         _courseRepository = new CourseRepository(_dbContext);
 
+        AddTestData();
+    }
+
+    void AddTestData()
+    {
+        var course1 = new Course("Course1", "Description1");
+        var course2 = new Course("Course2", "Description2");
+        _dbContext.Courses.Add(course1);
+        _dbContext.Courses.Add(course2);
+        _dbContext.SaveChanges();
+
+        var lecture1 = new Lecture(course1.Id, "Lecture1", "Content1");
+        var lecture2 = new Lecture(course2.Id, "Lecture2", "Content2");
+        course1.Lectures.Add(lecture1);
+        course2.Lectures.Add(lecture2);
+        _dbContext.SaveChanges();
     }
 
     [TearDown]
@@ -31,31 +47,18 @@ public class CourseRepositoryTests
     [Test]
     public async Task GetLecturesByCourse_CourseExists_ReturnsLectures()
     {
-        var course = new Course("Course1", "Description1");
-        _dbContext.Courses.Add(course);
-        await _dbContext.SaveChangesAsync();
+        var courseId = 1;
 
-        var lecture1 = new Lecture(course.Id, "Lecture1", "Content1");
-        var lecture2 = new Lecture(course.Id, "Lecture2", "Content2");
-        course.Lectures.Add(lecture1);
-        course.Lectures.Add(lecture2);
-        await _dbContext.SaveChangesAsync();
-
-        var retrievedLectures = await _courseRepository.GetLecturesByCourse(course.Id);
+        var retrievedLectures = await _courseRepository.GetLecturesByCourse(courseId);
 
         Assert.IsNotNull(retrievedLectures);
-        Assert.That(retrievedLectures.Count, Is.EqualTo(2));
+        Assert.That(retrievedLectures.Count, Is.EqualTo(1));
 
         var retrievedLecture1 = retrievedLectures.FirstOrDefault(l => l.Id == 1);
-        var retrievedLecture2 = retrievedLectures.FirstOrDefault(l => l.Id == 2);
 
         Assert.IsNotNull(retrievedLecture1);
         Assert.That(retrievedLecture1.Name, Is.EqualTo("Lecture1"));
         Assert.That(retrievedLecture1.Content, Is.EqualTo("Content1"));
-
-        Assert.IsNotNull(retrievedLecture2);
-        Assert.That(retrievedLecture2.Name, Is.EqualTo("Lecture2"));
-        Assert.That(retrievedLecture2.Content, Is.EqualTo("Content2"));
     }
 
     [Test]
@@ -70,10 +73,6 @@ public class CourseRepositoryTests
     [Test]
     public async Task Get_WithoutParameters_ReturnsAllCourses()
     {
-        _dbContext.Courses.Add(new Course("Course1", "Description1"));
-        _dbContext.Courses.Add(new Course("Course2", "Description2"));
-        await _dbContext.SaveChangesAsync();
-
         var retrievedCourses = await _courseRepository.Get();
 
         Assert.That(retrievedCourses.Count, Is.EqualTo(2));
@@ -93,10 +92,6 @@ public class CourseRepositoryTests
     [Test]
     public async Task Get_WithFilter_ReturnsFilteredCourses()
     {
-        _dbContext.Courses.Add(new Course("Course1", "Description1"));
-        _dbContext.Courses.Add(new Course("Course2", "Description2"));
-        await _dbContext.SaveChangesAsync();
-
         var retrievedCourses = await _courseRepository.Get(c => c.Name == "Course1");
 
         Assert.That(retrievedCourses.Count, Is.EqualTo(1));
@@ -106,10 +101,6 @@ public class CourseRepositoryTests
     [Test]
     public async Task Get_WithOrdering_ReturnsOrderedCourses()
     {
-        _dbContext.Courses.Add(new Course("Course2", "Description2"));
-        _dbContext.Courses.Add(new Course("Course1", "Description1"));
-        await _dbContext.SaveChangesAsync();
-
         var courses = await _courseRepository.Get(orderBy: q => q.OrderBy(c => c.Name));
 
         Assert.That(courses.First().Name, Is.EqualTo("Course1"));
@@ -119,10 +110,6 @@ public class CourseRepositoryTests
     [Test]
     public async Task Get_WithSkipAndTake_ReturnsPaginatedCourses()
     {
-        _dbContext.Courses.Add(new Course("Course1", "Description1"));
-        _dbContext.Courses.Add(new Course("Course2", "Description2"));
-        await _dbContext.SaveChangesAsync();
-
         var courses = await _courseRepository.Get(skip: 1, take: 1);
 
         Assert.That(courses.Count, Is.EqualTo(1));
@@ -132,13 +119,9 @@ public class CourseRepositoryTests
     [Test]
     public async Task Get_WithIncludes_ReturnsCoursesWithRelatedData()
     {
-        var course = new Course("Course1", "Description1");
-        var lecture = new Lecture(course.Id, "Lecture1", "Content1");
-        course.Lectures.Add(lecture);
-        _dbContext.Courses.Add(course);
-        await _dbContext.SaveChangesAsync();
+        var courseId = 2;
 
-        var courses = await _courseRepository.Get(c => c.Id == course.Id, includes: c => c.Lectures);
+        var courses = await _courseRepository.Get(c => c.Id == courseId, includes: c => c.Lectures);
 
         Assert.That(courses.Count, Is.EqualTo(1));
 
@@ -146,8 +129,8 @@ public class CourseRepositoryTests
         Assert.That(retrievedCourse.Lectures.Count, Is.EqualTo(1));
 
         var retrievedLecture = retrievedCourse.Lectures.First();
-        Assert.That(retrievedLecture.Name, Is.EqualTo("Lecture1"));
-        Assert.That(retrievedLecture.Content, Is.EqualTo("Content1"));
+        Assert.That(retrievedLecture.Name, Is.EqualTo("Lecture2"));
+        Assert.That(retrievedLecture.Content, Is.EqualTo("Content2"));
     }
 
     [Test]

@@ -18,6 +18,17 @@ public class LectureRepositoryTests
         _dbContext = new ApplicationDbContext(options);
 
         _lectureRepository = new LectureRepository(_dbContext);
+
+        AddTestData();
+    }
+
+    public void AddTestData()
+    {
+        var course = new Course("Course1", "Description1");
+        _dbContext.Courses.Add(course);
+        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture1", "Content1"));
+        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture2", "Content2"));
+        _dbContext.SaveChanges();
     }
 
     [TearDown]
@@ -29,12 +40,6 @@ public class LectureRepositoryTests
     [Test]
     public async Task Get_WithoutParameters_ReturnsAllLectures()
     {
-        var course = new Course("Course1", "Description1");
-        _dbContext.Courses.Add(course);
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture1", "Content1"));
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture2", "Content2"));
-        await _dbContext.SaveChangesAsync();
-
         var retrievedLectures = await _lectureRepository.Get();
         var retrievedLecture1 = retrievedLectures.FirstOrDefault(l => l.Id == 1);
         var retrievedLecture2 = retrievedLectures.FirstOrDefault(l => l.Id == 2);
@@ -51,14 +56,8 @@ public class LectureRepositoryTests
     }
 
     [Test]
-    public async Task Get_WithOrdering_ReturnsFilteredLectures()
+    public async Task Get_WithFiltering_ReturnsFilteredLectures()
     {
-        var course = new Course("Course1", "Description1");
-        _dbContext.Courses.Add(course);
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture2", "Content2"));
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture1", "Content1"));
-        await _dbContext.SaveChangesAsync();
-
         var retrievedLectures = await _lectureRepository.Get(l => l.Name == "Lecture1");
 
         Assert.That(retrievedLectures.Count, Is.EqualTo(1));
@@ -68,12 +67,6 @@ public class LectureRepositoryTests
     [Test]
     public async Task Get_WithOrdering_ReturnsOrderedLectures()
     {
-        var course = new Course("Course1", "Description1");
-        _dbContext.Courses.Add(course);
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture2", "Content2"));
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture1", "Content1"));
-        await _dbContext.SaveChangesAsync();
-
         var retrievedLectures = await _lectureRepository.Get(orderBy: q => q.OrderBy(l => l.Name));
 
         Assert.That(retrievedLectures.First().Name, Is.EqualTo("Lecture1"));
@@ -83,12 +76,6 @@ public class LectureRepositoryTests
     [Test]
     public async Task Get_WithSkipAndTake_ReturnsPaginatedLectures()
     {
-        var course = new Course("Course1", "Description1");
-        _dbContext.Courses.Add(course);
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture1", "Content1"));
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture2", "Content2"));
-        await _dbContext.SaveChangesAsync();
-
         var retrievedLectures = await _lectureRepository.Get(skip: 1, take: 1);
 
         Assert.That(retrievedLectures.Count, Is.EqualTo(1));
@@ -98,11 +85,8 @@ public class LectureRepositoryTests
     [Test]
     public async Task GetLecture_IncludesFlashcardSets_FlashcardSetsAreLoaded()
     {
-        var course = new Course("Sample Course", "Course Description");
-        _dbContext.Courses.Add(course);
-        await _dbContext.SaveChangesAsync();
-
-        var lecture = new Lecture(course.Id, "Sample Lecture", "Lecture Content");
+        var courseId = 1;
+        var lecture = new Lecture(courseId, "Sample Lecture", "Lecture Content");
         var flashcardSet = new FlashcardSet(lecture.Id, "Name", StudyZen.Domain.Enums.Color.Default);
         lecture.FlashcardSets.Add(flashcardSet);
         _dbContext.Lectures.Add(lecture);
@@ -125,28 +109,22 @@ public class LectureRepositoryTests
     [Test]
     public async Task GetLecture_IncludesCourse_CourseIsLoaded()
     {
-        var course = new Course("Sample Course", "Course Description");
-        _dbContext.Courses.Add(course);
-        await _dbContext.SaveChangesAsync();
-
-        var lecture = new Lecture(course.Id, "Sample Lecture", "Lecture Content");
-        _dbContext.Lectures.Add(lecture);
-        await _dbContext.SaveChangesAsync();
-
-        var lectures = await _lectureRepository.Get(l => l.Id == lecture.Id, includes: l => l.Course);
+        var courseId = 1;
+        var lectureId = 1;
+        var lectures = await _lectureRepository.Get(l => l.Id == lectureId, includes: l => l.Course);
 
         Assert.That(lectures.Count, Is.EqualTo(1));
 
         var retrievedLecture = lectures.First();
 
         Assert.IsNotNull(retrievedLecture.Course);
-        Assert.That(retrievedLecture.Course.Id, Is.EqualTo(course.Id));
+        Assert.That(retrievedLecture.Course.Id, Is.EqualTo(courseId));
     }
 
     [Test]
     public void Update_LectureExists_LectureUpdated()
     {
-        var course = new Course("Course1", "Description1");
+        var course = new Course("Course", "Description");
         _dbContext.Courses.Add(course);
         var lecture = new Lecture(course.Id, "OldLecture", "OldContent");
         _dbContext.Lectures.Add(lecture);
