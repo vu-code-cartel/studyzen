@@ -36,8 +36,8 @@ public class RepositoryTests
     public void SetUp()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-    .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-    .Options;
+        .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+        .Options;
 
         _dbContext = new TestApplicationDbContext(options);
         _repository = new RepositoryWrapper(_dbContext);
@@ -127,7 +127,46 @@ public class RepositoryTests
     public void GetByIdChecked_EntityDoesNotExist_ThrowsInstanceNotFoundException()
     {
         var entityId = 1;
-        var ex = Assert.ThrowsAsync<InstanceNotFoundException>(async () => await _repository.GetByIdChecked(entityId));
-        Assert.That(ex.Message, Is.EqualTo($"Could not find an instance of 'BaseEntityWrapper' by id {entityId}")); // Checking if the ID appears in the exception message
+        var exception = Assert.ThrowsAsync<InstanceNotFoundException>(async () => await _repository.GetByIdChecked(entityId));
+        Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'BaseEntityWrapper' by id {entityId}"));
+    }
+
+    [Test]
+    public void Delete_EntityExists_EntityRemoved()
+    {
+        var entityId = 1;
+        var entity = new BaseEntityWrapper(entityId);
+        _dbContext.Add(entity);
+        _dbContext.SaveChanges();
+
+        _repository.Delete(entity);
+        _dbContext.SaveChanges();
+
+        var deletedEntity = _dbContext.Find<BaseEntityWrapper>(1);
+        Assert.IsNull(deletedEntity);
+    }
+
+    [Test]
+    public async Task DeleteByIdChecked_EntityExists_EntityRemoved()
+    {
+        var entityId = 1;
+        var entity = new BaseEntityWrapper(entityId);
+        _dbContext.Add(entity);
+        await _dbContext.SaveChangesAsync();
+
+        await _repository.DeleteByIdChecked(entityId);
+        await _dbContext.SaveChangesAsync();
+
+        var deletedEntity = await _dbContext.FindAsync<BaseEntityWrapper>(entityId);
+        Assert.IsNull(deletedEntity);
+    }
+
+    [Test]
+    public void DeleteByIdChecked_EntityDoesNotExist_ThrowsInstanceNotFoundException()
+    {
+        var entityId = 1;
+
+        var exception = Assert.ThrowsAsync<InstanceNotFoundException>(async () => await _repository.DeleteByIdChecked(entityId));
+        Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'BaseEntityWrapper' by id {entityId}"));
     }
 }
