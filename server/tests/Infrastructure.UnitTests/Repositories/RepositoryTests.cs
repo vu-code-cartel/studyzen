@@ -51,6 +51,8 @@ public class RepositoryTests
 
     public void AddTestData()
     {
+        testEntityId = 1;
+
         var entity = new BaseEntityWrapper(testEntityId);
 
         _repository.Add(entity);
