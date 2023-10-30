@@ -29,14 +29,20 @@ public class CourseRepositoryTests
     {
         var course1 = new Course("Course1", "Description1");
         var course2 = new Course("Course2", "Description2");
-        _dbContext.Courses.Add(course1);
-        _dbContext.Courses.Add(course2);
-        _dbContext.SaveChanges();
+        var courses = new List<Course>
+        {
+            course1, course2
+        };
+        _dbContext.Courses.AddRange(courses);
 
         var lecture1 = new Lecture(course1.Id, "Lecture1", "Content1");
         var lecture2 = new Lecture(course2.Id, "Lecture2", "Content2");
-        course1.Lectures.Add(lecture1);
-        course2.Lectures.Add(lecture2);
+        var lectures = new List<Lecture>
+        {
+            lecture1, lecture2
+        };
+        _dbContext.Lectures.AddRange(lectures);
+
         _dbContext.SaveChanges();
     }
 

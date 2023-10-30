@@ -29,10 +29,16 @@ public class FlashcardSetRepositoryTests
     {
         var course = new Course("Course1", "Description1");
         _dbContext.Courses.Add(course);
+
         var lecture = new Lecture(course.Id, "Lecture1", "Content1");
         _dbContext.Lectures.Add(lecture);
-        _dbContext.FlashcardSets.Add(new FlashcardSet(lecture.Id, "Name1", StudyZen.Domain.Enums.Color.Default));
-        _dbContext.FlashcardSets.Add(new FlashcardSet(null, "Name2", StudyZen.Domain.Enums.Color.Default));
+
+        var flashcardSets = new List<FlashcardSet>
+        {
+            new FlashcardSet(lecture.Id, "Name1", Domain.Enums.Color.Default),
+            new FlashcardSet(null, "Name2", Domain.Enums.Color.Default)
+        };
+        _dbContext.FlashcardSets.AddRange(flashcardSets);
 
         _dbContext.SaveChanges();
     }
@@ -55,11 +61,11 @@ public class FlashcardSetRepositoryTests
 
         Assert.IsNotNull(retrievedFlashcardSet1);
         Assert.That(retrievedFlashcardSet1.Name, Is.EqualTo("Name1"));
-        Assert.That(retrievedFlashcardSet1.Color, Is.EqualTo(StudyZen.Domain.Enums.Color.Default));
+        Assert.That(retrievedFlashcardSet1.Color, Is.EqualTo(Domain.Enums.Color.Default));
 
         Assert.IsNotNull(retrievedFlashcardSet2);
         Assert.That(retrievedFlashcardSet2.Name, Is.EqualTo("Name2"));
-        Assert.That(retrievedFlashcardSet2.Color, Is.EqualTo(StudyZen.Domain.Enums.Color.Default));
+        Assert.That(retrievedFlashcardSet2.Color, Is.EqualTo(Domain.Enums.Color.Default));
     }
 
     [Test]
@@ -92,7 +98,7 @@ public class FlashcardSetRepositoryTests
     [Test]
     public async Task GetFlashcardSets_IncludesFlashcards_FlashcardsAreLoaded()
     {
-        var flashcardSet = new FlashcardSet(null, "Name", StudyZen.Domain.Enums.Color.Default);
+        var flashcardSet = new FlashcardSet(null, "Name", Domain.Enums.Color.Default);
         var flashcard = new Flashcard(flashcardSet.Id, "Front", "Back");
         flashcardSet.Flashcards.Add(flashcard);
         _dbContext.FlashcardSets.Add(flashcardSet);
@@ -130,23 +136,23 @@ public class FlashcardSetRepositoryTests
     [Test]
     public void Update_FlashcardSetExists_FlashcardSetUpdated()
     {
-        var flashcardSet = new FlashcardSet(null, "OldName", StudyZen.Domain.Enums.Color.Default);
+        var flashcardSet = new FlashcardSet(null, "OldName", Domain.Enums.Color.Default);
         _dbContext.FlashcardSets.Add(flashcardSet);
         _dbContext.SaveChanges();
 
         flashcardSet.Name = "NewName";
-        flashcardSet.Color = StudyZen.Domain.Enums.Color.Red;
+        flashcardSet.Color = Domain.Enums.Color.Red;
         _flashcardSetRepository.Update(flashcardSet);
         _dbContext.SaveChanges();
 
         Assert.That(flashcardSet.Name, Is.EqualTo("NewName"));
-        Assert.That(flashcardSet.Color, Is.EqualTo(StudyZen.Domain.Enums.Color.Red));
+        Assert.That(flashcardSet.Color, Is.EqualTo(Domain.Enums.Color.Red));
     }
 
     [Test]
     public async Task GetFlashcardsBySet_ValidFlashcardSetId_ReturnsCorrectFlashcards()
     {
-        var flashcardSet = new FlashcardSet(null, "Name", StudyZen.Domain.Enums.Color.Default);
+        var flashcardSet = new FlashcardSet(null, "Name", Domain.Enums.Color.Default);
         var flashcard1 = new Flashcard(flashcardSet.Id, "Question1", "Answer1");
         var flashcard2 = new Flashcard(flashcardSet.Id, "Question2", "Answer2");
 
@@ -168,6 +174,4 @@ public class FlashcardSetRepositoryTests
             async () => await _flashcardSetRepository.GetFlashcardsBySet(flashcardSetId)
             );
     }
-
-
 }

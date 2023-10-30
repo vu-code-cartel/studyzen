@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using StudyZen.Application.Exceptions;
 using StudyZen.Domain.Entities;
 using StudyZen.Infrastructure.Persistence;
@@ -33,6 +34,7 @@ public class RepositoryTests
 
     private RepositoryWrapper _repository;
     private TestApplicationDbContext _dbContext;
+    int testEntityId;
 
     [SetUp]
     public void SetUp()
@@ -49,9 +51,7 @@ public class RepositoryTests
 
     public void AddTestData()
     {
-        var entityId = 1;
-
-        var entity = new BaseEntityWrapper(entityId);
+        var entity = new BaseEntityWrapper(testEntityId);
 
         _repository.Add(entity);
         _dbContext.SaveChanges();
@@ -66,9 +66,7 @@ public class RepositoryTests
     [Test]
     public void Add_EntityPassed_EntityAddedToDbSet()
     {
-        var entityId = 1;
-
-        var retrievedEntity = _dbContext.Set<BaseEntityWrapper>().Find(entityId);
+        var retrievedEntity = _dbContext.Set<BaseEntityWrapper>().Find(testEntityId);
         Assert.IsNotNull(retrievedEntity);
     }
 
@@ -95,12 +93,10 @@ public class RepositoryTests
     [Test]
     public async Task GetById_ValidId_ReturnsEntity()
     {
-        var entityId = 1;
-
-        var retrievedEntity = await _repository.GetById(entityId);
+        var retrievedEntity = await _repository.GetById(testEntityId);
 
         Assert.IsNotNull(retrievedEntity);
-        Assert.That(retrievedEntity.Id, Is.EqualTo(entityId));
+        Assert.That(retrievedEntity.Id, Is.EqualTo(testEntityId));
     }
 
     [Test]
@@ -116,11 +112,10 @@ public class RepositoryTests
     [Test]
     public async Task GetByIdChecked_EntityExists_ReturnsEntity()
     {
-        var entityId = 1;
-        var retrievedEntity = await _repository.GetByIdChecked(entityId);
+        var retrievedEntity = await _repository.GetByIdChecked(testEntityId);
 
         Assert.IsNotNull(retrievedEntity);
-        Assert.That(retrievedEntity.Id, Is.EqualTo(entityId));
+        Assert.That(retrievedEntity.Id, Is.EqualTo(testEntityId));
     }
 
     [Test]
@@ -149,12 +144,10 @@ public class RepositoryTests
     [Test]
     public async Task DeleteByIdChecked_EntityExists_EntityRemoved()
     {
-        var entityId = 1;
-
-        await _repository.DeleteByIdChecked(entityId);
+        await _repository.DeleteByIdChecked(testEntityId);
         await _dbContext.SaveChangesAsync();
 
-        var deletedEntity = await _dbContext.FindAsync<BaseEntityWrapper>(entityId);
+        var deletedEntity = await _dbContext.FindAsync<BaseEntityWrapper>(testEntityId);
         Assert.IsNull(deletedEntity);
     }
 

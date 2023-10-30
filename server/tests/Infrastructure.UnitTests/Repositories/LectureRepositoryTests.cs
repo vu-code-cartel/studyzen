@@ -28,8 +28,14 @@ public class LectureRepositoryTests
     {
         var course = new Course("Course1", "Description1");
         _dbContext.Courses.Add(course);
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture1", "Content1"));
-        _dbContext.Lectures.Add(new Lecture(course.Id, "Lecture2", "Content2"));
+
+        var lectures = new List<Lecture>
+        {
+            new Lecture(course.Id, "Lecture1", "Content1"),
+            new Lecture(course.Id, "Lecture2", "Content2")
+        };
+        _dbContext.Lectures.AddRange(lectures);
+
         _dbContext.SaveChanges();
     }
 

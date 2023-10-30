@@ -28,10 +28,14 @@ public class FlashcardRepositoryTests
     {
         var flashcardSet = new FlashcardSet(null, "Name", StudyZen.Domain.Enums.Color.Default);
         _dbContext.FlashcardSets.Add(flashcardSet);
-        _dbContext.SaveChanges();
 
-        _dbContext.Flashcards.Add(new Flashcard(flashcardSet.Id, "Front1", "Back1"));
-        _dbContext.Flashcards.Add(new Flashcard(flashcardSet.Id, "Front2", "Back2"));
+        var flashcards = new List<Flashcard>
+        {
+            new Flashcard(flashcardSet.Id, "Front1", "Back1"),
+            new Flashcard(flashcardSet.Id, "Front2", "Back2")
+        };
+        _dbContext.Flashcards.AddRange(flashcards);
+
         _dbContext.SaveChanges();
     }
 
