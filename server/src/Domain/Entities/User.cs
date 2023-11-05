@@ -4,12 +4,8 @@ using StudyZen.Domain.Constraints;
 
 namespace StudyZen.Domain.Entities;
 
-public class User
+public class User : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-
     [Required]
     [StringLength(UserConstraints.UserNameMaxLength)]
     public string Username { get; set; }
@@ -21,7 +17,7 @@ public class User
 
     public DateTime? RefreshTokenExpiryTime { get; set; }
 
-    public User(string username, string hashedPassword)
+    public User(string username, string hashedPassword) : base(default)
     {
         Username = username;
         HashedPassword = hashedPassword;
