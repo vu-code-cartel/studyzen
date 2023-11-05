@@ -8,15 +8,9 @@ public class ApplicationUser : IdentityUser
 {
     [Required]
     [StringLength(ApplicationUserConstraints.FirstNameMaxLength)]
-    public string FirstName { get; set; }
+    public string FirstName { get; set; } = null!;
 
     [Required]
     [StringLength(ApplicationUserConstraints.LastNameMaxLength)]
-    public string LastName { get; set; }
-
-    public ApplicationUser(string firstName, string lastName)
-    {
-        FirstName = firstName;
-        LastName = lastName;
-    }
+    public string LastName { get; set; } = null!;
 }
