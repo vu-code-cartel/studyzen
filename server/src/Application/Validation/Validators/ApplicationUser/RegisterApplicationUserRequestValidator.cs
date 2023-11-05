@@ -9,6 +9,8 @@ public class RegisterApplicationUserRequestValidator : AbstractValidator<Registe
 {
     public RegisterApplicationUserRequestValidator(UserManager<ApplicationUser> userManager)
     {
+        RuleFor(u => u.Username)
+            .Username();
         RuleFor(u => u.Email)
             .Email(userManager);
         RuleFor(u => u.FirstName)
