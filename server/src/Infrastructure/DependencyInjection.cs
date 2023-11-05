@@ -3,6 +3,8 @@ using StudyZen.Application.Repositories;
 using Microsoft.EntityFrameworkCore;
 using StudyZen.Infrastructure.Persistence;
 using Microsoft.Extensions.Configuration;
+using StudyZen.Application.Authentication;
+using StudyZen.Infrastructure.Authentication;
 
 namespace StudyZen.Infrastructure;
 
@@ -17,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IFlashcardRepository, FlashcardRepository>();
         services.AddScoped<IFlashcardSetRepository, FlashcardSetRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
 
         return services;
     }
