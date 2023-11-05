@@ -9,6 +9,13 @@ namespace StudyZen.Application.Validation;
 
 public static class ApplicationUserValidationExtensions
 {
+    public static IRuleBuilderOptions<T, string?> Username<T>(this IRuleBuilder<T, string?> ruleBuilder)
+    {
+        return ruleBuilder
+            .MustNotBeNullOrWhitespace()
+            .LengthMustNotExceed(ApplicationUserConstraints.UsernameMaxLength);
+    }
+
     public static IRuleBuilderOptions<T, string?> Email<T>(this IRuleBuilder<T, string?> ruleBuilder, UserManager<ApplicationUser> userManager)
     {
         return ruleBuilder

@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace StudyZen.Application.Exceptions;
 
 public sealed class UserAlreadyExistsException : Exception
