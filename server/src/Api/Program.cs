@@ -1,4 +1,5 @@
 using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 using StudyZen.Api;
 using StudyZen.Application;
@@ -35,5 +36,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var roles = new[] { "Lecturer", "Student" };
+    await SeedData.SeedRoles(roleManager, roles);
+}
 
 app.Run();
