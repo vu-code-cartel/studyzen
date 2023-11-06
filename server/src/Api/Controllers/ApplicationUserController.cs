@@ -6,6 +6,8 @@ using StudyZen.Application.Services;
 namespace StudyZen.Api.Controllers;
 
 [ApiController]
+[Route("[controller]")]
+
 public sealed class ApplicationUserController : ControllerBase
 {
     private readonly IApplicationUserService _applicationUserService;
