@@ -8,11 +8,11 @@ namespace StudyZen.Api.Controllers;
 [ApiController]
 [Route("[controller]")]
 
-public sealed class ApplicationUserController : ControllerBase
+public sealed class AccountController : ControllerBase
 {
     private readonly IApplicationUserService _applicationUserService;
 
-    public ApplicationUserController(IApplicationUserService applicationUserService)
+    public AccountController(IApplicationUserService applicationUserService)
     {
         _applicationUserService = applicationUserService;
     }
