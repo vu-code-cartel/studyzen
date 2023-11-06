@@ -7,19 +7,20 @@ namespace StudyZen.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
-    {
-        services.AddScoped<ICourseService, CourseService>();
-        services.AddScoped<ILectureService, LectureService>();
-        services.AddScoped<IFlashcardService, FlashcardService>();
-        services.AddScoped<IFlashcardSetService, FlashcardSetService>();
-        services.AddScoped<IApplicationUserService, ApplicationUserService>();
-        services.AddScoped<IDataImporter, CsvDataImporter>();
-        services.AddScoped<IFlashcardImporter, FlashcardImporter>();
-        services.AddScoped<ValidationHandler>();
+        public static IServiceCollection AddApplication(this IServiceCollection services)
+        {
+                services.AddScoped<ICourseService, CourseService>();
+                services.AddScoped<ILectureService, LectureService>();
+                services.AddScoped<IFlashcardService, FlashcardService>();
+                services.AddScoped<IFlashcardSetService, FlashcardSetService>();
+                services.AddScoped<IQuizService, QuizService>();
+                services.AddScoped<IApplicationUserService, ApplicationUserService>();
+                services.AddScoped<IDataImporter, CsvDataImporter>();
+                services.AddScoped<IFlashcardImporter, FlashcardImporter>();
+                services.AddScoped<ValidationHandler>();
 
-        services.AddValidatorsFromAssemblyContaining<CreateLectureRequestValidator>();
+                services.AddValidatorsFromAssemblyContaining<CreateLectureRequestValidator>();
 
-        return services;
-    }
+                return services;
+        }
 }

@@ -1,4 +1,6 @@
-﻿namespace StudyZen.Application.Repositories;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace StudyZen.Application.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
@@ -6,5 +8,9 @@ public interface IUnitOfWork : IDisposable
     ILectureRepository Lectures { get; }
     IFlashcardSetRepository FlashcardSets { get; }
     IFlashcardRepository Flashcards { get; }
+    IQuizRepository Quizzes { get; }
+    IQuizQuestionRepository QuizQuestions { get; }
+    IQuizAnswerRepository QuizAnswers { get; }
     Task<int> SaveChanges();
+    IDbContextTransaction BeginTransaction();
 }

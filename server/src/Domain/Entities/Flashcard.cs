@@ -22,7 +22,7 @@ public sealed class Flashcard : BaseEntity
     [StringLength(FlashcardConstraints.BackMaxLength)]
     public string Back { get; set; }
 
-    public Flashcard(int flashcardSetId, string front, string back) : base(default)
+    public Flashcard(int flashcardSetId, string front, string back)
     {
         FlashcardSetId = flashcardSetId;
         Front = front;

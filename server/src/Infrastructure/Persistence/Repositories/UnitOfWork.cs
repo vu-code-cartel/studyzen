@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using StudyZen.Application.Repositories;
 
 namespace StudyZen.Infrastructure.Persistence;
@@ -12,6 +13,9 @@ public sealed class UnitOfWork : IUnitOfWork
     public ILectureRepository Lectures { get; }
     public IFlashcardSetRepository FlashcardSets { get; }
     public IFlashcardRepository Flashcards { get; }
+    public IQuizRepository Quizzes { get; }
+    public IQuizQuestionRepository QuizQuestions { get; }
+    public IQuizAnswerRepository QuizAnswers { get; }
 
     // TODO: change these to save changes interceptors after lab 2
     // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/interceptors
@@ -23,7 +27,10 @@ public sealed class UnitOfWork : IUnitOfWork
         ICourseRepository courses,
         ILectureRepository lectures,
         IFlashcardSetRepository flashcardSets,
-        IFlashcardRepository flashcards)
+        IFlashcardRepository flashcards,
+        IQuizRepository quizzes,
+        IQuizQuestionRepository quizQuestions, 
+        IQuizAnswerRepository quizAnswers)
     {
         _dbContext = dbContext;
 
@@ -31,6 +38,9 @@ public sealed class UnitOfWork : IUnitOfWork
         Lectures = lectures;
         FlashcardSets = flashcardSets;
         Flashcards = flashcards;
+        Quizzes = quizzes;
+        QuizQuestions = quizQuestions;
+        QuizAnswers = quizAnswers;
 
         OnInstanceAdded += AuditableEntityInterceptor.SetCreateStamp;
         OnInstanceUpdated += AuditableEntityInterceptor.SetUpdateStamp;
@@ -54,6 +64,8 @@ public sealed class UnitOfWork : IUnitOfWork
 
         return await _dbContext.SaveChangesAsync();
     }
+
+    public IDbContextTransaction BeginTransaction() => _dbContext.Database.BeginTransaction();
 
     public void Dispose()
     {
