@@ -16,7 +16,7 @@ public static class DependencyInjection
     {
         var jwtKey = configuration["Jwt:Key"];
 
-        if (string.IsNullOrEmpty(jwtKey))
+        if (string.IsNullOrWhiteSpace(jwtKey))
         {
             throw new InvalidOperationException("The JWT signing key must be configured.");
         }
