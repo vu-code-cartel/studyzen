@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddScoped<ILectureService, LectureService>();
         services.AddScoped<IFlashcardService, FlashcardService>();
         services.AddScoped<IFlashcardSetService, FlashcardSetService>();
+        services.AddScoped<IQuizService, QuizService>();
         services.AddScoped<IDataImporter, CsvDataImporter>();
         services.AddScoped<IFlashcardImporter, FlashcardImporter>();
         services.AddScoped<ValidationHandler>();

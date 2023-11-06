@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StudyZen.Domain.Entities;
 
-public sealed class FlashcardSet : BaseEntity
+public sealed class FlashcardSet : AuditableEntity
 {
     public int? LectureId { get; set; }
 
@@ -21,7 +21,7 @@ public sealed class FlashcardSet : BaseEntity
 
     public List<Flashcard> Flashcards { get; set; } = new();
 
-    public FlashcardSet(int? lectureId, string name, Color color) : base(default)
+    public FlashcardSet(int? lectureId, string name, Color color)
     {
         LectureId = lectureId;
         Name = name;
