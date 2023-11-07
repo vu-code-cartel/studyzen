@@ -40,6 +40,7 @@ public static class DependencyInjection
                 options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest);
                 options.MapValidationException();
                 options.MapToStatusCode<InstanceNotFoundException>(StatusCodes.Status422UnprocessableEntity);
+                options.MapToStatusCode<UserAlreadyExistsException>(StatusCodes.Status422UnprocessableEntity);
             })
             .AddControllers()
             .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)

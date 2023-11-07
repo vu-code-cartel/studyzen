@@ -10,4 +10,5 @@ public static class ValidationErrorCodes
     public const string TooLarge = "TooLarge";
     public const string InvalidFileFormat = "InvalidFileFormat";
     public const string IncorrectArgumentCount = "IncorrectArgumentCount";
+    public const string UserAlreadyExists = "UserAlreadyExists";
 }

@@ -20,12 +20,8 @@ public class BaseEntityTests
     {
         var entity = new BaseEntityWrapper(id)
         {
-            CreatedBy = createdBy,
-            UpdatedBy = updatedBy
         };
 
         entity.Id.Should().Be(id);
-        entity.CreatedBy.Should().Be(createdBy);
-        entity.UpdatedBy.Should().Be(updatedBy);
     }
 }
