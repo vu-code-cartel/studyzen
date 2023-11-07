@@ -1,4 +1,5 @@
 using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 using StudyZen.Api;
 using StudyZen.Application;
@@ -31,8 +32,23 @@ app.UseHttpsRedirection();
 
 app.UseCors();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var roles = new[] { "Lecturer", "Student" };
+    foreach (var role in roles)
+    {
+        var roleExist = await roleManager.RoleExistsAsync(role);
+        if (!roleExist)
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+}
 
 app.Run();
