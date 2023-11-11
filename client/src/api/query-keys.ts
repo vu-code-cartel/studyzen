@@ -7,4 +7,8 @@ export class QueryKeys {
   public static readonly GetFlashcardSets = 'getFlashcardSets';
   public static readonly GetFlashcard = 'getFlashcard';
   public static readonly GetFlashcards = 'getFlashcards';
+  public static readonly GetQuiz = 'getQuiz';
+  public static readonly GetQuizzes = 'getQuizzes';
+  public static readonly GetQuizQuestions = 'getQuizQuestions';
+  public static readonly GetQuizGame = 'getQuizGame';
 }

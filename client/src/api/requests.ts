@@ -47,3 +47,13 @@ export type UpdateFlashcardDto = {
   front?: string;
   back?: string;
 };
+
+export type JoinQuizGameDto = {
+  gamePin: string;
+  username: string;
+  connectionId: string;
+};
+
+export type CreateQuizDto = {
+  title: string;
+};

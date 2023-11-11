@@ -1,4 +1,5 @@
 import { UserActionStamp } from '../api/dtos';
+import * as signalR from '@microsoft/signalr';
 
 export const getIdFromSlug = (idWithSlug?: string) => {
   if (!idWithSlug) {
@@ -18,3 +19,9 @@ export const formatUserActionStamp = (stamp: UserActionStamp): UserActionStamp =
   ...stamp,
   timestamp: new Date(`${stamp.timestamp}`),
 });
+
+export const buildHubConnection = (hubUrl: string): signalR.HubConnection =>
+  new signalR.HubConnectionBuilder()
+    .withUrl(hubUrl, { withCredentials: false, skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets })
+    .withAutomaticReconnect()
+    .build();

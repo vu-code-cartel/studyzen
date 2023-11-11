@@ -63,6 +63,8 @@ public static class DependencyInjection
         services.AddScoped<IQuizAnswerRepository, QuizAnswerRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        services.AddSingleton<IQuizGameRepository, QuizGameRepository>();
+
         return services;
     }
 }
