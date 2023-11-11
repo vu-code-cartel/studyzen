@@ -1,10 +1,31 @@
-﻿using StudyZen.Domain.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using StudyZen.Domain.Interfaces;
 using StudyZen.Domain.ValueObjects;
 
 namespace StudyZen.Infrastructure.Persistence;
 
-public static class AuditableEntityInterceptor
+public class AuditableEntityInterceptor: SaveChangesInterceptor
 {
+    public override InterceptionResult<int> SavingChanges( DbContextEventData eventData, InterceptionResult<int> result)
+    {
+        var entries = eventData.Context.ChangeTracker.Entries();
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                SetCreateStamp(entry.Entity);
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                SetUpdateStamp(entry.Entity);
+            }
+        }
+
+        return result;
+    }
+    
     public static void SetCreateStamp(object instance)
     {
         if (instance is IAuditable auditable)
