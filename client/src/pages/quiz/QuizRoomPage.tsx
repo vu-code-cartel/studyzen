@@ -2,7 +2,7 @@ import { PageContainer } from '../../components/PageContainer';
 import { useParams } from 'react-router-dom';
 import { QUIZ_GAME_HUB_URL, QuizGameHubMethods, useGetQuizGame } from '../../hooks/api/quizGamesApi';
 import { CenteredLoader } from '../../components/CenteredLoader';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { QuizGameQuestionDto, QuizGameState, QuizPlayerDto } from '../../api/dtos';
 import * as signalR from '@microsoft/signalr';
 import { JoinQuizGameModal } from '../../components/quiz/JoinQuizGameModal';
@@ -14,40 +14,23 @@ import { buildHubConnection } from '../../common/utils';
 export const QuizRoomPage = () => {
   const { gamePin } = useParams();
   const { t } = useTranslation();
-  const connection = useRef<signalR.HubConnection | null>(null);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
   const [players, setPlayers] = useState<QuizPlayerDto[]>([]);
   const [question, setQuestion] = useState<QuizGameQuestionDto | null>(null);
-  const { data: game, isLoading: isGameLoading, isError } = useGetQuizGame(gamePin ?? null);
-
-  const stopConnection = async () => {
-    if (connection.current?.state === signalR.HubConnectionState.Connected) {
-      await connection.current.stop();
-    }
-  };
+  const [errorScreen, setErrorScreen] = useState<React.ReactNode | null>(null);
+  const { data: game, isLoading: isGameLoading, isError: isGameLoadError } = useGetQuizGame(gamePin ?? null);
 
   useEffect(() => {
-    const initializeConnection = async () => {
-      await connection.current?.start();
-      setIsConnected(true);
-    };
-
-    if (!connection.current) {
-      connection.current = buildHubConnection(QUIZ_GAME_HUB_URL);
-      initializeConnection();
-    }
-
-    return () => {
-      if (connection.current) {
-        stopConnection();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isConnected || !connection.current || !game) {
+    if (!game) {
       return;
     }
+
+    if (game.state !== QuizGameState.NotStarted) {
+      setErrorScreen(<div>game has already started</div>);
+      return;
+    }
+
+    const hubConnection = buildHubConnection(QUIZ_GAME_HUB_URL);
 
     const onPlayerJoin = (newPlayer: QuizPlayerDto) => {
       setPlayers((prev) => {
@@ -61,6 +44,7 @@ export const QuizRoomPage = () => {
     };
 
     const onPlayerLeave = (player: QuizPlayerDto) => {
+      console.log(player);
       setPlayers((prev) => prev.filter((p) => p.username !== player.username));
     };
 
@@ -68,36 +52,48 @@ export const QuizRoomPage = () => {
       setQuestion(question);
     };
 
-    const initialize = async (connection: signalR.HubConnection) => {
-      connection.on(QuizGameHubMethods.OnPlayerJoin, onPlayerJoin);
-      connection.on(QuizGameHubMethods.OnPlayerLeave, onPlayerLeave);
-      connection.on(QuizGameHubMethods.OnQuestionReceive, onQuestionReceive);
+    const initialize = async () => {
+      await hubConnection.start();
 
-      await connection.invoke(QuizGameHubMethods.ConnectToGame, game.pin);
+      hubConnection.on(QuizGameHubMethods.OnPlayerJoin, onPlayerJoin);
+      hubConnection.on(QuizGameHubMethods.OnPlayerLeave, onPlayerLeave);
+      hubConnection.on(QuizGameHubMethods.OnQuestionReceive, onQuestionReceive);
 
-      const players = await connection.invoke<QuizPlayerDto[]>(QuizGameHubMethods.GetPlayers, game.pin);
+      await hubConnection.invoke(QuizGameHubMethods.ConnectToGame, game.pin);
+
+      const players = await hubConnection.invoke<QuizPlayerDto[]>(QuizGameHubMethods.GetPlayers, game.pin);
       setPlayers(players);
+
+      setConnection(hubConnection);
     };
 
-    if (game.state === QuizGameState.NotStarted) {
-      initialize(connection.current);
-    } else {
-      stopConnection();
-      alert('quiz already started');
-      // TODO: show disconnected and disconnect
-    }
-  }, [isConnected, connection, game]);
+    const uninitialize = async () => {
+      if (hubConnection.state === signalR.HubConnectionState.Connected) {
+        await hubConnection.stop();
+      }
+    };
+
+    initialize();
+
+    return () => {
+      uninitialize();
+    };
+  }, [game]);
 
   return (
     <PageContainer>
-      {isError ? (
+      {isGameLoadError ? (
         <NotFound />
-      ) : isGameLoading || !game || !isConnected ? (
-        <CenteredLoader text={t('QuizGame.Title.Connecting')} />
+      ) : errorScreen ? (
+        errorScreen
       ) : (
         <>
-          <JoinQuizGameModal gamePin={game.pin} connectionId={connection.current!.connectionId!} />
-          <QuizWaitingRoom game={game} players={players} />
+          <JoinQuizGameModal gamePin={game?.pin} connectionId={connection ? connection.connectionId! : undefined} />
+          {isGameLoading || !game || !connection ? (
+            <CenteredLoader text={t('QuizGame.Title.Connecting')} />
+          ) : (
+            <QuizWaitingRoom game={game} players={players} />
+          )}
           {question && question.question}
         </>
       )}

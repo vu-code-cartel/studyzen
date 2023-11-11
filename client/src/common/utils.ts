@@ -21,7 +21,4 @@ export const formatUserActionStamp = (stamp: UserActionStamp): UserActionStamp =
 });
 
 export const buildHubConnection = (hubUrl: string): signalR.HubConnection =>
-  new signalR.HubConnectionBuilder()
-    .withUrl(hubUrl, { withCredentials: false, skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets })
-    .withAutomaticReconnect()
-    .build();
+  new signalR.HubConnectionBuilder().withUrl(hubUrl, { withCredentials: false }).withAutomaticReconnect().build();

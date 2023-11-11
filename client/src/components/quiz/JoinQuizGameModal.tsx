@@ -7,8 +7,8 @@ import { useQuizJoinGame } from '../../hooks/api/quizGamesApi';
 import { useButtonVariant } from '../../hooks/useButtonVariant';
 
 interface JoinQuizGameModalProps {
-  gamePin: string;
-  connectionId: string;
+  gamePin?: string;
+  connectionId?: string;
 }
 
 export const JoinQuizGameModal = (props: JoinQuizGameModalProps) => {
@@ -28,6 +28,10 @@ export const JoinQuizGameModal = (props: JoinQuizGameModalProps) => {
   const joinGame = useQuizJoinGame();
 
   const onJoinGameClick = async (values: JoinQuizGameDto) => {
+    if (!props.gamePin || !props.connectionId) {
+      return;
+    }
+
     const dto: JoinQuizGameDto = {
       gamePin: props.gamePin,
       username: values.username,
@@ -51,7 +55,11 @@ export const JoinQuizGameModal = (props: JoinQuizGameModalProps) => {
             data-autofocus
             {...form.getInputProps('username')}
           />
-          <Button variant={buttonVariant} type='submit' loading={joinGame.isLoading}>
+          <Button
+            variant={buttonVariant}
+            type='submit'
+            loading={joinGame.isLoading || !props.connectionId || !props.gamePin}
+          >
             {t('QuizGame.Button.Join')}
           </Button>
         </Stack>
