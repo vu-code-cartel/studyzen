@@ -21,7 +21,11 @@ public static class DependencyInjection
             throw new InvalidOperationException("The JWT signing key must be configured.");
         }
 
-        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                options.AddInterceptors(new AuditableEntityInterceptor()); // Add interceptor here
+            });    
 
         services.AddIdentityCore<ApplicationUser>(options =>
             {

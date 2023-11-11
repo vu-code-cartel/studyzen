@@ -25,11 +25,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         base.OnModelCreating(modelBuilder);
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.AddInterceptors(new AuditableEntityInterceptor());
-        
-        base.OnConfiguring(optionsBuilder);
-    }
+    
 }
