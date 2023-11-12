@@ -1,24 +1,25 @@
-﻿using StudyZen.Domain.Interfaces;
+﻿using StudyZen.Application.Services;
+using StudyZen.Domain.Interfaces;
 using StudyZen.Domain.ValueObjects;
 
 namespace StudyZen.Infrastructure.Persistence;
 
 public static class AuditableEntityInterceptor
 {
-    public static void SetCreateStamp(object instance)
+    public static void SetCreateStamp(object instance, IUserContextService userContextService)
     {
         if (instance is IAuditable auditable)
         {
-            auditable.CreatedBy = new UserActionStamp(Environment.UserName, DateTime.UtcNow);
+            auditable.CreatedBy = new UserActionStamp(userContextService.ApplicationUserId!, DateTime.UtcNow);
             auditable.UpdatedBy = auditable.CreatedBy with { }; // shallow copy
         }
     }
 
-    public static void SetUpdateStamp(object instance)
+    public static void SetUpdateStamp(object instance, IUserContextService userContextService)
     {
         if (instance is IAuditable auditable)
         {
-            auditable.UpdatedBy = new UserActionStamp(Environment.UserName, DateTime.UtcNow);
+            auditable.UpdatedBy = new UserActionStamp(userContextService.ApplicationUserId!, DateTime.UtcNow);
         }
     }
 }
