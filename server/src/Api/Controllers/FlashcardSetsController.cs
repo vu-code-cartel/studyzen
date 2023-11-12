@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
 using StudyZen.Application.Dtos;
@@ -10,16 +12,20 @@ namespace StudyZen.Api.Controllers;
 public sealed class FlashcardSetsController : ControllerBase
 {
     private readonly IFlashcardSetService _flashcardSetService;
+    private readonly IUserContextService _userContextService;
 
-    public FlashcardSetsController(IFlashcardSetService flashcardSetService)
+    public FlashcardSetsController(IFlashcardSetService flashcardSetService, IUserContextService userContextService)
     {
         _flashcardSetService = flashcardSetService;
+        _userContextService = userContextService;
     }
 
     [HttpPost]
+    [Authorize(Roles = "Lecturer, Student")]
     public async Task<IActionResult> CreateFlashcardSet([FromBody] CreateFlashcardSetDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
+        _userContextService.ApplicationUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var createdFlashcardSet = await _flashcardSetService.CreateFlashcardSet(request);
         return CreatedAtAction(nameof(GetFlashcardSet), new { flashcardSetId = createdFlashcardSet.Id }, createdFlashcardSet);
     }
@@ -39,14 +45,17 @@ public sealed class FlashcardSetsController : ControllerBase
     }
 
     [HttpPatch("{flashcardSetId}")]
+    [Authorize(Roles = "Lecturer, Student")]
     public async Task<IActionResult> UpdateFlashcardSetById(int flashcardSetId, [FromBody] UpdateFlashcardSetDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
+        _userContextService.ApplicationUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _flashcardSetService.UpdateFlashcardSet(flashcardSetId, request);
         return Ok();
     }
 
     [HttpDelete("{flashcardSetId}")]
+    [Authorize(Roles = "Lecturer, Student")]
     public async Task<IActionResult> DeleteFlashcardSet(int flashcardSetId)
     {
         await _flashcardSetService.DeleteFlashcardSet(flashcardSetId);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
 using StudyZen.Application.Dtos;
@@ -11,7 +12,6 @@ public sealed class FlashcardsController : ControllerBase
 {
     private readonly IFlashcardService _flashcardService;
     private readonly IFlashcardImporter _flashcardImporter;
-
     public FlashcardsController(IFlashcardService flashcardService, IFlashcardImporter flashcardImporter)
     {
         _flashcardService = flashcardService;
@@ -19,6 +19,7 @@ public sealed class FlashcardsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Lecturer, Student")]
     public async Task<IActionResult> CreateFlashcard([FromBody] CreateFlashcardDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
@@ -27,6 +28,7 @@ public sealed class FlashcardsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Lecturer, Student")]
     [Route("csv")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> CreateFlashcardsFromCsv(IFormFile file, int flashcardSetId)
@@ -58,6 +60,7 @@ public sealed class FlashcardsController : ControllerBase
     }
 
     [HttpPatch]
+    [Authorize(Roles = "Lecturer, Student")]
     [Route("{flashcardId}")]
     public async Task<IActionResult> UpdateFlashcardById(int flashcardId, [FromBody] UpdateFlashcardDto request)
     {
@@ -67,6 +70,7 @@ public sealed class FlashcardsController : ControllerBase
     }
 
     [HttpDelete("{flashcardId}")]
+    [Authorize(Roles = "Lecturer, Student")]
     public async Task<IActionResult> DeleteFlashcard(int flashcardId)
     {
         await _flashcardService.DeleteFlashcard(flashcardId);
