@@ -98,7 +98,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
         DbSet.Remove(instance);
     }
 
-    public async Task DeleteByIdChecked(int instanceId)
+    public virtual async Task DeleteByIdChecked(int instanceId)
     {
         var instance = await GetByIdChecked(instanceId);
         Delete(instance);
