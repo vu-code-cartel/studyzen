@@ -1,4 +1,5 @@
 using StudyZen.Application.Dtos;
+using StudyZen.Application.Exceptions;
 using StudyZen.Application.Repositories;
 using StudyZen.Application.Validation;
 using StudyZen.Domain.Entities;
@@ -16,11 +17,18 @@ public sealed class LectureService : ILectureService
         _validationHandler = validationHandler;
     }
 
-    public async Task<LectureDto> CreateLecture(CreateLectureDto dto)
+    public async Task<LectureDto> CreateLecture(CreateLectureDto dto, string applicationUserId)
     {
         await _validationHandler.ValidateAsync(dto);
 
         var newLecture = new Lecture(dto.CourseId, dto.Name, dto.Content);
+
+        var course = await _unitOfWork.Courses.GetByIdChecked(newLecture.CourseId);
+
+        if (!course.CreatedBy.User.Equals(applicationUserId))
+        {
+            throw new AccessDeniedException();
+        }
 
         _unitOfWork.Lectures.Add(newLecture);
         await _unitOfWork.SaveChanges();
@@ -40,11 +48,16 @@ public sealed class LectureService : ILectureService
         return lectures.Select(l => new LectureDto(l)).ToList();
     }
 
-    public async Task UpdateLecture(int lectureId, UpdateLectureDto dto)
+    public async Task UpdateLecture(int lectureId, UpdateLectureDto dto, string applicationUserId)
     {
         await _validationHandler.ValidateAsync(dto);
 
         var lecture = await _unitOfWork.Lectures.GetByIdChecked(lectureId);
+
+        if (!lecture.CreatedBy.User.Equals(applicationUserId))
+        {
+            throw new AccessDeniedException();
+        }
 
         lecture.Name = dto.Name ?? lecture.Name;
         lecture.Content = dto.Content ?? lecture.Content;
@@ -52,9 +65,9 @@ public sealed class LectureService : ILectureService
         await _unitOfWork.SaveChanges();
     }
 
-    public async Task DeleteLecture(int lectureId)
+    public async Task DeleteLecture(int lectureId, string applicationUserId)
     {
-        await _unitOfWork.Lectures.DeleteByIdChecked(lectureId);
+        await _unitOfWork.Lectures.DeleteByIdChecked(lectureId, applicationUserId);
         await _unitOfWork.SaveChanges();
     }
 }
