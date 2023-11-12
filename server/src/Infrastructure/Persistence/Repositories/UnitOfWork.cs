@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using StudyZen.Application.Repositories;
+using StudyZen.Application.Services;
 
 namespace StudyZen.Infrastructure.Persistence;
 
@@ -9,6 +10,8 @@ public sealed class UnitOfWork : IUnitOfWork
     private readonly ApplicationDbContext _dbContext;
     private bool _disposed;
 
+    private readonly IUserContextService _userContextService;
+
     public ICourseRepository Courses { get; }
     public ILectureRepository Lectures { get; }
     public IFlashcardSetRepository FlashcardSets { get; }
@@ -16,6 +19,7 @@ public sealed class UnitOfWork : IUnitOfWork
     public IQuizRepository Quizzes { get; }
     public IQuizQuestionRepository QuizQuestions { get; }
     public IQuizAnswerRepository QuizAnswers { get; }
+    public IRefreshTokenRepository RefreshTokens { get; }
 
     // TODO: change these to save changes interceptors after lab 2
     // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/interceptors
@@ -24,15 +28,19 @@ public sealed class UnitOfWork : IUnitOfWork
 
     public UnitOfWork(
         ApplicationDbContext dbContext,
+        IUserContextService userContextService,
         ICourseRepository courses,
         ILectureRepository lectures,
         IFlashcardSetRepository flashcardSets,
         IFlashcardRepository flashcards,
         IQuizRepository quizzes,
-        IQuizQuestionRepository quizQuestions, 
-        IQuizAnswerRepository quizAnswers)
+        IQuizQuestionRepository quizQuestions,
+        IQuizAnswerRepository quizAnswers,
+        IRefreshTokenRepository refreshTokens)
     {
         _dbContext = dbContext;
+
+        _userContextService = userContextService;
 
         Courses = courses;
         Lectures = lectures;
@@ -41,9 +49,10 @@ public sealed class UnitOfWork : IUnitOfWork
         Quizzes = quizzes;
         QuizQuestions = quizQuestions;
         QuizAnswers = quizAnswers;
+        RefreshTokens = refreshTokens;
 
-        OnInstanceAdded += AuditableEntityInterceptor.SetCreateStamp;
-        OnInstanceUpdated += AuditableEntityInterceptor.SetUpdateStamp;
+        OnInstanceAdded += (instance) => AuditableEntityInterceptor.SetCreateStamp(instance, userContextService);
+        OnInstanceUpdated += (instance) => AuditableEntityInterceptor.SetUpdateStamp(instance, userContextService);
     }
 
     public async Task<int> SaveChanges()
