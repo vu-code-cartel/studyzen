@@ -1,5 +1,4 @@
 using System.Security.Authentication;
-using Azure;
 using Microsoft.AspNetCore.Identity;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Validation;
