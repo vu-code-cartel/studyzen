@@ -7,6 +7,7 @@ namespace StudyZen.Infrastructure.Persistence;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
+    private static readonly AuditableEntityInterceptor _interceptor = new AuditableEntityInterceptor();
     public DbSet<Lecture> Lectures { get; set; } = null!;
     public DbSet<Course> Courses { get; set; } = null!;
     public DbSet<Flashcard> Flashcards { get; set; } = null!;
@@ -24,4 +25,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         base.OnModelCreating(modelBuilder);
     }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.AddInterceptors(_interceptor);
 }

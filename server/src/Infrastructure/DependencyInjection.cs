@@ -22,8 +22,7 @@ public static class DependencyInjection
         }
 
         services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
-        .AddInterceptors(new AuditableEntityInterceptor()));
+        options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddIdentityCore<ApplicationUser>(options =>
             {
