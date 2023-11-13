@@ -44,11 +44,14 @@ public static class DependencyInjection
                 options.MapToStatusCode<UserAlreadyExistsException>(StatusCodes.Status422UnprocessableEntity);
                 options.MapToStatusCode<AuthenticationException>(StatusCodes.Status401Unauthorized);
                 options.MapToStatusCode<AccessDeniedException>(StatusCodes.Status403Forbidden);
+                options.MapIdentifiableException();
             })
             .AddControllers()
             .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)
             .AddProblemDetailsConventions()
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+        services.AddSignalR();
 
         ProblemDetailsExtensions.AddProblemDetails(services);
 

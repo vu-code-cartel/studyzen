@@ -17,11 +17,7 @@ public sealed class QuizQuestion : BaseEntity
     [ForeignKey(nameof(QuizId))]
     public Quiz Quiz { get; set; } = null!;
 
-    public int? CorrectAnswerId { get; set; }
-
-    public QuizAnswer? CorrectAnswer { get; set; } = null!;
-
-    public List<QuizAnswer> PossibleAnswers { get; set; } = new();
+    public List<QuizAnswer> Choices { get; set; } = new();
 
     [Required]
     public TimeSpan TimeLimit { get; set; }

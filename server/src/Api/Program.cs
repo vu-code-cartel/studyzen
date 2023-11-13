@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Serilog;
 using StudyZen.Api;
 using StudyZen.Application;
+using StudyZen.Application.Services;
 using StudyZen.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,8 +35,9 @@ app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
+
+app.MapHub<QuizGameHub>("QuizGameHub");
 
 using (var scope = app.Services.CreateScope())
 {

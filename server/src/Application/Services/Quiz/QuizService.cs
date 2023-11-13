@@ -1,4 +1,5 @@
 ﻿using StudyZen.Application.Dtos;
+using StudyZen.Application.Extensions;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
 
@@ -22,19 +23,19 @@ public sealed class QuizService : IQuizService
         _unitOfWork.Quizzes.Add(quiz);
         await _unitOfWork.SaveChanges();
 
-        return new QuizDto(quiz);
+        return quiz.ToDto();
     }
 
     public async Task<QuizDto> GetQuiz(int quizId)
     {
         var quiz = await _unitOfWork.Quizzes.GetByIdChecked(quizId);
-        return new QuizDto(quiz);
+        return quiz.ToDto();
     }
 
     public async Task<IReadOnlyCollection<QuizDto>> GetAllQuizzes()
     {
         var quizzes = await _unitOfWork.Quizzes.Get();
-        return quizzes.Select(q => new QuizDto(q)).ToList();
+        return quizzes.ToDto();
     }
 
     public async Task UpdateQuiz(int quizId, UpdateQuizDto dto)
@@ -60,43 +61,32 @@ public sealed class QuizService : IQuizService
 
         var quiz = await _unitOfWork.Quizzes.GetByIdChecked(quizId);
 
-        // Starting a new transaction to avoid circular reference between question and correct answer when saving
-        await using var transaction = _unitOfWork.BeginTransaction();
+        var question = new QuizQuestion(quizId, dto.Question, TimeSpan.FromSeconds(dto.TimeLimitInSeconds));
 
-        try
+        foreach (var incorrectAnswer in dto.IncorrectAnswers)
         {
-            var question = new QuizQuestion(quizId, dto.Question, TimeSpan.FromSeconds(dto.TimeLimitInSeconds));
-
-            var correctAnswer = new QuizAnswer(quizId, dto.CorrectAnswer);
-            question.PossibleAnswers.Add(correctAnswer);
-
-            foreach (var incorrectAnswer in dto.IncorrectAnswers)
-            {
-                var answer = new QuizAnswer(quizId, incorrectAnswer);
-                question.PossibleAnswers.Add(answer);
-            }
-
-            quiz.Questions.Add(question);
-            await _unitOfWork.SaveChanges();
-
-            question.CorrectAnswer = correctAnswer;
-            await _unitOfWork.SaveChanges();
-
-            await transaction.CommitAsync();
-
-            return new QuizQuestionDto(question);
+            var answer = new QuizAnswer(quizId, incorrectAnswer, false);
+            question.Choices.Add(answer);
         }
-        catch
+
+        foreach (var correctAnswer in dto.CorrectAnswers)
         {
-            await transaction.RollbackAsync();
-            throw;
+            var answer = new QuizAnswer(quizId, correctAnswer, true);
+            question.Choices.Add(answer);
         }
+
+        quiz.Questions.Add(question);
+        await _unitOfWork.SaveChanges();
+
+        return question.ToDto();
     }
 
     public async Task<IReadOnlyCollection<QuizQuestionDto>> GetQuizQuestions(int quizId)
     {
+        await _unitOfWork.Quizzes.GetByIdChecked(quizId);
+
         var quizQuestions = await _unitOfWork.QuizQuestions
-            .Get(i => i.QuizId == quizId, includes: q => q.PossibleAnswers);
-        return quizQuestions.Select(i => new QuizQuestionDto(i)).ToList();
+            .Get(i => i.QuizId == quizId, includes: q => q.Choices);
+        return quizQuestions.ToDto();
     }
 }

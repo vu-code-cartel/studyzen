@@ -1,9 +1,15 @@
 {
+  "Generic": {
+    "Loading": "Loading...",
+    "New": "New",
+    "Create": "Create"
+  },
   "App": {
     "Title": "StudyZen",
     "Nav": {
       "Courses": "Courses",
       "Flashcards": "Flashcards",
+      "Quizzes": "Quizzes",
       "ToggleColorScheme": "Toggle color scheme"
     },
     "Action": {
@@ -187,6 +193,67 @@
     },
     "Validation": {
       "ImportFileNotSelected": "Please select a file to import"
+    }
+  },
+  "Quiz": {
+    "Title": {
+      "Quizzes": "Quizzes"
+    },
+    "Button": {
+      "New": "New quiz"
+    },
+    "Field": {
+      "Title": {
+        "Label": "Title",
+        "Error": {
+          "Required": "Quiz title is required"
+        }
+      }
+    },
+    "Notification": {
+      "FailedToLoadQuizzes": "Failed to load quizzes. Please try again later.",
+      "QuizNotFound": "Quiz not found",
+      "QuizCreatedSuccessfully": "The quiz was created successfully.",
+      "FailedToCreateQuiz": "Failed to create the quiz.",
+      "FailedToLoadQuizQuestions": "Failed to load the quiz questions."
+    }
+  },
+  "QuizGame": {
+    "Title": {
+      "Join": "Join game",
+      "GetReadyForGame": "Get ready for '{{quizTitle}}'!",
+      "PlayerCount_one": "{{count}} player",
+      "PlayerCount_other": "{{count}} players",
+      "Connecting": "Connecting to the game..."
+    },
+    "Button": {
+      "Enter": "Enter",
+      "Join": "Join",
+      "Start": "Start game",
+      "Create": "Create game"
+    },
+    "Field": {
+      "GamePin": {
+        "Label": "Game PIN",
+        "Error": {
+          "Required": "Game PIN is required"
+        }
+      },
+      "Username": {
+        "Label": "Username",
+        "Error": {
+          "Required": "Username is required"
+        }
+      }
+    },
+    "Notification": {
+      "FailedToCreateGame": "Failed to create the game. Please try again later.",
+      "FailedToLoadGame": "Failed to load the game.",
+      "GameNotFound": "No game is active by the specified PIN",
+      "GameAlreadyStarted": "Game has already started",
+      "FailedToJoinGame": "Failed to join game",
+      "UsernameTaken": "Username taken",
+      "FailedToConnect": "Failed to establish the game connection. Please consider refreshing the browser window."
     }
   },
   "RichTextEditor": {

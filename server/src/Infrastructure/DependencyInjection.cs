@@ -77,6 +77,8 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        services.AddSingleton<IQuizGameRepository, QuizGameRepository>();
+
         return services;
     }
 }
