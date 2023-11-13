@@ -41,7 +41,7 @@ public sealed class CourseService : ICourseService
         return allCourses.Select(course => new CourseDto(course)).ToList();
     }
 
-    public async Task UpdateCourse(int id, UpdateCourseDto dto, string? applicationUserId)
+    public async Task UpdateCourse(int id, UpdateCourseDto dto, string applicationUserId)
     {
         await _validationHandler.ValidateAsync(dto);
 
