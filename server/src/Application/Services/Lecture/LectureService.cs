@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Exceptions;
 using StudyZen.Application.Repositories;
@@ -10,20 +12,25 @@ public sealed class LectureService : ILectureService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ValidationHandler _validationHandler;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public LectureService(IUnitOfWork unitOfWork, ValidationHandler validationHandler)
+    public LectureService(IUnitOfWork unitOfWork, ValidationHandler validationHandler, IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
         _validationHandler = validationHandler;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<LectureDto> CreateLecture(CreateLectureDto dto, string applicationUserId)
+    public async Task<LectureDto> CreateLecture(CreateLectureDto dto)
     {
         await _validationHandler.ValidateAsync(dto);
 
         var newLecture = new Lecture(dto.CourseId, dto.Name, dto.Content);
 
         var course = await _unitOfWork.Courses.GetByIdChecked(newLecture.CourseId);
+
+        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                                    ?? throw new InvalidOperationException("Unable to retrieve user identity.");
 
         if (!course.CreatedBy.User.Equals(applicationUserId))
         {
@@ -48,11 +55,14 @@ public sealed class LectureService : ILectureService
         return lectures.Select(l => new LectureDto(l)).ToList();
     }
 
-    public async Task UpdateLecture(int lectureId, UpdateLectureDto dto, string applicationUserId)
+    public async Task UpdateLecture(int lectureId, UpdateLectureDto dto)
     {
         await _validationHandler.ValidateAsync(dto);
 
         var lecture = await _unitOfWork.Lectures.GetByIdChecked(lectureId);
+
+        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                                    ?? throw new InvalidOperationException("Unable to retrieve user identity.");
 
         if (!lecture.CreatedBy.User.Equals(applicationUserId))
         {
@@ -65,9 +75,19 @@ public sealed class LectureService : ILectureService
         await _unitOfWork.SaveChanges();
     }
 
-    public async Task DeleteLecture(int lectureId, string applicationUserId)
+    public async Task DeleteLecture(int lectureId)
     {
-        await _unitOfWork.Lectures.DeleteByIdChecked(lectureId, applicationUserId);
+        var lecture = await _unitOfWork.Lectures.GetByIdChecked(lectureId);
+
+        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                                    ?? throw new InvalidOperationException("Unable to retrieve user identity.");
+
+        if (!lecture.CreatedBy.User.Equals(applicationUserId))
+        {
+            throw new AccessDeniedException();
+        }
+
+        _unitOfWork.Lectures.Delete(lecture);
         await _unitOfWork.SaveChanges();
     }
 }

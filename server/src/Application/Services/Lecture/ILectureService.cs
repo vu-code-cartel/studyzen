@@ -4,9 +4,9 @@ namespace StudyZen.Application.Services;
 
 public interface ILectureService
 {
-    Task<LectureDto> CreateLecture(CreateLectureDto dto, string applicationUserId);
+    Task<LectureDto> CreateLecture(CreateLectureDto dto);
     Task<LectureDto> GetLectureById(int lectureId);
     Task<IReadOnlyCollection<LectureDto>> GetLecturesByCourseId(int courseId);
-    Task UpdateLecture(int lectureId, UpdateLectureDto dto, string applicationUserId);
-    Task DeleteLecture(int lectureId, string applicationUserId);
+    Task UpdateLecture(int lectureId, UpdateLectureDto dto);
+    Task DeleteLecture(int lectureId);
 }

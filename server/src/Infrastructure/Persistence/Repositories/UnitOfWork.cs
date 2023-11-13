@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using StudyZen.Application.Repositories;
-using StudyZen.Application.Services;
 
 namespace StudyZen.Infrastructure.Persistence;
 
@@ -10,7 +10,7 @@ public sealed class UnitOfWork : IUnitOfWork
     private readonly ApplicationDbContext _dbContext;
     private bool _disposed;
 
-    private readonly IUserContextService _userContextService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public ICourseRepository Courses { get; }
     public ILectureRepository Lectures { get; }
@@ -28,7 +28,7 @@ public sealed class UnitOfWork : IUnitOfWork
 
     public UnitOfWork(
         ApplicationDbContext dbContext,
-        IUserContextService userContextService,
+        IHttpContextAccessor httpContextAccessor,
         ICourseRepository courses,
         ILectureRepository lectures,
         IFlashcardSetRepository flashcardSets,
@@ -40,7 +40,7 @@ public sealed class UnitOfWork : IUnitOfWork
     {
         _dbContext = dbContext;
 
-        _userContextService = userContextService;
+        _httpContextAccessor = httpContextAccessor;
 
         Courses = courses;
         Lectures = lectures;
@@ -51,8 +51,8 @@ public sealed class UnitOfWork : IUnitOfWork
         QuizAnswers = quizAnswers;
         RefreshTokens = refreshTokens;
 
-        OnInstanceAdded += (instance) => AuditableEntityInterceptor.SetCreateStamp(instance, userContextService);
-        OnInstanceUpdated += (instance) => AuditableEntityInterceptor.SetUpdateStamp(instance, userContextService);
+        OnInstanceAdded += (instance) => AuditableEntityInterceptor.SetCreateStamp(instance, _httpContextAccessor);
+        OnInstanceUpdated += (instance) => AuditableEntityInterceptor.SetUpdateStamp(instance, _httpContextAccessor);
     }
 
     public async Task<int> SaveChanges()

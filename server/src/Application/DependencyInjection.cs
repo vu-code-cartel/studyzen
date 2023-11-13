@@ -21,6 +21,7 @@ public static class DependencyInjection
                 services.AddScoped<IFlashcardImporter, FlashcardImporter>();
                 services.AddScoped<IUserContextService, UserContextService>();
                 services.AddScoped<ValidationHandler>();
+                services.AddHttpContextAccessor();
 
                 services.AddValidatorsFromAssemblyContaining<CreateLectureRequestValidator>();
 

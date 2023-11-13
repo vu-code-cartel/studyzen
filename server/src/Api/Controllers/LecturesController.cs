@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
@@ -12,12 +11,10 @@ namespace StudyZen.Api.Controllers;
 public sealed class LecturesController : ControllerBase
 {
     private readonly ILectureService _lectureService;
-    private readonly IUserContextService _userContextService;
 
-    public LecturesController(ILectureService lectureService, IUserContextService userContextService)
+    public LecturesController(ILectureService lectureService)
     {
         _lectureService = lectureService;
-        _userContextService = userContextService;
     }
 
     [HttpPost]
@@ -25,8 +22,7 @@ public sealed class LecturesController : ControllerBase
     public async Task<IActionResult> CreateLecture([FromBody] CreateLectureDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
-        _userContextService.ApplicationUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var createdLecture = await _lectureService.CreateLecture(request, _userContextService.ApplicationUserId!);
+        var createdLecture = await _lectureService.CreateLecture(request);
         return CreatedAtAction(nameof(GetLecture), new { lectureId = createdLecture.Id }, createdLecture);
     }
 
@@ -51,8 +47,7 @@ public sealed class LecturesController : ControllerBase
     public async Task<IActionResult> UpdateLecture(int lectureId, [FromBody] UpdateLectureDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
-        _userContextService.ApplicationUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        await _lectureService.UpdateLecture(lectureId, request, _userContextService.ApplicationUserId!);
+        await _lectureService.UpdateLecture(lectureId, request);
         return Ok();
     }
 
@@ -61,8 +56,7 @@ public sealed class LecturesController : ControllerBase
     [Route("{lectureId}")]
     public async Task<IActionResult> DeleteLecture(int lectureId)
     {
-        _userContextService.ApplicationUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        await _lectureService.DeleteLecture(lectureId, _userContextService.ApplicationUserId!);
+        await _lectureService.DeleteLecture(lectureId);
         return Ok();
     }
 }
