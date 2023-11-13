@@ -12,7 +12,10 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        UpdateAuditFields(eventData.Context!);
+        if(eventData.Context != null)
+        {
+            UpdateAuditFields(eventData.Context);
+        }
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
@@ -20,7 +23,10 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         DbContextEventData eventData,
         InterceptionResult<int> result)
     {
-        UpdateAuditFields(eventData.Context!);
+        if(eventData.Context != null)
+        {
+            UpdateAuditFields(eventData.Context);
+        }
         return base.SavingChanges(eventData, result);
     }
 
