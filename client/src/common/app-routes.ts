@@ -10,6 +10,11 @@ export class AppRoutes {
   public static readonly FlashcardSets = '/flashcards';
   public static readonly NewFlashcardSet = `${this.FlashcardSets}/new`;
   public static readonly FlashcardSet = `${this.FlashcardSets}/:flashcardSetIdWithSlug`;
+  public static readonly Quizzes = '/quizzes';
+  public static readonly NewQuiz = `${this.Quizzes}/new`;
+  public static readonly Quiz = `${this.Quizzes}/:quizIdWithSlug`;
+  public static readonly QuizGames = `${this.Quizzes}/games`;
+  public static readonly QuizGameRoom = `${this.QuizGames}/:gamePin`;
 }
 
 export const getCourseRoute = (courseId: number, courseName: string) =>
@@ -23,3 +28,8 @@ export const getNewLectureRoute = (courseId: number, courseName: string) =>
 
 export const getFlashcardSetRoute = (flashcardSetId: number, flashcardSetName: string) =>
   `${AppRoutes.FlashcardSets}/${flashcardSetId}-${urlSlug(flashcardSetName)}`;
+
+export const getQuizRoute = (quizId: number, quizTitle: string) =>
+  `${AppRoutes.Quizzes}/${quizId}-${urlSlug(quizTitle)}`;
+
+export const getQuizGameRoomRoute = (gamePin: string) => `${AppRoutes.QuizGames}/${gamePin}`;

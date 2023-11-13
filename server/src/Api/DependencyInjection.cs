@@ -41,11 +41,14 @@ public static class DependencyInjection
                 options.MapValidationException();
                 options.MapToStatusCode<InstanceNotFoundException>(StatusCodes.Status422UnprocessableEntity);
                 options.MapToStatusCode<UserAlreadyExistsException>(StatusCodes.Status422UnprocessableEntity);
+                options.MapIdentifiableException();
             })
             .AddControllers()
             .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)
             .AddProblemDetailsConventions()
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+        services.AddSignalR();
 
         ProblemDetailsExtensions.AddProblemDetails(services);
 
