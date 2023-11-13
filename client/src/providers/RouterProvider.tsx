@@ -11,6 +11,10 @@ import { NotFound } from '../components/NotFound';
 import { FlashcardSetsPage } from '../pages/flashcards/FlashcardSetsPage';
 import { NewFlashcardSetPage } from '../pages/flashcards/NewFlashcardSetPage';
 import { FlashcardSetPage } from '../pages/flashcards/FlashcardSetPage';
+import { QuizzesPage } from '../pages/quiz/QuizzesPage';
+import { QuizPage } from '../pages/quiz/QuizPage';
+import { QuizRoomPage } from '../pages/quiz/QuizRoomPage';
+import { NewQuizPage } from '../pages/quiz/NewQuizPage';
 
 const router = createBrowserRouter([
   {
@@ -51,6 +55,22 @@ const router = createBrowserRouter([
       {
         path: AppRoutes.FlashcardSet,
         element: <FlashcardSetPage />,
+      },
+      {
+        path: AppRoutes.Quizzes,
+        element: <QuizzesPage />,
+      },
+      {
+        path: AppRoutes.NewQuiz,
+        element: <NewQuizPage />,
+      },
+      {
+        path: AppRoutes.Quiz,
+        element: <QuizPage />,
+      },
+      {
+        path: AppRoutes.QuizGameRoom,
+        element: <QuizRoomPage />,
       },
       {
         path: '*',

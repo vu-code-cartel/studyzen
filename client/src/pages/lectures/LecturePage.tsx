@@ -15,7 +15,6 @@ import { PageContainer } from '../../components/PageContainer';
 import { ControlledRichTextEditor } from '../../components/ControlledRichTextEditor';
 import { useState } from 'react';
 import { CourseDto, LectureDto } from '../../api/dtos';
-import { useButtonVariant } from '../../hooks/useButtonVariant';
 import { UpdateLectureRequest } from '../../api/requests';
 import { Editor } from '@tiptap/react';
 import { useAppStore } from '../../hooks/useAppStore';
