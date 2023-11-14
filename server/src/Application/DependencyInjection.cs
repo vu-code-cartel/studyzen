@@ -19,7 +19,6 @@ public static class DependencyInjection
                 services.AddScoped<IApplicationUserService, ApplicationUserService>();
                 services.AddScoped<IDataImporter, CsvDataImporter>();
                 services.AddScoped<IFlashcardImporter, FlashcardImporter>();
-                services.AddScoped<IUserContextService, UserContextService>();
                 services.AddScoped<ValidationHandler>();
                 services.AddHttpContextAccessor();
 
