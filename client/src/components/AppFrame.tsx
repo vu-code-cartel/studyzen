@@ -70,11 +70,17 @@ export const AppFrame = () => {
             isActive={activeCategory == 'flashcards'}
             onClick={close}
           />
+          <AppNavLink
+            label={t('App.Nav.Quizzes')}
+            to={AppRoutes.Quizzes}
+            isActive={activeCategory == 'quizzes'}
+            onClick={close}
+          />
         </AppShell.Section>
       </AppShell.Navbar>
 
-      <AppShell.Main>
-        <Box py='md'>
+      <AppShell.Main h='100vh' bg={colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0]}>
+        <Box py='md' h='100%'>
           <Outlet />
         </Box>
       </AppShell.Main>

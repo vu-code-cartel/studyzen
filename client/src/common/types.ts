@@ -1,1 +1,1 @@
-export type PageCategory = 'unknown' | 'courses' | 'flashcards';
+export type PageCategory = 'unknown' | 'courses' | 'flashcards' | 'quizzes';

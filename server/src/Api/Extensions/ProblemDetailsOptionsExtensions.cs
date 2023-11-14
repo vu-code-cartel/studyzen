@@ -3,6 +3,7 @@ using FluentValidation.Results;
 using Hellang.Middleware.ProblemDetails;
 using System.Net;
 using System.Text.Json;
+using StudyZen.Application.Exceptions;
 using StudyZen.Application.Validation;
 
 namespace StudyZen.Api.Extensions;
@@ -22,6 +23,28 @@ public static class ProblemDetailsOptionsExtensions
                 detail: "One or more validation errors occurred.");
 
             problemDetails.Extensions["errors"] = FormatValidationErrors(ex.Errors);
+
+            return problemDetails;
+        });
+    }
+
+    public static void MapIdentifiableException(
+        this Hellang.Middleware.ProblemDetails.ProblemDetailsOptions options)
+    {
+        options.Map<IdentifiableException>((ctx, ex) =>
+        {
+            var factory = ctx.RequestServices.GetRequiredService<ProblemDetailsFactory>();
+
+            var statusCode = ex.ErrorCode switch
+            {
+                ErrorCodes.QuizGameAlreadyStarted => HttpStatusCode.BadRequest,
+                ErrorCodes.QuizGameNotFound => HttpStatusCode.NotFound,
+                ErrorCodes.UsernameTaken => HttpStatusCode.Conflict,
+                _ => HttpStatusCode.InternalServerError
+            };
+
+            var problemDetails = factory.CreateProblemDetails(ctx, (int)statusCode);
+            problemDetails.Extensions["errorCode"] = ex.ErrorCode;
 
             return problemDetails;
         });

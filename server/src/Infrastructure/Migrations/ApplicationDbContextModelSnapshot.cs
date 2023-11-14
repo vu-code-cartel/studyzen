@@ -366,6 +366,9 @@ namespace StudyZen.Infrastructure.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
                     b.Property<int>("QuizQuestionId")
                         .HasColumnType("int");
 
@@ -384,9 +387,6 @@ namespace StudyZen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CorrectAnswerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Question")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -400,13 +400,38 @@ namespace StudyZen.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CorrectAnswerId")
-                        .IsUnique()
-                        .HasFilter("[CorrectAnswerId] IS NOT NULL");
-
                     b.HasIndex("QuizId");
 
                     b.ToTable("QuizQuestions");
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RefreshTokenHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -683,28 +708,35 @@ namespace StudyZen.Infrastructure.Migrations
 
             modelBuilder.Entity("StudyZen.Domain.Entities.QuizAnswer", b =>
                 {
-                    b.HasOne("StudyZen.Domain.Entities.QuizQuestion", null)
-                        .WithMany("PossibleAnswers")
+                    b.HasOne("StudyZen.Domain.Entities.QuizQuestion", "QuizQuestion")
+                        .WithMany("Choices")
                         .HasForeignKey("QuizQuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("QuizQuestion");
                 });
 
             modelBuilder.Entity("StudyZen.Domain.Entities.QuizQuestion", b =>
                 {
-                    b.HasOne("StudyZen.Domain.Entities.QuizAnswer", "CorrectAnswer")
-                        .WithOne()
-                        .HasForeignKey("StudyZen.Domain.Entities.QuizQuestion", "CorrectAnswerId");
-
                     b.HasOne("StudyZen.Domain.Entities.Quiz", "Quiz")
                         .WithMany("Questions")
                         .HasForeignKey("QuizId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CorrectAnswer");
-
                     b.Navigation("Quiz");
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("StudyZen.Domain.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("StudyZen.Domain.Entities.Course", b =>
@@ -729,7 +761,7 @@ namespace StudyZen.Infrastructure.Migrations
 
             modelBuilder.Entity("StudyZen.Domain.Entities.QuizQuestion", b =>
                 {
-                    b.Navigation("PossibleAnswers");
+                    b.Navigation("Choices");
                 });
 #pragma warning restore 612, 618
         }

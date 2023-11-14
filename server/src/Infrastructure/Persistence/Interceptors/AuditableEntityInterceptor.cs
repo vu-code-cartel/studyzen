@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using StudyZen.Domain.Interfaces;
 using StudyZen.Domain.ValueObjects;
 
@@ -12,7 +14,7 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        if(eventData.Context != null)
+        if (eventData.Context != null)
         {
             UpdateAuditFields(eventData.Context);
         }
@@ -23,7 +25,7 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         DbContextEventData eventData,
         InterceptionResult<int> result)
     {
-        if(eventData.Context != null)
+        if (eventData.Context != null)
         {
             UpdateAuditFields(eventData.Context);
         }
@@ -52,7 +54,7 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
         if (instance is IAuditable auditable)
         {
-            auditable.CreatedBy = new UserActionStamp(Environment.UserName, DateTime.UtcNow);
+            auditable.CreatedBy = new UserActionStamp(applicationUserId, DateTime.UtcNow);
             auditable.UpdatedBy = auditable.CreatedBy with { }; // shallow copy
         }
     }
@@ -60,7 +62,7 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
         if (instance is IAuditable auditable)
         {
-            auditable.UpdatedBy = new UserActionStamp(Environment.UserName, DateTime.UtcNow);
+            auditable.UpdatedBy = new UserActionStamp(applicationUserId, DateTime.UtcNow);
         }
     }
 }

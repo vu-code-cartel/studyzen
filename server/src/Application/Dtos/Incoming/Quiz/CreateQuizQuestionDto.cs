@@ -2,6 +2,6 @@
 
 public sealed record CreateQuizQuestionDto(
     string Question,
-    string CorrectAnswer,
+    IEnumerable<string> CorrectAnswers,
     IEnumerable<string> IncorrectAnswers,
     int TimeLimitInSeconds);

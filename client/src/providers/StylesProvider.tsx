@@ -9,8 +9,8 @@ export const StylesProvider = (props: StylesProviderProps) => {
   return (
     <>
       <ColorSchemeScript defaultColorScheme='auto' />
-      <MantineProvider defaultColorScheme='auto' theme={{ primaryShade: 7 }}>
-        <Notifications />
+      <MantineProvider defaultColorScheme='auto' theme={{ primaryColor: 'indigo' }}>
+        <Notifications position='top-center' limit={3} />
         {props.children}
       </MantineProvider>
     </>

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage;
 using StudyZen.Application.Repositories;
 
@@ -9,6 +9,8 @@ public sealed class UnitOfWork : IUnitOfWork
     private readonly ApplicationDbContext _dbContext;
     private bool _disposed;
 
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
     public ICourseRepository Courses { get; }
     public ILectureRepository Lectures { get; }
     public IFlashcardSetRepository FlashcardSets { get; }
@@ -16,21 +18,26 @@ public sealed class UnitOfWork : IUnitOfWork
     public IQuizRepository Quizzes { get; }
     public IQuizQuestionRepository QuizQuestions { get; }
     public IQuizAnswerRepository QuizAnswers { get; }
+    public IRefreshTokenRepository RefreshTokens { get; }
 
     // TODO: change these to save changes interceptors after lab 2
     // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/interceptors   
-    
+
     public UnitOfWork(
         ApplicationDbContext dbContext,
+        IHttpContextAccessor httpContextAccessor,
         ICourseRepository courses,
         ILectureRepository lectures,
         IFlashcardSetRepository flashcardSets,
         IFlashcardRepository flashcards,
         IQuizRepository quizzes,
-        IQuizQuestionRepository quizQuestions, 
-        IQuizAnswerRepository quizAnswers)
+        IQuizQuestionRepository quizQuestions,
+        IQuizAnswerRepository quizAnswers,
+        IRefreshTokenRepository refreshTokens)
     {
         _dbContext = dbContext;
+
+        _httpContextAccessor = httpContextAccessor;
 
         Courses = courses;
         Lectures = lectures;
@@ -39,7 +46,7 @@ public sealed class UnitOfWork : IUnitOfWork
         Quizzes = quizzes;
         QuizQuestions = quizQuestions;
         QuizAnswers = quizAnswers;
-
+        RefreshTokens = refreshTokens;
     }
 
     public async Task<int> SaveChanges()

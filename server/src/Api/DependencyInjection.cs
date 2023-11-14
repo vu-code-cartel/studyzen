@@ -4,6 +4,7 @@ using StudyZen.Api.Exceptions;
 using StudyZen.Api.Extensions;
 using System.Text.Json.Serialization;
 using StudyZen.Application.Exceptions;
+using System.Security.Authentication;
 
 namespace StudyZen.Api;
 
@@ -41,11 +42,16 @@ public static class DependencyInjection
                 options.MapValidationException();
                 options.MapToStatusCode<InstanceNotFoundException>(StatusCodes.Status422UnprocessableEntity);
                 options.MapToStatusCode<UserAlreadyExistsException>(StatusCodes.Status422UnprocessableEntity);
+                options.MapToStatusCode<AuthenticationException>(StatusCodes.Status401Unauthorized);
+                options.MapToStatusCode<AccessDeniedException>(StatusCodes.Status403Forbidden);
+                options.MapIdentifiableException();
             })
             .AddControllers()
             .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)
             .AddProblemDetailsConventions()
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+        services.AddSignalR();
 
         ProblemDetailsExtensions.AddProblemDetails(services);
 
