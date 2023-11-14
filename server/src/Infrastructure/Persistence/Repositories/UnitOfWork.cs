@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using StudyZen.Application.Repositories;
 
@@ -22,9 +21,7 @@ public sealed class UnitOfWork : IUnitOfWork
     public IRefreshTokenRepository RefreshTokens { get; }
 
     // TODO: change these to save changes interceptors after lab 2
-    // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/interceptors
-    public Action<object> OnInstanceAdded = delegate { };
-    public Action<object> OnInstanceUpdated = delegate { };
+    // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/interceptors   
 
     public UnitOfWork(
         ApplicationDbContext dbContext,
@@ -50,27 +47,10 @@ public sealed class UnitOfWork : IUnitOfWork
         QuizQuestions = quizQuestions;
         QuizAnswers = quizAnswers;
         RefreshTokens = refreshTokens;
-
-        OnInstanceAdded += (instance) => AuditableEntityInterceptor.SetCreateStamp(instance, _httpContextAccessor);
-        OnInstanceUpdated += (instance) => AuditableEntityInterceptor.SetUpdateStamp(instance, _httpContextAccessor);
     }
 
     public async Task<int> SaveChanges()
     {
-        var entries = _dbContext.ChangeTracker.Entries();
-
-        foreach (var entry in entries)
-        {
-            if (entry.State == EntityState.Added)
-            {
-                OnInstanceAdded(entry.Entity);
-            }
-            else if (entry.State == EntityState.Modified)
-            {
-                OnInstanceUpdated(entry.Entity);
-            }
-        }
-
         return await _dbContext.SaveChangesAsync();
     }
 
