@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StudyZen.Domain.Entities;
@@ -17,8 +18,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<QuizAnswer> QuizAnswers { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
     {
+        _interceptor.SetHttpContextAccessor(httpContextAccessor);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

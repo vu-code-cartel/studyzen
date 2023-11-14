@@ -9,6 +9,13 @@ namespace StudyZen.Infrastructure.Persistence;
 
 public class AuditableEntityInterceptor : SaveChangesInterceptor
 {
+    private IHttpContextAccessor _httpContextAccessor = null!;
+
+    public void SetHttpContextAccessor(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
@@ -54,6 +61,9 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
         if (instance is IAuditable auditable)
         {
+            var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                            ?? throw new InvalidOperationException("Unable to retrieve user identity.");
+
             auditable.CreatedBy = new UserActionStamp(applicationUserId, DateTime.UtcNow);
             auditable.UpdatedBy = auditable.CreatedBy with { }; // shallow copy
         }
@@ -62,6 +72,9 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
         if (instance is IAuditable auditable)
         {
+            var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                            ?? throw new InvalidOperationException("Unable to retrieve user identity.");
+
             auditable.UpdatedBy = new UserActionStamp(applicationUserId, DateTime.UtcNow);
         }
     }
