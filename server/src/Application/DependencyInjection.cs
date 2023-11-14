@@ -14,11 +14,13 @@ public static class DependencyInjection
                 services.AddScoped<IFlashcardService, FlashcardService>();
                 services.AddScoped<IFlashcardSetService, FlashcardSetService>();
                 services.AddScoped<IQuizService, QuizService>();
+                services.AddScoped<ITokenManagementService, TokenManagementService>();
                 services.AddScoped<IQuizGameService, QuizGameService>();
                 services.AddScoped<IApplicationUserService, ApplicationUserService>();
                 services.AddScoped<IDataImporter, CsvDataImporter>();
                 services.AddScoped<IFlashcardImporter, FlashcardImporter>();
                 services.AddScoped<ValidationHandler>();
+                services.AddHttpContextAccessor();
 
                 services.AddValidatorsFromAssemblyContaining<CreateLectureRequestValidator>();
 
