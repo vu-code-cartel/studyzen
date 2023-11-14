@@ -61,6 +61,41 @@ public class LecturesControllerTests : IClassFixture<WebApplicationFactory<Progr
         Assert.Equal(newLecture.Content, lecture.Content);
     }
 
+    [Fact]
+    public async Task UpdateLecture()
+    {
+        var course = CreateCourse().Result;
+        var createLectureDto = new LectureDto(new Lecture(course.Id, "Test name", "Test cont"));
+        var createResponse = await _httpClient.PostAsJsonAsync("Lectures", createLectureDto);
+        Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
+        var newLecture = await createResponse.Content.ReadFromJsonAsync<LectureDto>();
+        Assert.NotNull(newLecture);
 
+        var response = await _httpClient.PatchAsJsonAsync($"Lectures/{newLecture.Id}", _updateLectureDto);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var getResponse = await _httpClient.GetAsync($"Lectures/{newLecture.Id}");
+        var lecture = await getResponse.Content.ReadFromJsonAsync<LectureDto>();
+        Assert.NotNull(lecture);
+        Assert.Equal(_updateLectureDto.Name, lecture.Name);
+        Assert.Equal(_updateLectureDto.Content, lecture.Content);
+    }
+
+    [Fact]
+    public async Task DeleteLecture()
+    {
+        var course = CreateCourse().Result;
+        var createLectureDto = new LectureDto(new Lecture(course.Id, "Test name", "Test cont"));
+        var createResponse = await _httpClient.PostAsJsonAsync("Lectures", createLectureDto);
+        Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
+        var newLecture = await createResponse.Content.ReadFromJsonAsync<LectureDto>();
+        Assert.NotNull(newLecture);
+
+        var response = await _httpClient.DeleteAsync($"Lectures/{newLecture.Id}");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var getResponse = await _httpClient.GetAsync($"Lectures/{newLecture.Id}");
+        Assert.Equal(HttpStatusCode.UnprocessableEntity, getResponse.StatusCode);
+    }
 }
 
