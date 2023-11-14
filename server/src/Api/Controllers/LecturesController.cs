@@ -25,6 +25,7 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpGet]
+    [Route("{courseId}")]
     public async Task<IActionResult> GetLecturesByCourseId(int courseId)
     {
         var courseLectures = await _lectureService.GetLecturesByCourseId(courseId);

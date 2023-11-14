@@ -1,4 +1,5 @@
 using StudyZen.Domain.Entities;
+using System.Text.Json.Serialization;
 
 namespace StudyZen.Application.Dtos;
 
@@ -16,4 +17,6 @@ public record FlashcardDto
         Front = flashcard.Front;
         Back = flashcard.Back;
     }
+    [JsonConstructor]
+    public FlashcardDto() { }
 }

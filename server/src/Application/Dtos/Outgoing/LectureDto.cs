@@ -1,5 +1,6 @@
 using StudyZen.Domain.Entities;
 using StudyZen.Domain.ValueObjects;
+using System.Text.Json.Serialization;
 
 namespace StudyZen.Application.Dtos;
 
@@ -21,4 +22,6 @@ public record LectureDto
         CreatedBy = lecture.CreatedBy;
         UpdatedBy = lecture.UpdatedBy;
     }
+    [JsonConstructor]
+    public LectureDto() { }
 }

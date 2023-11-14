@@ -1,10 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Newtonsoft.Json;
 using StudyZen.Application.Dtos;
-using StudyZen.Domain.Entities;
 
 namespace Api.IntegrationTests.controllers;
 
@@ -25,9 +22,9 @@ public class CourseControllerTests : IClassFixture<WebApplicationFactory<Program
     public async Task CreateCourse()
     {
         var response = await _httpClient.PostAsJsonAsync("Courses", _createCourseDto);
-        var course = await response.Content.ReadFromJsonAsync<CourseDto>();
-
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+        var course = await response.Content.ReadFromJsonAsync<CourseDto>();
         Assert.NotNull(course);
         Assert.Equal(_createCourseDto.Name, course.Name);
         Assert.Equal(_createCourseDto.Description, course.Description);
@@ -42,8 +39,8 @@ public class CourseControllerTests : IClassFixture<WebApplicationFactory<Program
 
         var response = await _httpClient.GetAsync($"Courses/{newCourse.Id}");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var course = await response.Content.ReadFromJsonAsync<CourseDto>();
 
+        var course = await response.Content.ReadFromJsonAsync<CourseDto>();
         Assert.NotNull(course);
         Assert.Equal(newCourse.Name, course.Name);
         Assert.Equal(newCourse.Description, course.Description);
@@ -53,8 +50,8 @@ public class CourseControllerTests : IClassFixture<WebApplicationFactory<Program
     public async Task GetAllCourses()
     {
         var response = await _httpClient.GetAsync("Courses");
-
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
         var allCourses = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<CourseDto>>();
         Assert.NotNull(allCourses);
     }
