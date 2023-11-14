@@ -2,6 +2,9 @@
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
 using StudyZen.Application.Validation;
+using StudyZen.Application.Exceptions;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace StudyZen.Application.Services;
 
@@ -9,11 +12,13 @@ public sealed class CourseService : ICourseService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ValidationHandler _validationHandler;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CourseService(IUnitOfWork unitOfWork, ValidationHandler validationHandler)
+    public CourseService(IUnitOfWork unitOfWork, ValidationHandler validationHandler, IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
         _validationHandler = validationHandler;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<CourseDto> CreateCourse(CreateCourseDto dto)
@@ -46,6 +51,14 @@ public sealed class CourseService : ICourseService
 
         var course = await _unitOfWork.Courses.GetByIdChecked(id);
 
+        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                                    ?? throw new InvalidOperationException("Unable to retrieve user identity.");
+
+        if (!course.CreatedBy.User.Equals(applicationUserId))
+        {
+            throw new AccessDeniedException();
+        }
+
         course.Name = dto.Name ?? course.Name;
         course.Description = dto.Description ?? course.Description;
 
@@ -54,7 +67,17 @@ public sealed class CourseService : ICourseService
 
     public async Task DeleteCourse(int id)
     {
-        await _unitOfWork.Courses.DeleteByIdChecked(id);
+        var course = await _unitOfWork.Courses.GetByIdChecked(id);
+
+        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                            ?? throw new InvalidOperationException("Unable to retrieve user identity.");
+
+        if (!course.CreatedBy.User.Equals(applicationUserId))
+        {
+            throw new AccessDeniedException();
+        }
+
+        _unitOfWork.Courses.Delete(course);
         await _unitOfWork.SaveChanges();
     }
 }
