@@ -21,7 +21,8 @@ public static class DependencyInjection
             throw new InvalidOperationException("The JWT signing key must be configured.");
         }
 
-        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddIdentityCore<ApplicationUser>(options =>
             {
@@ -52,6 +53,19 @@ public static class DependencyInjection
                     ClockSkew = TimeSpan.Zero
                 };
 
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Cookies["AccessToken"];
+                        if (!string.IsNullOrEmpty(accessToken))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+
             });
 
         services.AddScoped<ICourseRepository, CourseRepository>();
@@ -61,6 +75,7 @@ public static class DependencyInjection
         services.AddScoped<IQuizRepository, QuizRepository>();
         services.AddScoped<IQuizQuestionRepository, QuizQuestionRepository>();
         services.AddScoped<IQuizAnswerRepository, QuizAnswerRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddSingleton<IQuizGameRepository, QuizGameRepository>();

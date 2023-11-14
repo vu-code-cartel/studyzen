@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
 using StudyZen.Application.Dtos;
@@ -17,6 +18,7 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Lecturer")]
     public async Task<IActionResult> CreateLecture([FromBody] CreateLectureDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
@@ -41,6 +43,7 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpPatch]
+    [Authorize(Roles = "Lecturer")]
     [Route("{lectureId}")]
     public async Task<IActionResult> UpdateLecture(int lectureId, [FromBody] UpdateLectureDto request)
     {
@@ -50,6 +53,7 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Roles = "Lecturer")]
     [Route("{lectureId}")]
     public async Task<IActionResult> DeleteLecture(int lectureId)
     {

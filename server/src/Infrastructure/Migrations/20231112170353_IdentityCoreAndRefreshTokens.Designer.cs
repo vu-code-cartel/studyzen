@@ -9,11 +9,11 @@ using StudyZen.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace StudyZen.Infrastructure.src.Infrastructure.Migrations
+namespace StudyZen.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231105175617_AddIdentityEfCore")]
-    partial class AddIdentityEfCore
+    [Migration("20231112170353_IdentityCoreAndRefreshTokens")]
+    partial class IdentityCoreAndRefreshTokens
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -179,13 +179,13 @@ namespace StudyZen.Infrastructure.src.Infrastructure.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -338,6 +338,109 @@ namespace StudyZen.Infrastructure.src.Infrastructure.Migrations
                     b.ToTable("Lectures");
                 });
 
+            modelBuilder.Entity("StudyZen.Domain.Entities.Quiz", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Quizzes");
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.QuizAnswer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<int>("QuizQuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuizQuestionId");
+
+                    b.ToTable("QuizAnswers");
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.QuizQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CorrectAnswerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("TimeLimit")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CorrectAnswerId")
+                        .IsUnique()
+                        .HasFilter("[CorrectAnswerId] IS NOT NULL");
+
+                    b.HasIndex("QuizId");
+
+                    b.ToTable("QuizQuestions");
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RefreshTokenHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -446,53 +549,7 @@ namespace StudyZen.Infrastructure.src.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("StudyZen.Domain.ValueObjects.UserActionStamp", "CreatedBy", b1 =>
-                        {
-                            b1.Property<int>("FlashcardId")
-                                .HasColumnType("int");
-
-                            b1.Property<DateTime>("Timestamp")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("User")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("FlashcardId");
-
-                            b1.ToTable("Flashcards");
-
-                            b1.WithOwner()
-                                .HasForeignKey("FlashcardId");
-                        });
-
-                    b.OwnsOne("StudyZen.Domain.ValueObjects.UserActionStamp", "UpdatedBy", b1 =>
-                        {
-                            b1.Property<int>("FlashcardId")
-                                .HasColumnType("int");
-
-                            b1.Property<DateTime>("Timestamp")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("User")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("FlashcardId");
-
-                            b1.ToTable("Flashcards");
-
-                            b1.WithOwner()
-                                .HasForeignKey("FlashcardId");
-                        });
-
-                    b.Navigation("CreatedBy")
-                        .IsRequired();
-
                     b.Navigation("FlashcardSet");
-
-                    b.Navigation("UpdatedBy")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("StudyZen.Domain.Entities.FlashcardSet", b =>
@@ -607,6 +664,92 @@ namespace StudyZen.Infrastructure.src.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("StudyZen.Domain.Entities.Quiz", b =>
+                {
+                    b.OwnsOne("StudyZen.Domain.ValueObjects.UserActionStamp", "CreatedBy", b1 =>
+                        {
+                            b1.Property<int>("QuizId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("Timestamp")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("User")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("QuizId");
+
+                            b1.ToTable("Quizzes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("QuizId");
+                        });
+
+                    b.OwnsOne("StudyZen.Domain.ValueObjects.UserActionStamp", "UpdatedBy", b1 =>
+                        {
+                            b1.Property<int>("QuizId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("Timestamp")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("User")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("QuizId");
+
+                            b1.ToTable("Quizzes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("QuizId");
+                        });
+
+                    b.Navigation("CreatedBy")
+                        .IsRequired();
+
+                    b.Navigation("UpdatedBy")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.QuizAnswer", b =>
+                {
+                    b.HasOne("StudyZen.Domain.Entities.QuizQuestion", null)
+                        .WithMany("PossibleAnswers")
+                        .HasForeignKey("QuizQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.QuizQuestion", b =>
+                {
+                    b.HasOne("StudyZen.Domain.Entities.QuizAnswer", "CorrectAnswer")
+                        .WithOne()
+                        .HasForeignKey("StudyZen.Domain.Entities.QuizQuestion", "CorrectAnswerId");
+
+                    b.HasOne("StudyZen.Domain.Entities.Quiz", "Quiz")
+                        .WithMany("Questions")
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CorrectAnswer");
+
+                    b.Navigation("Quiz");
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("StudyZen.Domain.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("StudyZen.Domain.Entities.Course", b =>
                 {
                     b.Navigation("Lectures");
@@ -620,6 +763,16 @@ namespace StudyZen.Infrastructure.src.Infrastructure.Migrations
             modelBuilder.Entity("StudyZen.Domain.Entities.Lecture", b =>
                 {
                     b.Navigation("FlashcardSets");
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.Quiz", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("StudyZen.Domain.Entities.QuizQuestion", b =>
+                {
+                    b.Navigation("PossibleAnswers");
                 });
 #pragma warning restore 612, 618
         }
