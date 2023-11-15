@@ -26,6 +26,12 @@ public class LecturesControllerTests
         _course = await courseResponse.Content.ReadFromJsonAsync<CourseDto>();
     }
 
+    [OneTimeTearDown]
+    public async Task OneTimeTeardown()
+    {
+        _httpClient.Dispose();
+    }
+
     [Test]
     public async Task CreateLecture()
     {

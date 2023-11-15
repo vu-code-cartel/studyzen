@@ -22,6 +22,12 @@ public class CourseControllerTests
         _updateCourseDto = new UpdateCourseDto("New name", "New desc");
     }
 
+    [OneTimeTearDown]
+    public async Task OneTimeTeardown()
+    {
+        _httpClient.Dispose();
+    }
+
     [Test]
     public async Task CreateCourse()
     {
