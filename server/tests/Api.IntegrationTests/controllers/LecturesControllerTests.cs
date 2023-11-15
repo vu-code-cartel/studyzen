@@ -9,20 +9,17 @@ namespace Api.IntegrationTests.controllers;
 [TestFixture]
 public class LecturesControllerTests
 {
-    private readonly HttpClient _httpClient;
-    private readonly UpdateLectureDto _updateLectureDto;
+    private HttpClient _httpClient;
+    private UpdateLectureDto _updateLectureDto;
     private CourseDto _course;
-
-    public LecturesControllerTests()
-    {
-        var factory = new WebApplicationFactory<Program>();
-        _httpClient = factory.CreateClient();
-        _updateLectureDto = new UpdateLectureDto("New name", "New cont");
-    }
 
     [OneTimeSetUp]
     public async Task OneTimeSetup()
     {
+        var factory = new WebApplicationFactory<Program>();
+        _httpClient = factory.CreateClient();
+        _updateLectureDto = new UpdateLectureDto("New name", "New cont");
+
         var createCourseDto = new CreateCourseDto("Test name", "Test desc");
         var courseResponse = await _httpClient.PostAsJsonAsync("Courses", createCourseDto);
         Assert.AreEqual(HttpStatusCode.Created, courseResponse.StatusCode);

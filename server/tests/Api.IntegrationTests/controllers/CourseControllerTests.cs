@@ -9,11 +9,12 @@ namespace Api.IntegrationTests.controllers;
 [TestFixture]
 public class CourseControllerTests
 {
-    private readonly HttpClient _httpClient;
-    private readonly CreateCourseDto _createCourseDto;
-    private readonly UpdateCourseDto _updateCourseDto;
+    private HttpClient _httpClient;
+    private CreateCourseDto _createCourseDto;
+    private UpdateCourseDto _updateCourseDto;
 
-    public CourseControllerTests()
+    [OneTimeSetUp]
+    public void OneTimeSetup()
     {
         var factory = new WebApplicationFactory<Program>();
         _httpClient = factory.CreateClient();
