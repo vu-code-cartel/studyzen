@@ -33,7 +33,7 @@ public class LecturesControllerTests
     }
 
     [Test]
-    public async Task CreateLecture()
+    public async Task CreateLecture_ValidInput_ReturnsCreated()
     {
         var createLectureDto = new LectureDto(new Lecture(_course.Id, "Test name", "Test cont"));
 
@@ -47,7 +47,7 @@ public class LecturesControllerTests
     }
 
     [Test]
-    public async Task GetLecture()
+    public async Task GetLecture_ValidInput_ReturnsOk()
     {
         var createLectureDto = new LectureDto(new Lecture(_course.Id, "Test name", "Test cont"));
         var createResponse = await _httpClient.PostAsJsonAsync("Lectures", createLectureDto);
@@ -65,7 +65,7 @@ public class LecturesControllerTests
     }
 
     [Test]
-    public async Task UpdateLecture()
+    public async Task UpdateLecture_ValidInput_ReturnsOk()
     {
         var createLectureDto = new LectureDto(new Lecture(_course.Id, "Test name", "Test cont"));
         var createResponse = await _httpClient.PostAsJsonAsync("Lectures", createLectureDto);
@@ -84,7 +84,7 @@ public class LecturesControllerTests
     }
 
     [Test]
-    public async Task DeleteLecture()
+    public async Task DeleteLecture_ValidRequest_ReturnsOk()
     {
         var createLectureDto = new LectureDto(new Lecture(_course.Id, "Test name", "Test cont"));
         var createResponse = await _httpClient.PostAsJsonAsync("Lectures", createLectureDto);

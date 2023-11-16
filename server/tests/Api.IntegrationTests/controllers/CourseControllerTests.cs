@@ -29,7 +29,7 @@ public class CourseControllerTests
     }
 
     [Test]
-    public async Task CreateCourse()
+    public async Task CreateCourse_ValidInput_ReturnsCreated()
     {
         var response = await _httpClient.PostAsJsonAsync("Courses", _createCourseDto);
         Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
@@ -41,7 +41,7 @@ public class CourseControllerTests
     }
 
     [Test]
-    public async Task GetCourse()
+    public async Task GetCourse_ValidInput_ReturnsOk()
     {
         var createResponse = await _httpClient.PostAsJsonAsync("Courses", _createCourseDto);
         var newCourse = await createResponse.Content.ReadFromJsonAsync<CourseDto>();
@@ -57,7 +57,7 @@ public class CourseControllerTests
     }
 
     [Test]
-    public async Task GetAllCourses()
+    public async Task GetAllCourses_ValidRequest_ReturnsOk()
     {
         var response = await _httpClient.GetAsync("Courses");
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
@@ -67,7 +67,7 @@ public class CourseControllerTests
     }
 
     [Test]
-    public async Task UpdateCourse()
+    public async Task UpdateCourse_ValidInput_ReturnsOk()
     {
         var createResponse = await _httpClient.PostAsJsonAsync("Courses", _createCourseDto);
         var newCourse = await createResponse.Content.ReadFromJsonAsync<CourseDto>();
@@ -84,7 +84,7 @@ public class CourseControllerTests
     }
 
     [Test]
-    public async Task DeleteCourse()
+    public async Task DeleteCourse_ValidRequest_ReturnsOk()
     {
         var createResponse = await _httpClient.PostAsJsonAsync("Courses", _createCourseDto);
         var newCourse = await createResponse.Content.ReadFromJsonAsync<CourseDto>();
