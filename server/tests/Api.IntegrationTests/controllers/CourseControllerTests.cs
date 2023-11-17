@@ -1,7 +1,10 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using System.Net.Mail;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc.Testing;
 using StudyZen.Application.Dtos;
+using StudyZen.Infrastructure.Persistence;
 
 
 namespace Api.IntegrationTests.controllers;
@@ -14,10 +17,9 @@ public class CourseControllerTests
     private UpdateCourseDto _updateCourseDto;
 
     [OneTimeSetUp]
-    public void OneTimeSetup()
+    public async Task OneTimeSetup()
     {
-        var factory = new WebApplicationFactory<Program>();
-        _httpClient = factory.CreateClient();
+        _httpClient = TestClient.GetTestClient();
         _createCourseDto = new CreateCourseDto("Test name", "Test desc");
         _updateCourseDto = new UpdateCourseDto("New name", "New desc");
     }
@@ -27,6 +29,7 @@ public class CourseControllerTests
     {
         _httpClient.Dispose();
     }
+
 
     [Test]
     public async Task CreateCourse_ValidInput_ReturnsCreated()

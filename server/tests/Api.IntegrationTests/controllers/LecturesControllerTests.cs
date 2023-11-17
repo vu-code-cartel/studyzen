@@ -16,8 +16,7 @@ public class LecturesControllerTests
     [OneTimeSetUp]
     public async Task OneTimeSetup()
     {
-        var factory = new WebApplicationFactory<Program>();
-        _httpClient = factory.CreateClient();
+        _httpClient = TestClient.GetTestClient();
         _updateLectureDto = new UpdateLectureDto("New name", "New cont");
 
         var createCourseDto = new CreateCourseDto("Test name", "Test desc");
