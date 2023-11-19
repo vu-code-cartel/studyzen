@@ -215,7 +215,9 @@
       "QuizNotFound": "Quiz not found",
       "QuizCreatedSuccessfully": "The quiz was created successfully.",
       "FailedToCreateQuiz": "Failed to create the quiz.",
-      "FailedToLoadQuizQuestions": "Failed to load the quiz questions."
+      "FailedToLoadQuizQuestions": "Failed to load the quiz questions.",
+      "QuestionAddedSuccessfully": "Quiz question added.",
+      "FailedToAddQuestion": "Failed add question to the quiz."
     }
   },
   "QuizGame": {

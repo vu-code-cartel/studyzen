@@ -57,3 +57,10 @@ export type JoinQuizGameDto = {
 export type CreateQuizDto = {
   title: string;
 };
+
+export type CreateQuizQuestionDto = {
+  question: string;
+  correctAnswers: string[];
+  incorrectAnswers: string[];
+  timeLimitInSeconds: number;
+};
