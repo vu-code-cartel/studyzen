@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from '../../api/query-keys';
 import { QuizDto, QuizQuestionDto } from '../../api/dtos';
 import { notifications } from '@mantine/notifications';
-import { CreateQuizDto } from '../../api/requests';
+import { CreateQuizDto, CreateQuizQuestionDto } from '../../api/requests';
 
 const API_URL = `${SERVER_URL}/Quizzes`;
 
@@ -98,5 +98,34 @@ export const useGetQuizQuestions = (quizId: number | null) => {
 
       return [];
     }
+  });
+};
+
+export const useAddQuestionToQuiz = () => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ quizId, dto }: { quizId: number; dto: CreateQuizQuestionDto }) => {
+      await axiosClient.post(`${API_URL}/${quizId}/Questions`, dto);
+    },
+    onSuccess: (_, { quizId }) => {
+      notifications.show({
+        message: t('Quiz.Notification.QuestionAddedSuccessfully'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'teal',
+      });
+
+      queryClient.invalidateQueries([QueryKeys.GetQuizQuestions, quizId]);
+    },
+    onError: () => {
+      notifications.show({
+        message: t('Quiz.Notification.FailedToAddQuestion'),
+        withBorder: true,
+        withCloseButton: true,
+        color: 'red',
+      });
+    },
   });
 };

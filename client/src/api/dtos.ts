@@ -84,4 +84,5 @@ export type QuizGameChoiceDto = {
 export type QuizGameQuestionDto = {
   question: string;
   choices: QuizGameChoiceDto[];
+  timeLimitInSeconds: number;
 };

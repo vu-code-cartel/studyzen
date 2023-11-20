@@ -10,6 +10,8 @@ public sealed class QuizGame
     public QuizGameState State { get; set; }
     public List<QuizPlayer> Players { get; set; }
     public Queue<QuizQuestion> Questions { get; set; }
+    public QuizQuestion? CurrentQuestion { get; set; }
+    public CancellationTokenSource? QuestionCancellationSource { get; set; }
 
     public QuizGame(
         int quizId,
