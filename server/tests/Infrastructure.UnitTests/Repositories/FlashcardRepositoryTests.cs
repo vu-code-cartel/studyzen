@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using StudyZen.Application.Services;
 using StudyZen.Domain.Entities;
 using StudyZen.Infrastructure.Persistence;
 
@@ -17,7 +19,10 @@ public class FlashcardRepositoryTests
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
-        _dbContext = new ApplicationDbContext(options);
+        var currentUserAccessorMock = new Mock<ICurrentUserAccessor>();
+        currentUserAccessorMock.Setup(c => c.GetUserId()).Returns(Guid.NewGuid().ToString());
+
+        _dbContext = new ApplicationDbContext(options, currentUserAccessorMock.Object);
 
         _flashcardRepository = new FlashcardRepository(_dbContext);
 

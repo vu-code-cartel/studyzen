@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using StudyZen.Application.Repositories;
-using StudyZen.Infrastructure.Persistence;
-using StudyZen.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using StudyZen.Application.Repositories;
+using StudyZen.Domain.Entities;
+using StudyZen.Infrastructure.Persistence;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 namespace StudyZen.Infrastructure;
 
 public static class DependencyInjection

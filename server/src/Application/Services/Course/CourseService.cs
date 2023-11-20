@@ -1,10 +1,8 @@
 ﻿using StudyZen.Application.Dtos;
-using StudyZen.Application.Repositories;
-using StudyZen.Domain.Entities;
-using StudyZen.Application.Validation;
 using StudyZen.Application.Exceptions;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+using StudyZen.Application.Repositories;
+using StudyZen.Application.Validation;
+using StudyZen.Domain.Entities;
 
 namespace StudyZen.Application.Services;
 
@@ -12,13 +10,13 @@ public sealed class CourseService : ICourseService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ValidationHandler _validationHandler;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICurrentUserAccessor _currentUserAccessor;
 
-    public CourseService(IUnitOfWork unitOfWork, ValidationHandler validationHandler, IHttpContextAccessor httpContextAccessor)
+    public CourseService(IUnitOfWork unitOfWork, ValidationHandler validationHandler, ICurrentUserAccessor currentUserAccessor)
     {
         _unitOfWork = unitOfWork;
         _validationHandler = validationHandler;
-        _httpContextAccessor = httpContextAccessor;
+        _currentUserAccessor = currentUserAccessor;
     }
 
     public async Task<CourseDto> CreateCourse(CreateCourseDto dto)
@@ -51,9 +49,7 @@ public sealed class CourseService : ICourseService
 
         var course = await _unitOfWork.Courses.GetByIdChecked(id);
 
-        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                                    ?? throw new InvalidOperationException("Unable to retrieve user identity.");
-
+        var applicationUserId = _currentUserAccessor.GetUserId();
         if (!course.CreatedBy.User.Equals(applicationUserId))
         {
             throw new AccessDeniedException();
@@ -69,9 +65,7 @@ public sealed class CourseService : ICourseService
     {
         var course = await _unitOfWork.Courses.GetByIdChecked(id);
 
-        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                            ?? throw new InvalidOperationException("Unable to retrieve user identity.");
-
+        var applicationUserId = _currentUserAccessor.GetUserId();
         if (!course.CreatedBy.User.Equals(applicationUserId))
         {
             throw new AccessDeniedException();
