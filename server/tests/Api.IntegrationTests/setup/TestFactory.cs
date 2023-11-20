@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Api.IntegrationTests;
+namespace Api.IntegrationTests.setup;
 
-public static class TestClient
+public static class TestFactory
 {
-    public static HttpClient GetTestClient()
+    public static WebApplicationFactory<Program> GetNewTestFactory()
     {
-        return new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        return new CustomWebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestServices(services =>
             {
                 services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
             });
-        }).CreateClient();
+        });
     }
 }

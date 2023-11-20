@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
 
-namespace Api.IntegrationTests;
+namespace Api.IntegrationTests.setup;
 
 public class FakePolicyEvaluator : IPolicyEvaluator
 {
