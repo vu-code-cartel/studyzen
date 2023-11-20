@@ -6,6 +6,7 @@ using StudyZen.Application.Dtos;
 using StudyZen.Application.Validation;
 using StudyZen.Domain.Entities;
 using FluentValidation;
+using StudyZen.Domain.ValueObjects;
 
 namespace StudyZen.Application.UnitTests.Services;
 
@@ -15,13 +16,17 @@ public class LectureServiceTests
     private Mock<IUnitOfWork> _unitOfWorkMock;
     private Mock<ValidationHandler> _validationHandlerMock;
     private LectureService _lectureService;
+    private Mock<ICourseRepository> _courseRepositoryMock;
     private Mock<ILectureRepository> _lectureRepositoryMock;
+    private Mock<ICurrentUserAccessor> _currentUserAccessorMock;
+    private string _userId = Guid.NewGuid().ToString();
 
     [SetUp]
     public void SetUp()
     {
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _lectureRepositoryMock = new Mock<ILectureRepository>();
+        _courseRepositoryMock = new Mock<ICourseRepository>();
 
         var serviceProviderMock = new Mock<IServiceProvider>();
         serviceProviderMock.Setup(sp => sp.GetService(It.IsAny<Type>()))
@@ -30,15 +35,24 @@ public class LectureServiceTests
         _validationHandlerMock = new Mock<ValidationHandler>(serviceProviderMock.Object);
 
         _unitOfWorkMock.Setup(u => u.Lectures).Returns(_lectureRepositoryMock.Object);
+        _unitOfWorkMock.Setup(u => u.Courses).Returns(_courseRepositoryMock.Object);
+        _currentUserAccessorMock = new Mock<ICurrentUserAccessor>(); 
+        _currentUserAccessorMock.Setup(c => c.GetUserId()).Returns(_userId);
 
-        _lectureService = new LectureService(_unitOfWorkMock.Object, _validationHandlerMock.Object);
+        _lectureService = new LectureService(_unitOfWorkMock.Object, _validationHandlerMock.Object, _currentUserAccessorMock.Object);
     }
 
     [Test]
     public async Task CreateLecture_GivenValidDto_ReturnsLectureDto()
     {
+        var course = new Course("course_name", "course_desc")
+        {
+            Id = 1,
+            CreatedBy = new UserActionStamp(_userId, DateTime.UtcNow)
+        };
         var createLectureDto = new CreateLectureDto(1, "name", "content");
 
+        _unitOfWorkMock.Setup(u => u.Courses.GetByIdChecked(course.Id)).ReturnsAsync(course);
         _unitOfWorkMock.Setup(u => u.Lectures.Add(It.IsAny<Lecture>()));
         _unitOfWorkMock.Setup(u => u.SaveChanges()).ReturnsAsync(1);
 
@@ -48,6 +62,7 @@ public class LectureServiceTests
         Assert.IsInstanceOf<LectureDto>(result);
         _unitOfWorkMock.Verify(u => u.Lectures.Add(It.IsAny<Lecture>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.SaveChanges(), Times.Once);
+        _currentUserAccessorMock.Verify(c => c.GetUserId(), Times.Once);
     }
 
     [Test]
@@ -94,7 +109,10 @@ public class LectureServiceTests
     {
         var lectureId = 1;
         var updateLectureDto = new UpdateLectureDto("new_name", "new_content");
-        var lecture = new Lecture(1, "name", "content");
+        var lecture = new Lecture(1, "name", "content")
+        {
+            CreatedBy = new UserActionStamp(_userId, DateTime.UtcNow)
+        };
 
         _unitOfWorkMock.Setup(u => u.Lectures.GetByIdChecked(lectureId)).ReturnsAsync(lecture);
         _validationHandlerMock.Setup(v => v.ValidateAsync(updateLectureDto)).Returns(Task.CompletedTask);
@@ -104,6 +122,7 @@ public class LectureServiceTests
         await _lectureService.UpdateLecture(lectureId, updateLectureDto);
 
         _unitOfWorkMock.Verify(u => u.SaveChanges(), Times.Once);
+        _currentUserAccessorMock.Verify(c => c.GetUserId(), Times.Once);
 
         Assert.That(lecture.Name, Is.EqualTo("new_name"));
         Assert.That(lecture.Content, Is.EqualTo("new_content"));
@@ -130,9 +149,12 @@ public class LectureServiceTests
     {
         var lectureId = 1;
         var updateLectureDto = new UpdateLectureDto("new_name", "new_content");
-        var lecture = new Lecture(1, "name", "content");
+        var lecture = new Lecture(1, "name", "content")
+        {
+            CreatedBy = new UserActionStamp(_userId, DateTime.UtcNow)
+        };
 
-        _unitOfWorkMock.Setup(u => u.Lectures.GetById(lectureId)).ReturnsAsync(lecture);
+        _unitOfWorkMock.Setup(u => u.Lectures.GetByIdChecked(lectureId)).ReturnsAsync(lecture);
         _validationHandlerMock.Setup(v => v.ValidateAsync(updateLectureDto))
                               .ThrowsAsync(new ValidationException("Validation error"));
 
@@ -143,14 +165,20 @@ public class LectureServiceTests
     public async Task DeleteLecture_LectureExists_MethodsAreCalled()
     {
         int lectureId = 1;
+        var lecture = new Lecture(1, "name", "content")
+        {
+            Id = lectureId,
+            CreatedBy = new UserActionStamp(_userId, DateTime.UtcNow)
+        };
 
-        _unitOfWorkMock.Setup(u => u.Lectures.DeleteByIdChecked(lectureId)).Returns(Task.CompletedTask);
+        _unitOfWorkMock.Setup(u => u.Lectures.GetByIdChecked(lectureId)).Returns(Task.FromResult(lecture));
         _unitOfWorkMock.Setup(u => u.SaveChanges()).ReturnsAsync(1);
 
         await _lectureService.DeleteLecture(lectureId);
 
-        _unitOfWorkMock.Verify(u => u.Lectures.DeleteByIdChecked(lectureId), Times.Once);
+        _unitOfWorkMock.Verify(u => u.Lectures.Delete(lecture), Times.Once);
         _unitOfWorkMock.Verify(u => u.SaveChanges(), Times.Once);
+        _currentUserAccessorMock.Verify(c => c.GetUserId(), Times.Once);
     }
 
     [Test]
@@ -158,7 +186,7 @@ public class LectureServiceTests
     {
         int lectureId = 1;
 
-        _unitOfWorkMock.Setup(u => u.Lectures.DeleteByIdChecked(lectureId))
+        _unitOfWorkMock.Setup(u => u.Lectures.GetByIdChecked(lectureId))
                                    .Throws(new InstanceNotFoundException("Lecture", lectureId));
 
         Assert.ThrowsAsync<InstanceNotFoundException>(
@@ -207,5 +235,4 @@ public class LectureServiceTests
 
         Assert.That(exception.Message, Is.EqualTo($"Could not find an instance of 'Course' by id {courseId}"));
     }
-
 }

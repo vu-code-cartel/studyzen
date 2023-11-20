@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using StudyZen.Application.Services;
 using StudyZen.Domain.Entities;
 using StudyZen.Infrastructure.Persistence;
 
@@ -17,7 +20,9 @@ public class LectureRepositoryTests
         .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
         .Options;
 
-        _dbContext = new ApplicationDbContext(options);
+        var currentUserAccessorMock = new Mock<ICurrentUserAccessor>();
+        currentUserAccessorMock.Setup(c => c.GetUserId()).Returns(Guid.NewGuid().ToString());
+        _dbContext = new ApplicationDbContext(options, currentUserAccessorMock.Object);
 
         _lectureRepository = new LectureRepository(_dbContext);
 
