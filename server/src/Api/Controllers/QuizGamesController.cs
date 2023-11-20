@@ -45,8 +45,8 @@ public sealed class QuizGamesController : ControllerBase
     [Route("{gamePin}/Start")]
     public async Task<IActionResult> StartGame(string gamePin)
     {
-        _quizGameService.StartGame(gamePin);
-        await _quizGameService.SendNextQuestion(gamePin);
+        await _quizGameService.StartGame(gamePin);
+        _quizGameService.SendNextQuestion(gamePin);
         return Ok();
     }
 }

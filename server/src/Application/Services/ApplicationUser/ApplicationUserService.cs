@@ -1,22 +1,20 @@
-using System.Security.Authentication;
 using Microsoft.AspNetCore.Identity;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Validation;
 using StudyZen.Domain.Entities;
+using System.Security.Authentication;
 
 namespace StudyZen.Application.Services;
 
 public sealed class ApplicationUserService : IApplicationUserService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ValidationHandler _validationHandler;
     private readonly ITokenManagementService _tokenManagementService;
 
-    public ApplicationUserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ValidationHandler validationHandler, ITokenManagementService tokenManagementService)
+    public ApplicationUserService(UserManager<ApplicationUser> userManager, ValidationHandler validationHandler, ITokenManagementService tokenManagementService)
     {
         _userManager = userManager;
-        _roleManager = roleManager;
         _validationHandler = validationHandler;
         _tokenManagementService = tokenManagementService;
     }

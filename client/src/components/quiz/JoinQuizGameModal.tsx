@@ -7,8 +7,9 @@ import { useQuizJoinGame } from '../../hooks/api/quizGamesApi';
 import { useButtonVariant } from '../../hooks/useButtonVariant';
 
 interface JoinQuizGameModalProps {
-  gamePin?: string;
-  connectionId?: string;
+  gamePin: string | null;
+  connectionId: string | null;
+  onPlayerJoin: () => void;
 }
 
 export const JoinQuizGameModal = (props: JoinQuizGameModalProps) => {
@@ -40,6 +41,7 @@ export const JoinQuizGameModal = (props: JoinQuizGameModalProps) => {
 
     try {
       await joinGame.mutateAsync(dto);
+      props.onPlayerJoin();
       close();
     } catch {
       // ignored

@@ -80,13 +80,13 @@ public sealed class QuizGameService : IQuizGameService
 
         if (game.State != QuizGameState.NotStarted)
         {
-            throw new QuizGameAlreadyStartedException();
+            throw new IdentifiableException(ErrorCodes.QuizGameAlreadyStarted);
         }
 
         var player = game.Players.Find(u => u.Username == dto.Username);
         if (player is not null)
         {
-            throw new UsernameTakenException();
+            throw new IdentifiableException(ErrorCodes.UsernameTaken);
         }
 
         player = new QuizPlayer(dto.Username, dto.GamePin, dto.ConnectionId);
@@ -95,33 +95,108 @@ public sealed class QuizGameService : IQuizGameService
         await _hubContext.Clients.Group(dto.GamePin).OnPlayerJoin(player.ToDto());
     }
 
-    public void StartGame(string gamePin)
+    public async Task StartGame(string gamePin)
     {
         var game = _quizGameRepository.GetGameChecked(gamePin);
 
         if (game.State != QuizGameState.NotStarted)
         {
-            throw new QuizGameAlreadyStartedException();
+            throw new IdentifiableException(ErrorCodes.QuizGameAlreadyStarted);
         }
 
         game.State = QuizGameState.InProgress;
+        await _hubContext.Clients.Group(gamePin).OnGameStart();
     }
 
-    public async Task SendNextQuestion(string gamePin)
+    public void SendNextQuestion(string gamePin)
     {
-        // TODO: fix this next week
-
         var game = _quizGameRepository.GetGameChecked(gamePin);
 
-        if (!game.Questions.TryDequeue(out var question))
+        if (game.State == QuizGameState.Finished || game.QuestionCancellationSource is not null || !game.Questions.TryDequeue(out var question))
         {
-            return; // TODO: quiz finished
+            return;
         }
 
-        var dto = new QuizGameQuestionDto(
-            question.Question,
-            question.Choices.Select(c => new QuizGameChoiceDto(c.Id, c.Answer)).ToList());
+        game.Players.ForEach(p => p.HasAnswered = false);
+        Task.Factory.StartNew(async () =>
+        {
+            game.CurrentQuestion = question;
+            game.QuestionCancellationSource = new CancellationTokenSource();
+            var cancellationToken = game.QuestionCancellationSource.Token;
 
-        await _hubContext.Clients.Group(gamePin).OnQuestionReceive(dto);
+            var dto = new QuizGameQuestionDto(
+                question.Question,
+                question.Choices.Select(c => new QuizGameChoiceDto(c.Id, c.Answer)).ToList(),
+                question.TimeLimit.Seconds);
+
+            var correctAnswerIds = question.Choices.Where(c => c.IsCorrect).Select(c => c.Id);
+            var group = _hubContext.Clients.Group(gamePin);
+            await group.OnQuestionReceive(dto);
+
+            try
+            {
+                await Task.Delay(question.TimeLimit, cancellationToken).WaitAsync(cancellationToken);
+            }
+            catch (OperationCanceledException) {}
+
+            await group.OnAnswerReceive(correctAnswerIds);
+            game.QuestionCancellationSource = null;
+        });
+    }
+
+    public void SubmitAnswer(string gamePin, string connectionId, IList<int> answerIds)
+    {
+        var game = _quizGameRepository.GetGameChecked(gamePin);
+        var player = _quizGameRepository.GetPlayerByConnectionId(connectionId);
+
+        if (game.State == QuizGameState.Finished || game.CurrentQuestion is null || player is null || player.HasAnswered)
+        {
+            return;
+        }
+
+        var isAnswerCorrect = game.CurrentQuestion
+            .Choices
+            .All(choice => 
+                (!choice.IsCorrect || answerIds.Contains(choice.Id)) 
+                && (choice.IsCorrect || !answerIds.Contains(choice.Id)));
+
+        if (isAnswerCorrect)
+        {
+            player.AccumulatedPoints += 1000;
+        }
+
+        player.HasAnswered = true;
+    }
+
+    public async Task SendScoreboard(string gamePin)
+    {
+        var game = _quizGameRepository.GetGameChecked(gamePin);
+        if (game.QuestionCancellationSource is not null)
+        {
+            return;
+        }
+
+        var players = game.Players.ToDto();
+        if (game.State == QuizGameState.Finished || game.Questions.Count <= 0)
+        {
+            await _hubContext.Clients.Group(gamePin).OnGameFinish(players);
+            game.State = QuizGameState.Finished;
+        }
+        else
+        {
+            await _hubContext.Clients.Group(gamePin).OnScoreboardReceive(players);
+        }
+    }
+
+    public bool AreAllPlayersAnswered(string gamePin)
+    {
+        var game = _quizGameRepository.GetGameChecked(gamePin);
+        return game.Players.All(p => p.HasAnswered);
+    }
+
+    public void FinishQuestion(string gamePin)
+    {
+        var game = _quizGameRepository.GetGameChecked(gamePin);
+        game.QuestionCancellationSource?.Cancel();
     }
 }

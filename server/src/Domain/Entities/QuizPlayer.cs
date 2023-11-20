@@ -6,6 +6,7 @@ public sealed class QuizPlayer
     public string Username { get; set; }
     public string GamePin { get; set; }
     public int AccumulatedPoints { get; set; }
+    public bool HasAnswered { get; set; }
 
     public QuizPlayer(string username, string gamePin, string connectionId)
     {

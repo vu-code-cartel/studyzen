@@ -5,6 +5,8 @@ using StudyZen.Api.Extensions;
 using System.Text.Json.Serialization;
 using StudyZen.Application.Exceptions;
 using System.Security.Authentication;
+using StudyZen.Api.Auth;
+using StudyZen.Application.Services;
 
 namespace StudyZen.Api;
 
@@ -54,6 +56,8 @@ public static class DependencyInjection
         services.AddSignalR();
 
         ProblemDetailsExtensions.AddProblemDetails(services);
+
+        services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
+using Moq;
 using StudyZen.Application.Exceptions;
+using StudyZen.Application.Services;
 using StudyZen.Domain.Entities;
 using StudyZen.Infrastructure.Persistence;
 
@@ -27,7 +28,8 @@ public class RepositoryTests
     {
         public DbSet<BaseEntityWrapper> BaseEntityWrappers { get; set; }
 
-        public TestApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public TestApplicationDbContext(
+            DbContextOptions<ApplicationDbContext> options) : base(options, Mock.Of<ICurrentUserAccessor>())
         {
         }
     }

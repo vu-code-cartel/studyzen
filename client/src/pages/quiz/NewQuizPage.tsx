@@ -20,7 +20,7 @@ export const NewQuizPage = () => {
       title: '',
     },
     validate: {
-      title: (value) => (value ? undefined : t('Quiz.Error.TitleRequired')),
+      title: (value) => (value ? undefined : t('Quiz.Field.Title.Error.Required')),
     },
   });
 
@@ -33,17 +33,17 @@ export const NewQuizPage = () => {
       <PageHeader>
         <AppBreadcrumbs
           items={[
-            { title: t('Quiz.Quizzes'), to: AppRoutes.Quizzes },
-            { title: t('Quiz.New'), to: AppRoutes.NewQuiz },
+            { title: t('Quiz.Title.Quizzes'), to: AppRoutes.Quizzes },
+            { title: t('Generic.New'), to: AppRoutes.NewQuiz },
           ]}
         />
       </PageHeader>
       <form onSubmit={form.onSubmit(onCreateQuizClick)}>
         <Fieldset>
           <Stack>
-            <TextInput label={t('Quiz.Field.Title')} {...form.getInputProps('title')} />
+            <TextInput label={t('Quiz.Field.Title.Label')} {...form.getInputProps('title')} />
             <Button type='submit' variant={buttonVariant} color='teal' loading={createQuiz.isLoading}>
-              {t('Quiz.Create')}
+              {t('Generic.Create')}
             </Button>
           </Stack>
         </Fieldset>

@@ -2,4 +2,5 @@
 
 public sealed record QuizGameQuestionDto(
     string Question, 
-    IReadOnlyCollection<QuizGameChoiceDto> Choices);
+    IReadOnlyCollection<QuizGameChoiceDto> Choices,
+    int TimeLimitInSeconds);

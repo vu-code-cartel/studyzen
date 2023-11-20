@@ -16,7 +16,14 @@ export class QuizGameHubMethods {
   public static readonly GetPlayers = 'GetPlayers';
   public static readonly OnPlayerJoin = 'OnPlayerJoin';
   public static readonly OnPlayerLeave = 'OnPlayerLeave';
+  public static readonly OnGameStart = 'OnGameStart';
   public static readonly OnQuestionReceive = 'OnQuestionReceive';
+  public static readonly OnAnswerReceive = 'OnAnswerReceive';
+  public static readonly SubmitAnswer = 'SubmitAnswer';
+  public static readonly SendScoreboard = 'SendScoreboard';
+  public static readonly OnScoreboardReceive = 'OnScoreboardReceive';
+  public static readonly NextQuestion = 'NextQuestion';
+  public static readonly OnGameFinish = 'OnGameFinish';
 }
 
 export const useCreateGame = () => {
