@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using StudyZen.Application.Services;
 using StudyZen.Domain.Interfaces;
 using StudyZen.Domain.ValueObjects;
 
@@ -9,11 +10,11 @@ namespace StudyZen.Infrastructure.Persistence;
 
 public class AuditableEntityInterceptor : SaveChangesInterceptor
 {
-    private IHttpContextAccessor _httpContextAccessor = null!;
+    private readonly ICurrentUserAccessor _currentUserAccessor;
 
-    public void SetHttpContextAccessor(IHttpContextAccessor httpContextAccessor)
+    public AuditableEntityInterceptor(ICurrentUserAccessor currentUserAccessor)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _currentUserAccessor = currentUserAccessor;
     }
 
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
@@ -21,10 +22,7 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        if (eventData.Context != null)
-        {
-            UpdateAuditFields(eventData.Context);
-        }
+        UpdateAuditFields(eventData.Context);
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
@@ -32,15 +30,17 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         DbContextEventData eventData,
         InterceptionResult<int> result)
     {
-        if (eventData.Context != null)
-        {
-            UpdateAuditFields(eventData.Context);
-        }
+        UpdateAuditFields(eventData.Context);
         return base.SavingChanges(eventData, result);
     }
 
-    private void UpdateAuditFields(DbContext context)
+    private void UpdateAuditFields(DbContext? context)
     {
+        if (context is null)
+        {
+            return;
+        }
+
         var entries = context.ChangeTracker.Entries();
 
         foreach (var entry in entries)
@@ -61,21 +61,16 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
         if (instance is IAuditable auditable)
         {
-            var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                            ?? throw new InvalidOperationException("Unable to retrieve user identity.");
-
-            auditable.CreatedBy = new UserActionStamp(applicationUserId, DateTime.UtcNow);
+            auditable.CreatedBy = new UserActionStamp(_currentUserAccessor.GetUserId(), DateTime.UtcNow);
             auditable.UpdatedBy = auditable.CreatedBy with { }; // shallow copy
         }
     }
+
     public void SetUpdateStamp(object instance)
     {
         if (instance is IAuditable auditable)
         {
-            var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                            ?? throw new InvalidOperationException("Unable to retrieve user identity.");
-
-            auditable.UpdatedBy = new UserActionStamp(applicationUserId, DateTime.UtcNow);
+            auditable.UpdatedBy = new UserActionStamp(_currentUserAccessor.GetUserId(), DateTime.UtcNow);
         }
     }
 }

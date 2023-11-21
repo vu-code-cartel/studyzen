@@ -5,14 +5,40 @@ import { PageHeader } from '../../components/PageHeader';
 import { AppRoutes, getQuizGameRoomRoute, getQuizRoute } from '../../common/app-routes';
 import { usePageCategory } from '../../hooks/usePageCategory';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetQuiz, useGetQuizQuestions } from '../../hooks/api/quizzesApi';
+import { useAddQuestionToQuiz, useGetQuiz, useGetQuizQuestions } from '../../hooks/api/quizzesApi';
 import { getIdFromSlug } from '../../common/utils';
 import { CenteredLoader } from '../../components/CenteredLoader';
-import { Accordion, Button, Radio, Stack, useMantineTheme } from '@mantine/core';
+import {
+  Accordion,
+  Button,
+  Card,
+  Radio,
+  Stack,
+  useMantineTheme,
+  Text,
+  Group,
+  TextInput,
+  Divider,
+  NumberInput,
+} from '@mantine/core';
 import { useButtonVariant } from '../../hooks/useButtonVariant';
 import { useCreateGame } from '../../hooks/api/quizGamesApi';
 import { QuizDto } from '../../api/dtos';
 import { useAppStore } from '../../hooks/useAppStore';
+import { useState } from 'react';
+import { useForm } from '@mantine/form';
+import { CreateQuizQuestionDto } from '../../api/requests';
+
+type QuizChoice = {
+  answer: string;
+  isCorrect: boolean;
+};
+
+type NewQuizQuestionForm = {
+  question: string;
+  choice: string;
+  timeLimitInSeconds: number;
+};
 
 export const QuizPage = () => {
   const { t } = useTranslation();
@@ -25,10 +51,65 @@ export const QuizPage = () => {
   const colorScheme = useAppStore((state) => state.colorScheme);
   usePageCategory('quizzes');
   const theme = useMantineTheme();
+  const [choices, setChoices] = useState<QuizChoice[]>([]);
+  const initialValues: NewQuizQuestionForm = {
+    question: '',
+    choice: '',
+    timeLimitInSeconds: 15,
+  };
+  const form = useForm<NewQuizQuestionForm>({
+    initialValues,
+    validate: {
+      question: (value) => (value ? undefined : 'Question is required'),
+    },
+  });
+  const addQuestion = useAddQuestionToQuiz();
 
   const onCreateGameClick = async (quiz: QuizDto) => {
     const game = await createGame.mutateAsync(quiz.id);
     navigate(getQuizGameRoomRoute(game.pin));
+  };
+
+  const onAddQuestionClick = async (values: NewQuizQuestionForm) => {
+    if (!quiz?.id) {
+      return;
+    }
+
+    const correctAnswers = choices.filter((c) => c.isCorrect).map((c) => c.answer);
+    const incorrectAnswers = choices.filter((c) => !c.isCorrect).map((c) => c.answer);
+
+    if (correctAnswers.length + incorrectAnswers.length <= 0) {
+      return;
+    }
+
+    const dto: CreateQuizQuestionDto = {
+      question: values.question,
+      correctAnswers,
+      incorrectAnswers,
+      timeLimitInSeconds: values.timeLimitInSeconds,
+    };
+
+    await addQuestion.mutateAsync({ quizId: quiz.id, dto });
+    form.setValues(initialValues);
+    setChoices([]);
+  };
+
+  const onAddChoiceClick = () => {
+    setChoices((prev) => [...prev, { answer: form.values.choice, isCorrect: false }]);
+  };
+
+  const onSetAnswer = (choice: QuizChoice) => {
+    const nextIsCorrect = !choice.isCorrect;
+
+    setChoices((prev) =>
+      prev.map((c) => {
+        if (c === choice) {
+          c.isCorrect = nextIsCorrect;
+        }
+
+        return c;
+      }),
+    );
   };
 
   return (
@@ -47,6 +128,43 @@ export const QuizPage = () => {
               {t('QuizGame.Button.Create')}
             </Button>
           </PageHeader>
+          <Card mb='md' withBorder>
+            <form onSubmit={form.onSubmit(onAddQuestionClick)}>
+              <Stack>
+                <Text>Add question</Text>
+                <TextInput label='Question' {...form.getInputProps('question')} />
+                <Stack>
+                  <TextInput label='Choice' {...form.getInputProps('choice')} />
+                  <Group justify='end'>
+                    <Button variant={buttonVariant} onClick={onAddChoiceClick}>
+                      Add choice
+                    </Button>
+                  </Group>
+                </Stack>
+                <NumberInput
+                  label='Time limit in seconds'
+                  min={3}
+                  max={600}
+                  {...form.getInputProps('timeLimitInSeconds')}
+                />
+                {choices.length > 0 && <Divider />}
+                {choices.map((choice) => (
+                  <Radio
+                    label={choice.answer}
+                    key={choice.answer}
+                    color={choice.isCorrect ? 'teal' : undefined}
+                    checked={choice.isCorrect}
+                    onClick={() => onSetAnswer(choice)}
+                    onChange={() => {}}
+                  />
+                ))}
+                <Divider />
+                <Button variant={buttonVariant} type='submit'>
+                  Add question
+                </Button>
+              </Stack>
+            </form>
+          </Card>
           {areQuestionsLoading && <CenteredLoader />}
           {questions && (
             <Accordion variant='contained'>

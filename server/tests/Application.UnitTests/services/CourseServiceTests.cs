@@ -7,6 +7,7 @@ using StudyZen.Application.Validation;
 using StudyZen.Domain.Entities;
 using FluentValidation;
 using System.Linq.Expressions;
+using StudyZen.Domain.ValueObjects;
 
 namespace StudyZen.Application.UnitTests.Services;
 
@@ -17,6 +18,8 @@ public class CourseServiceTests
     private Mock<ValidationHandler> _validationHandlerMock;
     private CourseService _courseService;
     private Mock<ICourseRepository> _courseRepositoryMock;
+    private Mock<ICurrentUserAccessor> _currentUserAccessorMock;
+    private string _userId = Guid.NewGuid().ToString();
 
     [SetUp]
     public void SetUp()
@@ -30,9 +33,14 @@ public class CourseServiceTests
 
         _validationHandlerMock = new Mock<ValidationHandler>(serviceProviderMock.Object);
 
-        _unitOfWorkMock.Setup(u => u.Courses).Returns(_courseRepositoryMock.Object);
+        _unitOfWorkMock.SetupGet(u => u.Courses).Returns(_courseRepositoryMock.Object);
+        _currentUserAccessorMock = new Mock<ICurrentUserAccessor>();
+        _currentUserAccessorMock.Setup(c => c.GetUserId()).Returns(_userId);
 
-        _courseService = new CourseService(_unitOfWorkMock.Object, _validationHandlerMock.Object);
+        _courseService = new CourseService(
+            _unitOfWorkMock.Object, 
+            _validationHandlerMock.Object,
+            _currentUserAccessorMock.Object);
     }
 
     [Test]
@@ -96,6 +104,7 @@ public class CourseServiceTests
         var courseId = 1;
         var updateCourseDto = new UpdateCourseDto("new_name", "new_description");
         var course = new Course("name", "description");
+        course.CreatedBy = new UserActionStamp(_userId, DateTime.UtcNow);
 
         _unitOfWorkMock.Setup(u => u.Courses.GetByIdChecked(courseId)).ReturnsAsync(course);
         _validationHandlerMock.Setup(v => v.ValidateAsync(updateCourseDto)).Returns(Task.CompletedTask);
@@ -105,6 +114,7 @@ public class CourseServiceTests
         await _courseService.UpdateCourse(courseId, updateCourseDto);
 
         _unitOfWorkMock.Verify(u => u.SaveChanges(), Times.Once);
+        _currentUserAccessorMock.Verify(c => c.GetUserId(), Times.Once);
 
         Assert.That(course.Name, Is.EqualTo("new_name"));
         Assert.That(course.Description, Is.EqualTo("new_description"));
@@ -131,6 +141,7 @@ public class CourseServiceTests
         var courseId = 1;
         var updateCourseDto = new UpdateCourseDto("new_name", "new_description");
         var course = new Course("name", "description");
+        course.CreatedBy = new UserActionStamp(_userId, DateTime.UtcNow);
 
         _unitOfWorkMock.Setup(u => u.Courses.GetById(courseId)).ReturnsAsync(course);
         _validationHandlerMock.Setup(v => v.ValidateAsync(updateCourseDto))
@@ -143,14 +154,19 @@ public class CourseServiceTests
     public async Task DeleteCourse_CourseExists_MethodsAreCalled()
     {
         int courseId = 1;
+        var course = new Course("name", "description")
+        {
+            CreatedBy = new UserActionStamp(_userId, DateTime.UtcNow)
+        };
 
-        _unitOfWorkMock.Setup(u => u.Courses.DeleteByIdChecked(courseId)).Returns(Task.CompletedTask);
+        _courseRepositoryMock.Setup(c => c.GetByIdChecked(courseId)).Returns(Task.FromResult(course));
         _unitOfWorkMock.Setup(u => u.SaveChanges()).ReturnsAsync(1);
 
         await _courseService.DeleteCourse(courseId);
 
-        _unitOfWorkMock.Verify(u => u.Courses.DeleteByIdChecked(courseId), Times.Once);
+        _courseRepositoryMock.Verify(u => u.Delete(course), Times.Once);
         _unitOfWorkMock.Verify(u => u.SaveChanges(), Times.Once);
+        _currentUserAccessorMock.Verify(c => c.GetUserId(), Times.Once);
     }
 
     [Test]
@@ -158,7 +174,7 @@ public class CourseServiceTests
     {
         int courseId = 1;
 
-        _unitOfWorkMock.Setup(u => u.Courses.DeleteByIdChecked(courseId))
+        _unitOfWorkMock.Setup(u => u.Courses.GetByIdChecked(courseId))
                                    .Throws(new InstanceNotFoundException("Course", courseId));
 
         Assert.ThrowsAsync<InstanceNotFoundException>(
@@ -183,6 +199,5 @@ public class CourseServiceTests
         Assert.That(result.Count, Is.EqualTo(courses.Count));
         Assert.IsTrue(result.All(c => c is CourseDto));
     }
-
 }
 

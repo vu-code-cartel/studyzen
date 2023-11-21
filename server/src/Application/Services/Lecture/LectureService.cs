@@ -12,13 +12,13 @@ public sealed class LectureService : ILectureService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ValidationHandler _validationHandler;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICurrentUserAccessor _currentUserAccessor;
 
-    public LectureService(IUnitOfWork unitOfWork, ValidationHandler validationHandler, IHttpContextAccessor httpContextAccessor)
+    public LectureService(IUnitOfWork unitOfWork, ValidationHandler validationHandler, ICurrentUserAccessor currentUserAccessor)
     {
         _unitOfWork = unitOfWork;
         _validationHandler = validationHandler;
-        _httpContextAccessor = httpContextAccessor;
+        _currentUserAccessor = currentUserAccessor;
     }
 
     public async Task<LectureDto> CreateLecture(CreateLectureDto dto)
@@ -29,9 +29,7 @@ public sealed class LectureService : ILectureService
 
         var course = await _unitOfWork.Courses.GetByIdChecked(newLecture.CourseId);
 
-        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                                    ?? throw new InvalidOperationException("Unable to retrieve user identity.");
-
+        var applicationUserId = _currentUserAccessor.GetUserId();
         if (!course.CreatedBy.User.Equals(applicationUserId))
         {
             throw new AccessDeniedException();
@@ -61,9 +59,7 @@ public sealed class LectureService : ILectureService
 
         var lecture = await _unitOfWork.Lectures.GetByIdChecked(lectureId);
 
-        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                                    ?? throw new InvalidOperationException("Unable to retrieve user identity.");
-
+        var applicationUserId = _currentUserAccessor.GetUserId();
         if (!lecture.CreatedBy.User.Equals(applicationUserId))
         {
             throw new AccessDeniedException();
@@ -79,9 +75,7 @@ public sealed class LectureService : ILectureService
     {
         var lecture = await _unitOfWork.Lectures.GetByIdChecked(lectureId);
 
-        var applicationUserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                                    ?? throw new InvalidOperationException("Unable to retrieve user identity.");
-
+        var applicationUserId = _currentUserAccessor.GetUserId();
         if (!lecture.CreatedBy.User.Equals(applicationUserId))
         {
             throw new AccessDeniedException();
