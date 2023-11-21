@@ -28,7 +28,7 @@ export const CoursesPage = () => {
     <PageContainer>
       <PageHeader>
         <AppBreadcrumbs items={[{ title: t('Course.Title.Courses'), to: AppRoutes.Courses }]} />
-        <Button component={Link} to={AppRoutes.NewCourse} color='teal' variant={buttonVariant}>
+        <Button component={Link} to={AppRoutes.NewCourse} variant={buttonVariant}>
           {t('Course.Action.NewCourse')}
         </Button>
       </PageHeader>

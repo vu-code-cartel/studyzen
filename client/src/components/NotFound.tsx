@@ -16,7 +16,7 @@ export const NotFound = () => {
       <Text fw={600} ta='center'>
         {t('NotFound.Title')}
       </Text>
-      <Button component={Link} to={AppRoutes.Home} color='teal' variant={buttonVariant}>
+      <Button component={Link} to={AppRoutes.Home} variant={buttonVariant}>
         {t('NotFound.GoBackHome')}
       </Button>
     </Stack>

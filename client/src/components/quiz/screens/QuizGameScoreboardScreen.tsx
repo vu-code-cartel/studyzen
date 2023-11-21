@@ -22,15 +22,17 @@ export const QuizGameScoreboardScreen = (props: QuizGameScoreboardProps) => {
     <Card withBorder shadow='sm'>
       <Stack>
         <Center>
-          <Title order={3}>{props.isFinished ? "Who's the best?" : 'Scoreboard'}</Title>
+          <Title order={3}>{props.isFinished ? 'Congratulations!' : 'Scoreboard'}</Title>
         </Center>
         <Stack gap='xs'>
           {props.players
             .sort((a, b) => b.accumulatedPoints - a.accumulatedPoints)
-            .map((player) => (
+            .map((player, idx) => (
               <Card key={player.username} p='xs' shadow='none'>
                 <Group justify='space-between'>
-                  <Text fw={600}>{player.username}</Text>
+                  <Text fw={600}>
+                    {idx + 1}. {player.username}
+                  </Text>
                   <Text fw={600}>{player.accumulatedPoints}</Text>
                 </Group>
               </Card>
