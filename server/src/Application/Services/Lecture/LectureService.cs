@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Exceptions;
 using StudyZen.Application.Repositories;

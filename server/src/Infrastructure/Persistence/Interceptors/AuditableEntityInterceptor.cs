@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 using StudyZen.Application.Services;
 using StudyZen.Domain.Interfaces;
 using StudyZen.Domain.ValueObjects;

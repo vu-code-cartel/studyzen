@@ -2,9 +2,6 @@
 using StudyZen.Application.Exceptions;
 using StudyZen.Application.Repositories;
 using StudyZen.Application.Validation;
-using StudyZen.Application.Exceptions;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 using StudyZen.Domain.Entities;
 
 namespace StudyZen.Application.Services;
