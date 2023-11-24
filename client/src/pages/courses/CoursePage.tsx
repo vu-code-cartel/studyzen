@@ -54,7 +54,7 @@ export const CoursePage = () => {
         />
       </PageHeader>
 
-      <Tabs defaultValue={CourseTabs.Lectures} mb='sm' color='teal'>
+      <Tabs defaultValue={CourseTabs.Lectures} mb='sm'>
         <Tabs.List mb='md'>
           <Tabs.Tab value={CourseTabs.Lectures}>{t('Course.Tab.Lectures')}</Tabs.Tab>
           <Tabs.Tab value={CourseTabs.About}>{t('Course.Tab.About')}</Tabs.Tab>
@@ -106,7 +106,6 @@ const LecturesPanel = (props: CoursePanelProps) => {
         <Grid.Col span='content'>
           <Button
             fullWidth
-            color='teal'
             variant={buttonVariant}
             component={Link}
             to={getNewLectureRoute(props.course.id, props.course.name)}

@@ -42,7 +42,7 @@ export const NewQuizPage = () => {
         <Fieldset>
           <Stack>
             <TextInput label={t('Quiz.Field.Title.Label')} {...form.getInputProps('title')} />
-            <Button type='submit' variant={buttonVariant} color='teal' loading={createQuiz.isLoading}>
+            <Button type='submit' variant={buttonVariant} loading={createQuiz.isLoading}>
               {t('Generic.Create')}
             </Button>
           </Stack>

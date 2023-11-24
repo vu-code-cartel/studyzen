@@ -10,6 +10,8 @@ import { TooLateForQuizGameScreen } from '../../components/quiz/screens/QuizGame
 import { InitialQuizGameScreen } from '../../components/quiz/screens/InitialQuizGameScreen';
 import { QuizGameQuestionScreen } from '../../components/quiz/screens/QuizGameQuestionScreen';
 import { QuizGameScoreboardScreen } from '../../components/quiz/screens/QuizGameScoreboardScreen';
+import { usePageCategory } from '../../hooks/usePageCategory';
+import Confetti from 'react-confetti';
 
 enum QuizRoomScreen {
   WaitingForUserToJoin,
@@ -24,6 +26,7 @@ enum QuizRoomScreen {
 
 export const QuizRoomPage = () => {
   const { gamePin } = useParams();
+  usePageCategory('quizzes');
   const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
   const [players, setPlayers] = useState<QuizPlayerDto[]>([]);
   const [question, setQuestion] = useState<QuizGameQuestionDto | null>(null);
@@ -155,12 +158,15 @@ export const QuizRoomPage = () => {
             connection={connection}
           />
         ) : currentScreen === QuizRoomScreen.Scoreboard || currentScreen === QuizRoomScreen.Finish ? (
-          <QuizGameScoreboardScreen
-            gamePin={game.pin}
-            players={players}
-            connection={connection}
-            isFinished={currentScreen === QuizRoomScreen.Finish}
-          />
+          <>
+            <QuizGameScoreboardScreen
+              gamePin={game.pin}
+              players={players}
+              connection={connection}
+              isFinished={currentScreen === QuizRoomScreen.Finish}
+            />
+            {currentScreen === QuizRoomScreen.Finish && <Confetti />}
+          </>
         ) : null
       ) : null}
     </PageContainer>

@@ -95,7 +95,13 @@ export const QuizPage = () => {
   };
 
   const onAddChoiceClick = () => {
-    setChoices((prev) => [...prev, { answer: form.values.choice, isCorrect: false }]);
+    if (!form.values.choice) {
+      form.setFieldError('choice', 'Choice is required');
+    } else if (choices.findIndex((c) => c.answer === form.values.choice) !== -1) {
+      form.setFieldError('choice', 'Such choice already exists');
+    } else {
+      setChoices((prev) => [...prev, { answer: form.values.choice, isCorrect: false }]);
+    }
   };
 
   const onSetAnswer = (choice: QuizChoice) => {
@@ -133,6 +139,12 @@ export const QuizPage = () => {
               <Stack>
                 <Text>Add question</Text>
                 <TextInput label='Question' {...form.getInputProps('question')} />
+                <NumberInput
+                  label='Time limit in seconds'
+                  min={3}
+                  max={600}
+                  {...form.getInputProps('timeLimitInSeconds')}
+                />
                 <Stack>
                   <TextInput label='Choice' {...form.getInputProps('choice')} />
                   <Group justify='end'>
@@ -141,12 +153,6 @@ export const QuizPage = () => {
                     </Button>
                   </Group>
                 </Stack>
-                <NumberInput
-                  label='Time limit in seconds'
-                  min={3}
-                  max={600}
-                  {...form.getInputProps('timeLimitInSeconds')}
-                />
                 {choices.length > 0 && <Divider />}
                 {choices.map((choice) => (
                   <Radio
