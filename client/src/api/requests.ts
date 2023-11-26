@@ -57,3 +57,8 @@ export type JoinQuizGameDto = {
 export type CreateQuizDto = {
   title: string;
 };
+
+export type LoginRequest = {
+  email: string;
+  password: string;
+}

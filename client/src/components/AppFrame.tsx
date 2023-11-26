@@ -7,6 +7,9 @@ import { IconMoonStars, IconSun } from '@tabler/icons-react';
 import { Link, Outlet } from 'react-router-dom';
 import { useColorScheme, useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useEffect } from 'react';
+import { Button } from '@mantine/core';
+import { useState } from 'react';
+import { LoginModal } from '../components/account/LoginModal';
 
 export const AppFrame = () => {
   const [isOpen, { toggle, close }] = useDisclosure();
@@ -19,6 +22,17 @@ export const AppFrame = () => {
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const { colorScheme: mantineColorScheme, toggleColorScheme } = useMantineColorScheme();
   const mediaColorScheme = useColorScheme();
+  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
+  const setIsLoggedIn = useAppStore((state) => state.setIsLoggedIn);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+
+  const handleLogin = () => {
+    setLoginModalOpen(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
 
   useEffect(() => {
     if (mantineColorScheme != 'auto') {
@@ -55,6 +69,13 @@ export const AppFrame = () => {
               {colorScheme === 'dark' ? <IconSun size='1rem' /> : <IconMoonStars size='1rem' />}
             </ActionIcon>
           </Group>
+          <AppShell.Section>
+            {isLoggedIn ? (
+              <Button onClick={handleLogout}>Logout</Button>
+            ) : (
+              <Button onClick={handleLogin}>Login</Button>
+            )}
+          </AppShell.Section>
         </AppShell.Section>
 
         <AppShell.Section grow>
@@ -84,6 +105,10 @@ export const AppFrame = () => {
           <Outlet />
         </Box>
       </AppShell.Main>
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        close={() => setLoginModalOpen(false)}
+      />
     </AppShell>
   );
 };

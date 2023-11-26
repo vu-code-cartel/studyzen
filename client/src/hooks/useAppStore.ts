@@ -10,6 +10,8 @@ interface AppState {
   setIsMobile: (isMobile: boolean | undefined) => void;
   colorScheme: ColorScheme;
   setColorScheme: (scheme: ColorScheme) => void;
+  isLoggedIn: boolean;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -19,4 +21,6 @@ export const useAppStore = create<AppState>((set) => ({
   setIsMobile: (value) => set(() => ({ isMobile: value })),
   colorScheme: undefined,
   setColorScheme: (scheme) => set(() => ({ colorScheme: scheme })),
+  isLoggedIn: false,
+  setIsLoggedIn: (value) => set(() => ({ isLoggedIn: value })),
 }));

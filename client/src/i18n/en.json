@@ -256,6 +256,40 @@
       "FailedToConnect": "Failed to establish the game connection. Please consider refreshing the browser window."
     }
   },
+  "Authentication": {
+    "Loading": "Loading...",
+    "Title": {
+      "Login": "Log in"
+    },
+    "Field": {
+      "Username": {
+        "Label": "Username",
+        "Error": {
+          "Required": "Username is required"
+        }
+      },
+      "Password": {
+        "Label": "Password",
+        "Error": {
+          "Required": "Password is required"
+        }
+      }
+    },
+    "Button": {
+      "Login": "Log in",
+      "LoggingIn": "Logging In..."
+    },
+    "Notification": {
+      "LoginFailed": "Wrong username or password",
+      "LoginSuccessful": "Login was successful",
+      "LogoutSuccessful": "Logout was successful",
+      "LogoutFailed": "Cannot log out. Please try again"
+    },
+    "Error": {
+      "LoginFailed": "Wrong username or password",
+      "LoginSuccessful": "Login was successful"
+    }
+  },
   "RichTextEditor": {
     "Control": {
       "EditContent": "Edit content",
