@@ -100,7 +100,7 @@ export const AppFrame = () => {
         </AppShell.Section>
       </AppShell.Navbar>
 
-      <AppShell.Main h='100vh' bg={colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0]}>
+      <AppShell.Main h='100%' mih='100vh' bg={colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0]}>
         <Box py='md' h='100%'>
           <Outlet />
         </Box>

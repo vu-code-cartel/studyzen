@@ -119,7 +119,7 @@ export const FlashcardSetForm = (props: FlashcardSetFormProps) => {
             onChange={(e) => setIsConnected(e.currentTarget.checked)}
           />
 
-          <Button type='submit' variant={buttonVariant} color='teal' disabled={props.isReadonly}>
+          <Button type='submit' variant={buttonVariant} disabled={props.isReadonly}>
             {t('FlashcardSet.Action.CreateFlashcardSet')}
           </Button>
         </Stack>

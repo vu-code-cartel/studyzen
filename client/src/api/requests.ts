@@ -58,6 +58,20 @@ export type CreateQuizDto = {
   title: string;
 };
 
+export type CreateQuizQuestionDto = {
+  question: string;
+  correctAnswers: string[];
+  incorrectAnswers: string[];
+  timeLimitInSeconds: number;
+};
+
+export type CreateQuizQuestionDto = {
+  question: string;
+  correctAnswers: string[];
+  incorrectAnswers: string[];
+  timeLimitInSeconds: number;
+};
+
 export type LoginRequest = {
   email: string;
   password: string;

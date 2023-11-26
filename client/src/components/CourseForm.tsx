@@ -55,14 +55,14 @@ export const CourseForm = (props: CourseFormProps) => {
                   <Button variant='default' onClick={props.onCancelClick}>
                     Cancel
                   </Button>
-                  <Button type='submit' variant={buttonVariant} color='teal'>
+                  <Button type='submit' variant={buttonVariant}>
                     Save changes
                   </Button>
                 </>
               )}
             </Group>
           ) : (
-            <Button type='submit' color='teal' variant={buttonVariant} disabled={props.isReadonly}>
+            <Button type='submit' variant={buttonVariant} disabled={props.isReadonly}>
               {t('Course.Action.CreateCourse')}
             </Button>
           )}

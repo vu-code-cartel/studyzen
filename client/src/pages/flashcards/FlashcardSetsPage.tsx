@@ -32,7 +32,7 @@ export const FlashcardSetsPage = () => {
     <PageContainer>
       <PageHeader>
         <AppBreadcrumbs items={[{ title: t('FlashcardSet.Title.Flashcards'), to: AppRoutes.FlashcardSets }]} />
-        <Button variant={buttonVariant} color='teal' component={Link} to={AppRoutes.NewFlashcardSet}>
+        <Button variant={buttonVariant} component={Link} to={AppRoutes.NewFlashcardSet}>
           {t('FlashcardSet.Action.NewFlashcardSet')}
         </Button>
       </PageHeader>

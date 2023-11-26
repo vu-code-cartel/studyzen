@@ -69,7 +69,7 @@ export const FlashcardSetPage = () => {
         />
       </PageHeader>
 
-      <Tabs color='teal' defaultValue={FlashcardSetTabs.ViewSet} keepMounted={false}>
+      <Tabs defaultValue={FlashcardSetTabs.ViewSet} keepMounted={false}>
         <Tabs.List mb='md'>
           <Tabs.Tab value={FlashcardSetTabs.ViewSet}>{t('FlashcardSet.Tab.ViewSet')}</Tabs.Tab>
           <Tabs.Tab value={FlashcardSetTabs.Learn}>{t('FlashcardSet.Tab.Learn')}</Tabs.Tab>
@@ -158,7 +158,7 @@ const ViewSetPanel = (props: FlashcardSetPanelProps) => {
 
               <Group justify='end'>
                 <Group gap='xs'>
-                  <ActionIcon variant='light' color='teal' type='submit'>
+                  <ActionIcon variant='light' type='submit'>
                     <IconPlus stroke={1.5} width='70%' height='70%' />
                   </ActionIcon>
                 </Group>

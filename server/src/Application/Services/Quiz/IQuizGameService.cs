@@ -10,6 +10,10 @@ public interface IQuizGameService
     Task Quit(string connectionId);
     Task JoinGame(JoinQuizGameDto dto);
     List<QuizPlayerDto> GetPlayers(string gamePin);
-    void StartGame(string gamePin);
-    Task SendNextQuestion(string gamePin);
+    Task StartGame(string gamePin);
+    void SendNextQuestion(string gamePin);
+    void SubmitAnswer(string gamePin, string connectionId, IList<int> answerIds);
+    Task SendScoreboard(string gamePin);
+    bool AreAllPlayersAnswered(string gamePin);
+    void FinishQuestion(string gamePin);
 }

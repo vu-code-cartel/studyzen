@@ -95,7 +95,7 @@ const NewLectureForm = (props: NewLectureFormProps) => {
             setValue={(value) => form.setFieldValue('content', value)}
             isRequired
           />
-          <Button type='submit' color='teal' variant={buttonVariant}>
+          <Button type='submit' variant={buttonVariant}>
             {t('Lecture.Action.CreateLecture')}
           </Button>
         </Stack>
