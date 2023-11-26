@@ -4,17 +4,25 @@ import { PageHeader } from '../components/PageHeader';
 import { useDocumentTitle } from '@mantine/hooks';
 import { usePageCategory } from '../hooks/usePageCategory';
 import { PageContainer } from '../components/PageContainer';
+import { useAppStore } from '../hooks/useAppStore';
 
 export const HomePage = () => {
   const { t } = useTranslation();
   useDocumentTitle(t('Home.DocumentTitle'));
   usePageCategory('unknown');
 
+  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
+  const username = useAppStore((state) => state.username);
+
   return (
     <PageContainer>
       <PageHeader>
-        <Text fw={600}>{t('Home.Title')}</Text>
+        {isLoggedIn ? (
+          <Text fw={600}>{t('Home.WelcomeMessage', { username: username })}</Text>
+        ) : (
+          <Text fw={600}>{t('Home.Title')}</Text>
+        )}
       </PageHeader>
     </PageContainer>
   );
-};
+}

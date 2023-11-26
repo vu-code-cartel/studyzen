@@ -32,6 +32,7 @@
   },
   "Home": {
     "DocumentTitle": "StudyZen",
+    "WelcomeMessage": "Welcome to Studyzen, {{username}}!",
     "Title": "Welcome to StudyZen!"
   },
   "NotFound": {
@@ -261,13 +262,18 @@
   "Authentication": {
     "Loading": "Loading...",
     "Title": {
-      "Login": "Log in"
+      "SignIn": "Sign in",
+      "SignUp": "Sign up"
+    },
+    "Role": {
+      "Student": "Student",
+      "Lecturer": "Lecturer"
     },
     "Field": {
-      "Username": {
-        "Label": "Username",
+      "Email": {
+        "Label": "Email",
         "Error": {
-          "Required": "Username is required"
+          "Required": "Email is required"
         }
       },
       "Password": {
@@ -275,21 +281,49 @@
         "Error": {
           "Required": "Password is required"
         }
+      },
+      "Username": {
+        "Label": "Username",
+        "Error": {
+          "Required": "Username is required"
+        }
+      },
+      "FirstName": {
+        "Label": "First name",
+        "Error": {
+          "Required": "First name is required"
+        }
+      },
+      "LastName": {
+        "Label": "Last name",
+        "Error": {
+          "Required": "Last name is required"
+        }
+      },
+      "Role": {
+        "Label": "Role",
+        "Error": {
+          "Required": "Role is required"
+        }
       }
     },
     "Button": {
-      "Login": "Log in",
-      "LoggingIn": "Logging In..."
+      "SignIn": "Sign in",
+      "SignUp": "Sign up",
+      "SigningIn": "Signing In...",
+      "SigningUp": "Signing up..."
     },
     "Notification": {
-      "LoginFailed": "Wrong username or password",
-      "LoginSuccessful": "Login was successful",
-      "LogoutSuccessful": "Logout was successful",
-      "LogoutFailed": "Cannot log out. Please try again"
+      "SignInSuccessful": "Sign in was successful",
+      "SignOutSuccessful": "Sign out was successful",
+      "SignUpSuccessful": "Registration was successful"
     },
     "Error": {
-      "LoginFailed": "Wrong username or password",
-      "LoginSuccessful": "Login was successful"
+      "InvalidCredentials": "Wrong username or password",
+      "SignInFailed": "Cannot sign in. Please try again",
+      "SignOutFailed": "Cannot sign out. Please try again",
+      "UserExists": "User with the given email already exists",
+      "RegisterFailed": "Cannot register new user. Please try again"
     }
   },
   "RichTextEditor": {

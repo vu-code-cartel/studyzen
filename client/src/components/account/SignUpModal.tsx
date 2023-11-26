@@ -11,7 +11,7 @@ interface RegisterModalProps {
     onRegisterSuccess: () => void;
 }
 
-export const RegisterModal = ({ isOpen, close, onRegisterSuccess }: RegisterModalProps) => {
+export const SignUpModal = ({ isOpen, close, onRegisterSuccess }: RegisterModalProps) => {
     const { t } = useTranslation();
     const { mutate: register, isLoading } = useRegister(onRegisterSuccess);
     const buttonVariant = useButtonVariant();
@@ -24,6 +24,13 @@ export const RegisterModal = ({ isOpen, close, onRegisterSuccess }: RegisterModa
             firstName: '',
             lastName: '',
             role: 'student',
+        },
+        validate: {
+            username: (value) => (value ? null : t('Authentication.Field.Username.Error.Required')),
+            email: (value) => (value ? null : t('Authentication.Field.Email.Error.Required')),
+            password: (value) => (value ? null : t('Authentication.Field.Password.Error.Required')),
+            firstName: (value) => (value ? null : t('Authentication.Field.FirstName.Error.Required')),
+            lastName: (value) => (value ? null : t('Authentication.Field.LastName.Error.Required')),
         },
     });
 
@@ -74,7 +81,7 @@ export const RegisterModal = ({ isOpen, close, onRegisterSuccess }: RegisterModa
                         variant={buttonVariant}
                         disabled={isLoading}
                     >
-                        {isLoading ? t('Authentication.Button.RegisteringIn') : t('Authentication.Button.Register')}
+                        {isLoading ? t('Authentication.Button.SigningUp') : t('Authentication.Button.SignUp')}
                     </Button>
                 </Stack>
             </form>

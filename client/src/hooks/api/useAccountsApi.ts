@@ -21,7 +21,7 @@ export const useLogin = (onSuccessCallback?: () => void) => {
         onSuccess: () => {
             fetchUserInfo();
             notifications.show({
-                message: t('Authentication.Notification.LoginSuccessful'),
+                message: t('Authentication.Notification.SignInSuccessful'),
                 withBorder: true,
                 withCloseButton: true,
                 color: 'teal',
@@ -31,7 +31,7 @@ export const useLogin = (onSuccessCallback?: () => void) => {
             if (onSuccessCallback) onSuccessCallback();
         },
         onError: (error: unknown) => {
-            let message = t('Authentication.Error.LoginFailed');
+            let message = t('Authentication.Error.SignInFailed');
 
             if (axios.isAxiosError(error)) {
                 const serverResponse = error.response?.data;
@@ -67,7 +67,7 @@ export const useLogout = () => {
             queryClient.removeQueries();
 
             notifications.show({
-                message: t('Authentication.Notification.LogoutSuccessful'),
+                message: t('Authentication.Notification.SignOutSuccessful'),
                 withBorder: true,
                 withCloseButton: true,
                 color: 'green',
@@ -75,7 +75,7 @@ export const useLogout = () => {
         },
         onError() {
             notifications.show({
-                message: t('Authentication.Error.LogoutFailed'),
+                message: t('Authentication.Error.SignOutFailed'),
                 withBorder: true,
                 withCloseButton: true,
                 color: 'red',
@@ -106,7 +106,7 @@ export const useRegister = (onSuccessCallback?: () => void) => {
             queryClient.removeQueries();
 
             notifications.show({
-                message: t('Authentication.Notification.RegisterSuccessful'),
+                message: t('Authentication.Notification.SignUpSuccessful'),
                 withBorder: true,
                 withCloseButton: true,
                 color: 'green',

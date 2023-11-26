@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 import { Button } from '@mantine/core';
 import { useState } from 'react';
 import { SigInModal } from './account/SignInModal';
-import { RegisterModal } from './account/RegisterModal';
+import { SignUpModal } from './account/SignUpModal';
 import { useLogout } from '../hooks/api/useAccountsApi';
 
 export const AppFrame = () => {
@@ -97,13 +97,6 @@ export const AppFrame = () => {
               {colorScheme === 'dark' ? <IconSun size='1rem' /> : <IconMoonStars size='1rem' />}
             </ActionIcon>
           </Group>
-          <AppShell.Section>
-            {isLoggedIn ? (
-              <Button onClick={handleLogout}>Logout</Button>
-            ) : (
-              <Button onClick={handleLogin}>Login</Button>
-            )}
-          </AppShell.Section>
         </AppShell.Section>
 
         <AppShell.Section grow>
@@ -126,6 +119,17 @@ export const AppFrame = () => {
             onClick={close}
           />
         </AppShell.Section>
+        <AppShell.Section p='md'>
+          {isLoggedIn ? (
+            <Button onClick={handleLogout} fullWidth>
+              Sign out
+            </Button>
+          ) : (
+            <Button onClick={handleLogin} fullWidth>
+              Sign in
+            </Button>
+          )}
+        </AppShell.Section>
       </AppShell.Navbar>
 
       <AppShell.Main h='100%' mih='100vh' bg={colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0]}>
@@ -139,7 +143,7 @@ export const AppFrame = () => {
         onLoginSuccess={onLoginSuccess}
         onSignUp={openSignUpModal}
       />
-      <RegisterModal
+      <SignUpModal
         isOpen={isRegisterModalOpen}
         close={closeSignUpModal}
         onRegisterSuccess={onRegisterSuccess}

@@ -36,8 +36,8 @@ export const SigInModal = ({ isOpen, close, onLoginSuccess, onSignUp }: SignInMo
     };
 
     const handleClose = () => {
+        form.reset();  // Reset the form
         close();
-        form.reset();
     };
 
     return (
@@ -58,7 +58,7 @@ export const SigInModal = ({ isOpen, close, onLoginSuccess, onSignUp }: SignInMo
                         variant={buttonVariant}
                         disabled={isLoading}
                     >
-                        {isLoading ? t('Authentication.Button.LoggingIn') : t('Authentication.Button.Login')}
+                        {isLoading ? t('Authentication.Button.SigningIn') : t('Authentication.Button.SignIn')}
                     </Button>
                 </Stack>
             </form>
@@ -69,9 +69,9 @@ export const SigInModal = ({ isOpen, close, onLoginSuccess, onSignUp }: SignInMo
                     onClick={handleSignUpClick}
                     style={{
                         cursor: 'pointer',
-                        fontWeight: 'bold', // Make the text bold
-                        color: '#007bff', // Change the color to make it stand out
-                        textDecoration: 'underline' // Optionally add underline
+                        fontWeight: 'bold',
+                        color: '#007bff',
+                        textDecoration: 'underline'
                     }}
                 >
                     Sign up
