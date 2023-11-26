@@ -9,7 +9,9 @@ import { useColorScheme, useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Button } from '@mantine/core';
 import { useState } from 'react';
-import { LoginModal } from '../components/account/LoginModal';
+import { SigInModal } from './account/SignInModal';
+import { RegisterModal } from './account/RegisterModal';
+import { useLogout } from '../hooks/api/useAccountsApi';
 
 export const AppFrame = () => {
   const [isOpen, { toggle, close }] = useDisclosure();
@@ -25,12 +27,38 @@ export const AppFrame = () => {
   const isLoggedIn = useAppStore((state) => state.isLoggedIn);
   const setIsLoggedIn = useAppStore((state) => state.setIsLoggedIn);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
 
   const handleLogin = () => {
     setLoginModalOpen(true);
   };
 
+  const onLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setLoginModalOpen(false);
+  };
+
+  const onRegisterSuccess = () => {
+    setRegisterModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setLoginModalOpen(false);
+  };
+
+  const openSignUpModal = () => {
+    setRegisterModalOpen(true);
+    setLoginModalOpen(false);
+  };
+
+  const closeSignUpModal = () => {
+    setRegisterModalOpen(false);
+  };
+
+  const { logout } = useLogout();
+
   const handleLogout = () => {
+    logout();
     setIsLoggedIn(false);
   };
 
@@ -105,9 +133,16 @@ export const AppFrame = () => {
           <Outlet />
         </Box>
       </AppShell.Main>
-      <LoginModal
+      <SigInModal
         isOpen={isLoginModalOpen}
-        close={() => setLoginModalOpen(false)}
+        close={handleCloseModal}
+        onLoginSuccess={onLoginSuccess}
+        onSignUp={openSignUpModal}
+      />
+      <RegisterModal
+        isOpen={isRegisterModalOpen}
+        close={closeSignUpModal}
+        onRegisterSuccess={onRegisterSuccess}
       />
     </AppShell>
   );

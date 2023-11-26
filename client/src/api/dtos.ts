@@ -14,6 +14,11 @@ export enum QuizGameState {
   Finished = 'Finished',
 }
 
+export enum Role {
+  Lecturer = 'Lecturer',
+  Student = 'Student',
+}
+
 export type UserActionStamp = {
   user: string;
   timestamp: Date;
