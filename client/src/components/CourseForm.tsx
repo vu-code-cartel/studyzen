@@ -46,7 +46,6 @@ export const CourseForm = (props: CourseFormProps) => {
             {...form.getInputProps('description')}
           />
           {props.isEditable ? (
-            // Edit and Save buttons for editable mode
             <Group justify='end'>
               {props.isReadonly ? (
                 <Button variant={buttonVariant} onClick={props.onEditClick}>
@@ -64,7 +63,6 @@ export const CourseForm = (props: CourseFormProps) => {
               )}
             </Group>
           ) : props.isCreationMode ? (
-            // Create button for creation mode
             <Button type='submit' variant={buttonVariant}>
               Create Course
             </Button>

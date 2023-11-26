@@ -108,16 +108,18 @@ const LecturesPanel = (props: CoursePanelProps) => {
             onChange={(e) => setLectureNameFilter(e.currentTarget.value)}
           />
         </Grid.Col>
-        <Grid.Col span='content'>
-          <Button
-            fullWidth
-            variant={buttonVariant}
-            component={Link}
-            to={getNewLectureRoute(props.course.id, props.course.name)}
-          >
-            {t('Lecture.Action.NewLecture')}
-          </Button>
-        </Grid.Col>
+        {props.isCurrentUserCreator && (
+          <Grid.Col span='content'>
+            <Button
+              fullWidth
+              variant={buttonVariant}
+              component={Link}
+              to={getNewLectureRoute(props.course.id, props.course.name)}
+            >
+              {t('Lecture.Action.NewLecture')}
+            </Button>
+          </Grid.Col>
+        )}
       </Grid>
       <StyledList
         items={filteredLectures.map((lecture) => (

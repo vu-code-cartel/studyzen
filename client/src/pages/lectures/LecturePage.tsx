@@ -29,9 +29,11 @@ class LectureTabs {
 }
 
 export const LecturePage = () => {
+  const currentUserId = useAppStore((state) => state.id);
   const { courseIdWithSlug, lectureIdWithSlug } = useParams();
   const { data: course, isLoading: isCourseLoading } = useGetCourse(getIdFromSlug(courseIdWithSlug));
   const { data: lecture, isLoading: isLectureLoading } = useGetLecture(getIdFromSlug(lectureIdWithSlug));
+  const isCurrentUserCreator = (lecture?.createdBy?.user ?? '') === currentUserId;
   const { t } = useTranslation();
   const isMobile = useAppStore((state) => state.isMobile);
   useDocumentTitle(t('Lecture.DocumentTitle.Lecture', { courseName: course?.name, lectureName: lecture?.name }));
@@ -70,18 +72,22 @@ export const LecturePage = () => {
         <Tabs.List ml={isMobile ? 0 : 'md'} mb={isMobile ? 'md' : 0}>
           <Tabs.Tab value={LectureTabs.Lecture}>{t('Lecture.Tab.Lecture')}</Tabs.Tab>
           <Tabs.Tab value={LectureTabs.Flashcards}>{t('Lecture.Tab.Flashcards')}</Tabs.Tab>
-          <Tabs.Tab value={LectureTabs.Settings}>{t('Lecture.Tab.Settings')}</Tabs.Tab>
+          {isCurrentUserCreator && (
+            <Tabs.Tab value={LectureTabs.Settings}>{t('Lecture.Tab.Settings')}</Tabs.Tab>
+          )}
         </Tabs.List>
 
         <Tabs.Panel value={LectureTabs.Lecture}>
-          <LecturePanel course={course} lecture={lecture} />
+          <LecturePanel course={course} lecture={lecture} isCurrentUserCreator={isCurrentUserCreator} />
         </Tabs.Panel>
         <Tabs.Panel value={LectureTabs.Flashcards}>
           <LectureFlashcardsPanel course={course} lecture={lecture} />
         </Tabs.Panel>
-        <Tabs.Panel value={LectureTabs.Settings}>
-          <LectureSettingsPanel course={course} lecture={lecture} />
-        </Tabs.Panel>
+        {isCurrentUserCreator && (
+          <Tabs.Panel value={LectureTabs.Settings}>
+            <LectureSettingsPanel course={course} lecture={lecture} />
+          </Tabs.Panel>
+        )}
       </Tabs>
     </PageContainer>
   );
@@ -90,6 +96,7 @@ export const LecturePage = () => {
 interface LecturePanelProps {
   course: CourseDto;
   lecture: LectureDto;
+  isCurrentUserCreator?: boolean;
 }
 
 const LecturePanel = (props: LecturePanelProps) => {
@@ -120,8 +127,8 @@ const LecturePanel = (props: LecturePanelProps) => {
       <ControlledRichTextEditor
         content={content}
         setValue={setContent}
-        isReadonly={isEditorReadonly}
-        showEditContentControl
+        isReadonly={!props.isCurrentUserCreator || isEditorReadonly}
+        showEditContentControl={props.isCurrentUserCreator}
         onEditContentClick={onEditContentClick}
         onSaveChangesClick={onSaveEditorChangesClick}
       />
