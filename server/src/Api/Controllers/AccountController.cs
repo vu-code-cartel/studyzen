@@ -49,8 +49,6 @@ public sealed class AccountController : ControllerBase
         Response.Cookies.Append("AccessToken", tokens.AccessToken, cookieOptions);
         Response.Cookies.Append("RefreshToken", tokens.RefreshToken, cookieOptions);
 
-        Console.WriteLine(tokens.AccessToken);
-
         return Ok();
     }
 

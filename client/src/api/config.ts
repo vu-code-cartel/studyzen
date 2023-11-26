@@ -11,12 +11,9 @@ axiosClient.defaults.headers.patch['Content-Type'] = 'application/json';
 
 axiosClient.interceptors.response.use(
     response => {
-        console.log('Response received:', response);
         return response;
     },
     async error => {
-        console.log('Error encountered:', error);
-
         if (error.response && error.response.status === 401) {
             const originalRequest = error.config;
             if (!originalRequest._retry) {
