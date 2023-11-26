@@ -1,9 +1,11 @@
 ﻿using StudyZen.Domain.Constraints;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StudyZen.Domain.Entities;
 
+[ExcludeFromCodeCoverage]
 public sealed class QuizAnswer : BaseEntity
 {
     [Required]

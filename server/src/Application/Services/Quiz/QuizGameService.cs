@@ -156,9 +156,7 @@ public sealed class QuizGameService : IQuizGameService
 
         var isAnswerCorrect = game.CurrentQuestion
             .Choices
-            .All(choice => 
-                (!choice.IsCorrect || answerIds.Contains(choice.Id)) 
-                && (choice.IsCorrect || !answerIds.Contains(choice.Id)));
+            .All(choice => (choice.IsCorrect && answerIds.Contains(choice.Id)) || (!choice.IsCorrect && !answerIds.Contains(choice.Id)));
 
         if (isAnswerCorrect)
         {

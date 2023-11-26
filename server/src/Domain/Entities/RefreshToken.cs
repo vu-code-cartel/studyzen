@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StudyZen.Domain.Entities;
 
+[ExcludeFromCodeCoverage]
 public class RefreshToken : BaseEntity
 {
     [Required]

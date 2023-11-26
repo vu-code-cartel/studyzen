@@ -7,9 +7,11 @@ using StudyZen.Application.Exceptions;
 using System.Security.Authentication;
 using StudyZen.Api.Auth;
 using StudyZen.Application.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StudyZen.Api;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddApi(this IServiceCollection services)

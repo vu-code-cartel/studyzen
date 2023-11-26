@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Identity;
 using StudyZen.Domain.Constraints;
 
 namespace StudyZen.Domain.Entities;
 
+[ExcludeFromCodeCoverage]
 public class ApplicationUser : IdentityUser
 {
     [Required]
