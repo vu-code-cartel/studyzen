@@ -8,12 +8,14 @@ public record ApplicationUserDto
     public string Email { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public string Role { get; set; }
 
-    public ApplicationUserDto(ApplicationUser applicationUser)
+    public ApplicationUserDto(ApplicationUser applicationUser, string role)
     {
         Username = applicationUser.UserName!;
         Email = applicationUser.Email!;
         FirstName = applicationUser.FirstName;
         LastName = applicationUser.LastName;
+        Role = role;
     }
 }

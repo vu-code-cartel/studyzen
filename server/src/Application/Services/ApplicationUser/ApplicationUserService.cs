@@ -11,15 +11,17 @@ public sealed class ApplicationUserService : IApplicationUserService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ValidationHandler _validationHandler;
     private readonly ITokenManagementService _tokenManagementService;
+    private readonly ICurrentUserAccessor _currentUserAccessor;
 
-    public ApplicationUserService(UserManager<ApplicationUser> userManager, ValidationHandler validationHandler, ITokenManagementService tokenManagementService)
+    public ApplicationUserService(UserManager<ApplicationUser> userManager, ValidationHandler validationHandler, ITokenManagementService tokenManagementService, ICurrentUserAccessor currentUserAccessor)
     {
         _userManager = userManager;
         _validationHandler = validationHandler;
         _tokenManagementService = tokenManagementService;
+        _currentUserAccessor = currentUserAccessor;
     }
 
-    public async Task<ApplicationUserDto> CreateApplicationUser(RegisterApplicationUserDto dto)
+    public async Task CreateApplicationUser(RegisterApplicationUserDto dto)
     {
         await _validationHandler.ValidateAsync(dto);
 
@@ -37,8 +39,6 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             await _userManager.AddToRoleAsync(applicationUser, dto.Role);
         }
-
-        return new ApplicationUserDto(applicationUser);
     }
 
     public async Task<Tokens> AuthenticateApplicationUser(LoginApplicationUserDto dto)
@@ -77,5 +77,14 @@ public sealed class ApplicationUserService : IApplicationUserService
         var accessToken = await _tokenManagementService.CreateAccessToken(applicationUser);
         var refreshToken = await _tokenManagementService.CreateRefreshToken(applicationUser);
         return new Tokens(accessToken, refreshToken);
+    }
+
+    public async Task<ApplicationUserDto> GetUser()
+    {
+        var applicationUserId = _currentUserAccessor.GetUserId();
+        var applicationUser = await _userManager.FindByIdAsync(applicationUserId);
+        var role = _userManager.GetRolesAsync(applicationUser!).Result.FirstOrDefault();
+
+        return new ApplicationUserDto(applicationUser!, role!);
     }
 }
