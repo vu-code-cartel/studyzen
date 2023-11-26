@@ -62,7 +62,7 @@ export const useLogout = () => {
             await axiosClient.post(`${ACCOUNTS_API_URL}/logout`, null, { withCredentials: true });
         },
         onSuccess() {
-            setUser('', '');
+            setUser('', '', '');
             setIsLoggedIn(false);
             queryClient.removeQueries();
 
@@ -143,13 +143,13 @@ export const useFetchUserInfo = () => {
         try {
             const response = await axiosClient.get(`${ACCOUNTS_API_URL}/user`);
             if (response.status === 200) {
-                const { username, role } = response.data;
-                setUser(username, role);
+                const { id, username, role } = response.data;
+                setUser(id, username, role);
                 setIsLoggedIn(true);
             }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 401) {
-                setUser('', '');
+                setUser('', '', '');
             }
             setIsLoggedIn(false);
             throw error;

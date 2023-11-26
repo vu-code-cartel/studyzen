@@ -12,9 +12,10 @@ interface AppState {
   setColorScheme: (scheme: ColorScheme) => void;
   isLoggedIn: boolean;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
+  id: string;
   username: string;
   role: string;
-  setUser: (username: string, role: string) => void;
+  setUser: (id: string, username: string, role: string) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -26,7 +27,8 @@ export const useAppStore = create<AppState>((set) => ({
   setColorScheme: (scheme) => set(() => ({ colorScheme: scheme })),
   isLoggedIn: false,
   setIsLoggedIn: (value) => set(() => ({ isLoggedIn: value })),
+  id: '',
   username: '',
   role: '',
-  setUser: (username, role) => set({ username, role }),
+  setUser: (id, username, role) => set({ id, username, role }),
 }));
