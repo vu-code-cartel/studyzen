@@ -24,7 +24,8 @@ public static class DependencyInjection
                     "http://localhost:5173")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowCredentials());
+                .AllowCredentials()
+                .WithExposedHeaders("www-authenticate"));
         });
 
         services
