@@ -8,6 +8,7 @@ interface CourseFormProps {
   onSubmit: (request: CreateCourseRequest) => void;
   isReadonly?: boolean;
   isEditable?: boolean;
+  isCreationMode?: boolean;
   onEditClick?: () => void;
   onCancelClick?: () => void;
   initialValues?: CreateCourseRequest;
@@ -44,7 +45,8 @@ export const CourseForm = (props: CourseFormProps) => {
             readOnly={props.isReadonly}
             {...form.getInputProps('description')}
           />
-          {props.isEditable && props.onEditClick && props.onCancelClick ? (
+          {props.isEditable ? (
+            // Edit and Save buttons for editable mode
             <Group justify='end'>
               {props.isReadonly ? (
                 <Button variant={buttonVariant} onClick={props.onEditClick}>
@@ -61,11 +63,12 @@ export const CourseForm = (props: CourseFormProps) => {
                 </>
               )}
             </Group>
-          ) : (
-            <Button type='submit' variant={buttonVariant} disabled={props.isReadonly}>
-              {t('Course.Action.CreateCourse')}
+          ) : props.isCreationMode ? (
+            // Create button for creation mode
+            <Button type='submit' variant={buttonVariant}>
+              Create Course
             </Button>
-          )}
+          ) : null}
         </Stack>
       </Fieldset>
     </form>

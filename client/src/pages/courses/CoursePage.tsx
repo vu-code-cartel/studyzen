@@ -20,6 +20,7 @@ import { StyledList } from '../../components/StyledList';
 import { formatDistanceToNow } from 'date-fns';
 import { CourseForm } from '../../components/CourseForm';
 import { CreateCourseRequest, UpdateCourseRequest } from '../../api/requests';
+import { useAppStore } from '../../hooks/useAppStore';
 
 class CourseTabs {
   public static readonly Lectures = 'lectures';
@@ -28,10 +29,11 @@ class CourseTabs {
 }
 
 export const CoursePage = () => {
+  const currentUserId = useAppStore((state) => state.id);
   const { t } = useTranslation();
   const { courseIdWithSlug } = useParams();
   const { data: course, isLoading: isCourseLoading } = useGetCourse(getIdFromSlug(courseIdWithSlug));
-
+  const isCurrentUserCreator = (course?.createdBy?.user ?? '') === currentUserId;
   useDocumentTitle(t('Course.DocumentTitle.Course', { courseName: course?.name }));
   usePageCategory('courses');
 
@@ -58,12 +60,14 @@ export const CoursePage = () => {
         <Tabs.List mb='md'>
           <Tabs.Tab value={CourseTabs.Lectures}>{t('Course.Tab.Lectures')}</Tabs.Tab>
           <Tabs.Tab value={CourseTabs.About}>{t('Course.Tab.About')}</Tabs.Tab>
-          <Tabs.Tab value={CourseTabs.Settings}>{t('Course.Tab.Settings')}</Tabs.Tab>
+          {isCurrentUserCreator && (
+            <Tabs.Tab value={CourseTabs.Settings}>{t('Course.Tab.Settings')}</Tabs.Tab>
+          )}
         </Tabs.List>
 
-        <LecturesPanel course={course} />
-        <AboutCoursePanel course={course} />
-        <CourseSettingsPanel course={course} />
+        <LecturesPanel course={course} isCurrentUserCreator={isCurrentUserCreator} />
+        <AboutCoursePanel course={course} isCurrentUserCreator={isCurrentUserCreator} />
+        <CourseSettingsPanel course={course} isCurrentUserCreator={isCurrentUserCreator} />
       </Tabs>
     </PageContainer>
   );
@@ -71,6 +75,7 @@ export const CoursePage = () => {
 
 interface CoursePanelProps {
   course: CourseDto;
+  isCurrentUserCreator: boolean;
 }
 
 const LecturesPanel = (props: CoursePanelProps) => {
@@ -156,8 +161,11 @@ const AboutCoursePanel = (props: CoursePanelProps) => {
         onEditClick={() => setIsEditing(true)}
         onCancelClick={() => setIsEditing(false)}
         isReadonly={!isEditing}
-        isEditable
-        initialValues={{ name: props.course.name, description: props.course.description }}
+        isEditable={props.isCurrentUserCreator} // Show editing controls only if the user is the creator
+        initialValues={{
+          name: props.course.name,
+          description: props.course.description,
+        }}
       />
     </Tabs.Panel>
   );
