@@ -1,17 +1,19 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Modal, Stack, TextInput } from '@mantine/core';
+import { Button, Modal, Stack, TextInput, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useLogin } from '../../hooks/api/useAccountsApi';
 import { useButtonVariant } from '../../hooks/useButtonVariant';
 
-interface LoginModalProps {
+interface SignInModalProps {
     isOpen: boolean;
     close: () => void;
+    onLoginSuccess: () => void;
+    onSignUp: () => void;
 }
 
-export const LoginModal = ({ isOpen, close }: LoginModalProps) => {
+export const SigInModal = ({ isOpen, close, onLoginSuccess, onSignUp }: SignInModalProps) => {
     const { t } = useTranslation();
-    const { login, isLoading } = useLogin();
+    const { mutate: login, isLoading } = useLogin(onLoginSuccess);
     const buttonVariant = useButtonVariant();
     const form = useForm({
         initialValues: {
@@ -19,7 +21,7 @@ export const LoginModal = ({ isOpen, close }: LoginModalProps) => {
             password: '',
         },
         validate: {
-            email: (value) => (value ? null : t('Authentication.Field.Username.Error.Required')),
+            email: (value) => (value ? null : t('Authentication.Field.Email.Error.Required')),
             password: (value) => (value ? null : t('Authentication.Field.Password.Error.Required')),
         },
     });
@@ -28,12 +30,22 @@ export const LoginModal = ({ isOpen, close }: LoginModalProps) => {
         login(values);
     };
 
+    const handleSignUpClick = () => {
+        close();
+        onSignUp();
+    };
+
+    const handleClose = () => {
+        close();
+        form.reset();
+    };
+
     return (
-        <Modal opened={isOpen} onClose={close} title={t('Authentication.Title.Login')}>
+        <Modal opened={isOpen} onClose={handleClose} title={t('Authentication.Title.SignIn')}>
             <form onSubmit={form.onSubmit(onLogin)} autoComplete='off' style={{ position: 'relative' }}>
                 <Stack>
                     <TextInput
-                        placeholder={t('Authentication.Field.Username.Label')}
+                        placeholder={t('Authentication.Field.Email.Label')}
                         {...form.getInputProps('email')}
                     />
                     <TextInput
@@ -50,6 +62,21 @@ export const LoginModal = ({ isOpen, close }: LoginModalProps) => {
                     </Button>
                 </Stack>
             </form>
+            <Text>
+                New to StudyZen?{' '}
+                <Text
+                    component="a"
+                    onClick={handleSignUpClick}
+                    style={{
+                        cursor: 'pointer',
+                        fontWeight: 'bold', // Make the text bold
+                        color: '#007bff', // Change the color to make it stand out
+                        textDecoration: 'underline' // Optionally add underline
+                    }}
+                >
+                    Sign up
+                </Text>
+            </Text>
         </Modal>
     );
-}; 
+};
