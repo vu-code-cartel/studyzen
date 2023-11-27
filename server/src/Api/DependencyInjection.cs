@@ -42,7 +42,7 @@ public static class DependencyInjection
                 };
                 options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest);
                 options.MapValidationException();
-                options.MapToStatusCode<InstanceNotFoundException>(StatusCodes.Status422UnprocessableEntity);
+                options.MapToStatusCode<InstanceNotFoundException>(StatusCodes.Status404NotFound);
                 options.MapToStatusCode<UserAlreadyExistsException>(StatusCodes.Status422UnprocessableEntity);
                 options.MapToStatusCode<AuthenticationException>(StatusCodes.Status401Unauthorized);
                 options.MapToStatusCode<AccessDeniedException>(StatusCodes.Status403Forbidden);
