@@ -7,9 +7,11 @@ using StudyZen.Application.Exceptions;
 using System.Security.Authentication;
 using StudyZen.Api.Auth;
 using StudyZen.Application.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StudyZen.Api;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddApi(this IServiceCollection services)
@@ -44,7 +46,7 @@ public static class DependencyInjection
                 };
                 options.MapToStatusCode<RequestArgumentNullException>(StatusCodes.Status400BadRequest);
                 options.MapValidationException();
-                options.MapToStatusCode<InstanceNotFoundException>(StatusCodes.Status422UnprocessableEntity);
+                options.MapToStatusCode<InstanceNotFoundException>(StatusCodes.Status404NotFound);
                 options.MapToStatusCode<UserAlreadyExistsException>(StatusCodes.Status422UnprocessableEntity);
                 options.MapToStatusCode<AuthenticationException>(StatusCodes.Status401Unauthorized);
                 options.MapToStatusCode<AccessDeniedException>(StatusCodes.Status403Forbidden);

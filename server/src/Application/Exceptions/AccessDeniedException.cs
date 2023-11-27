@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace StudyZen.Application.Exceptions;
 
+[ExcludeFromCodeCoverage]
 public sealed class AccessDeniedException : Exception
 {
     public AccessDeniedException()

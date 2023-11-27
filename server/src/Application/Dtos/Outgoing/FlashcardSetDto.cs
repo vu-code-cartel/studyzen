@@ -1,5 +1,6 @@
 using StudyZen.Domain.Enums;
 using StudyZen.Domain.Entities;
+using System.Text.Json.Serialization;
 
 namespace StudyZen.Application.Dtos;
 
@@ -9,7 +10,6 @@ public record FlashcardSetDto
     public int? LectureId { get; init; }
     public string Name { get; init; }
     public Color Color { get; init; }
-
     public FlashcardSetDto(FlashcardSet flashcardSet)
     {
         Id = flashcardSet.Id;
@@ -17,4 +17,6 @@ public record FlashcardSetDto
         Name = flashcardSet.Name;
         Color = flashcardSet.Color;
     }
+    [JsonConstructor]
+    public FlashcardSetDto() { }
 }

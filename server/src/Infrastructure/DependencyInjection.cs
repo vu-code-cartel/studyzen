@@ -7,9 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 using StudyZen.Application.Repositories;
 using StudyZen.Domain.Entities;
 using StudyZen.Infrastructure.Persistence;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 namespace StudyZen.Infrastructure;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

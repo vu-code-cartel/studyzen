@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using StudyZen.Domain.Entities;
 using StudyZen.Domain.ValueObjects;
 
@@ -19,4 +20,6 @@ public record CourseDto
         CreatedBy = course.CreatedBy;
         UpdatedBy = course.UpdatedBy;
     }
+    [JsonConstructor]
+    public CourseDto() { }
 }
