@@ -8,9 +8,6 @@ import { Link, Outlet } from 'react-router-dom';
 import { useColorScheme, useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Button } from '@mantine/core';
-import { useState } from 'react';
-import { SigInModal } from './account/SignInModal';
-import { SignUpModal } from './account/SignUpModal';
 import { useLogout } from '../hooks/api/useAccountsApi';
 
 export const AppFrame = () => {
@@ -24,36 +21,7 @@ export const AppFrame = () => {
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const { colorScheme: mantineColorScheme, toggleColorScheme } = useMantineColorScheme();
   const mediaColorScheme = useColorScheme();
-  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
   const setIsLoggedIn = useAppStore((state) => state.setIsLoggedIn);
-  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
-  const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
-
-  const handleLogin = () => {
-    setLoginModalOpen(true);
-  };
-
-  const onLoginSuccess = () => {
-    setIsLoggedIn(true);
-    setLoginModalOpen(false);
-  };
-
-  const onRegisterSuccess = () => {
-    setRegisterModalOpen(false);
-  };
-
-  const handleCloseModal = () => {
-    setLoginModalOpen(false);
-  };
-
-  const openSignUpModal = () => {
-    setRegisterModalOpen(true);
-    setLoginModalOpen(false);
-  };
-
-  const closeSignUpModal = () => {
-    setRegisterModalOpen(false);
-  };
 
   const { logout } = useLogout();
 
@@ -120,15 +88,9 @@ export const AppFrame = () => {
           />
         </AppShell.Section>
         <AppShell.Section p='md'>
-          {isLoggedIn ? (
-            <Button onClick={handleLogout} fullWidth>
-              Sign out
-            </Button>
-          ) : (
-            <Button onClick={handleLogin} fullWidth>
-              Sign in
-            </Button>
-          )}
+          <Button onClick={handleLogout} fullWidth>
+            Sign out
+          </Button>
         </AppShell.Section>
       </AppShell.Navbar>
 
@@ -137,17 +99,6 @@ export const AppFrame = () => {
           <Outlet />
         </Box>
       </AppShell.Main>
-      <SigInModal
-        isOpen={isLoginModalOpen}
-        close={handleCloseModal}
-        onLoginSuccess={onLoginSuccess}
-        onSignUp={openSignUpModal}
-      />
-      <SignUpModal
-        isOpen={isRegisterModalOpen}
-        close={closeSignUpModal}
-        onRegisterSuccess={onRegisterSuccess}
-      />
     </AppShell>
   );
 };
