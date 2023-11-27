@@ -16,7 +16,7 @@ export const useLogin = (onSuccessCallback?: () => void) => {
 
     return useMutation({
         mutationFn: async (request: LoginRequest) => {
-            await axiosClient.post(`${ACCOUNTS_API_URL}/login`, request, { withCredentials: true });
+            await axiosClient.post(`${ACCOUNTS_API_URL}/login`, request);
         },
         onSuccess: () => {
             fetchUserInfo();
@@ -59,7 +59,7 @@ export const useLogout = () => {
 
     const mutation = useMutation({
         mutationFn: async () => {
-            await axiosClient.post(`${ACCOUNTS_API_URL}/logout`, null, { withCredentials: true });
+            await axiosClient.post(`${ACCOUNTS_API_URL}/logout`, null,);
         },
         onSuccess() {
             setUser('', '', '');
@@ -90,7 +90,7 @@ export const useLogout = () => {
 };
 
 export const refreshToken = async () => {
-    const response = await axiosClient.post(`${SERVER_URL}/Account/refresh-token`, {}, { withCredentials: true });
+    const response = await axiosClient.post(`${SERVER_URL}/Account/refresh-token`, {});
     return response.data;
 };
 
@@ -100,7 +100,7 @@ export const useRegister = (onSuccessCallback?: () => void) => {
 
     return useMutation({
         mutationFn: async (request: RegisterRequest) => {
-            await axiosClient.post(`${ACCOUNTS_API_URL}/register`, request, { withCredentials: true });
+            await axiosClient.post(`${ACCOUNTS_API_URL}/register`, request);
         },
         onSuccess() {
             queryClient.removeQueries();
