@@ -152,7 +152,6 @@ export const useFetchUserInfo = () => {
                 setUser('', '', '');
             }
             setIsLoggedIn(false);
-            throw error;
         }
     };
 
