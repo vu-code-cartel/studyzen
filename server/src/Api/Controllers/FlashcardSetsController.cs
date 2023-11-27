@@ -8,6 +8,7 @@ using StudyZen.Application.Services;
 namespace StudyZen.Api.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Lecturer, Student")]
 [Route("[controller]")]
 public sealed class FlashcardSetsController : ControllerBase
 {
@@ -19,7 +20,6 @@ public sealed class FlashcardSetsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Lecturer, Student")]
     public async Task<IActionResult> CreateFlashcardSet([FromBody] CreateFlashcardSetDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
@@ -42,7 +42,6 @@ public sealed class FlashcardSetsController : ControllerBase
     }
 
     [HttpPatch("{flashcardSetId}")]
-    [Authorize(Roles = "Lecturer, Student")]
     public async Task<IActionResult> UpdateFlashcardSetById(int flashcardSetId, [FromBody] UpdateFlashcardSetDto request)
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
@@ -51,7 +50,6 @@ public sealed class FlashcardSetsController : ControllerBase
     }
 
     [HttpDelete("{flashcardSetId}")]
-    [Authorize(Roles = "Lecturer, Student")]
     public async Task<IActionResult> DeleteFlashcardSet(int flashcardSetId)
     {
         await _flashcardSetService.DeleteFlashcardSet(flashcardSetId);
