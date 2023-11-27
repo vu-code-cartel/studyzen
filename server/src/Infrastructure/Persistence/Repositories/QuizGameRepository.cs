@@ -45,7 +45,7 @@ public sealed class QuizGameRepository : IQuizGameRepository
 
     public QuizGame GetGameChecked(string gamePin)
     {
-        return GetGame(gamePin) ?? throw new QuizGameNotFoundException();
+        return GetGame(gamePin) ?? throw new IdentifiableException(ErrorCodes.QuizGameNotFound);
     }
 
     public void AddPlayerToGame(QuizPlayer player, QuizGame game)

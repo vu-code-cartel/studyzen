@@ -2,9 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using StudyZen.Application.Services;
 using StudyZen.Application.Validation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StudyZen.Application;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
         public static IServiceCollection AddApplication(this IServiceCollection services)
