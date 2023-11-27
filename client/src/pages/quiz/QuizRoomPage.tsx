@@ -136,7 +136,7 @@ export const QuizRoomPage = () => {
   }, [currentScreen, connection]);
 
   return (
-    <PageContainer>
+    <PageContainer mt='64px'>
       {currentScreen === QuizRoomScreen.WaitingForUserToJoin ||
       currentScreen === QuizRoomScreen.WaitingForGameToStart ? (
         <InitialQuizGameScreen

@@ -79,12 +79,16 @@ export const QuizGameQuestionScreen = (props: QuizGameQuestionScreenProps) => {
               ))}
             </Stack>
             <Button variant={buttonVariant} onClick={onAnswerSubmit} disabled={isAnswerSubmitted}>
-              Answer
+              {isAnswerSubmitted
+                ? props.answerIds
+                  ? 'Prepare for next question!'
+                  : 'Waiting for other players...'
+                : 'Answer'}
             </Button>
           </Stack>
         </Card>
         <Group justify='end'>
-          <Button variant={buttonVariant} onClick={onNextClick}>
+          <Button variant='outline' onClick={onNextClick}>
             Next
           </Button>
         </Group>
