@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using StudyZen.Application.Validation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StudyZen.Application.Exceptions;
 
+[ExcludeFromCodeCoverage]
 public class IncorrectArgumentCountException : ValidationException
 {
     public IncorrectArgumentCountException(params string[] propertyNames)

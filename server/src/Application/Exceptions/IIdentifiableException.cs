@@ -1,5 +1,8 @@
-﻿namespace StudyZen.Application.Exceptions;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace StudyZen.Application.Exceptions;
+
+[ExcludeFromCodeCoverage]
 public class IdentifiableException : Exception
 {
     public string ErrorCode { get; }
