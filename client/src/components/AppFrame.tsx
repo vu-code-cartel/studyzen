@@ -9,6 +9,7 @@ import { useColorScheme, useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Button } from '@mantine/core';
 import { useLogout } from '../hooks/api/useAccountsApi';
+import { useButtonVariant } from '../hooks/useButtonVariant';
 
 export const AppFrame = () => {
   const [isOpen, { toggle, close }] = useDisclosure();
@@ -22,6 +23,7 @@ export const AppFrame = () => {
   const { colorScheme: mantineColorScheme, toggleColorScheme } = useMantineColorScheme();
   const mediaColorScheme = useColorScheme();
   const setUser = useAppStore((state) => state.setUser);
+  const buttonVariant = useButtonVariant();
 
   const { logout } = useLogout();
 
@@ -88,7 +90,7 @@ export const AppFrame = () => {
           />
         </AppShell.Section>
         <AppShell.Section p='md'>
-          <Button onClick={handleLogout} fullWidth>
+          <Button onClick={handleLogout} variant={buttonVariant} fullWidth>
             Sign out
           </Button>
         </AppShell.Section>

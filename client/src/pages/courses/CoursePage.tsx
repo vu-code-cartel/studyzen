@@ -60,9 +60,7 @@ export const CoursePage = () => {
         <Tabs.List mb='md'>
           <Tabs.Tab value={CourseTabs.Lectures}>{t('Course.Tab.Lectures')}</Tabs.Tab>
           <Tabs.Tab value={CourseTabs.About}>{t('Course.Tab.About')}</Tabs.Tab>
-          {isCurrentUserCreator && (
-            <Tabs.Tab value={CourseTabs.Settings}>{t('Course.Tab.Settings')}</Tabs.Tab>
-          )}
+          {isCurrentUserCreator && <Tabs.Tab value={CourseTabs.Settings}>{t('Course.Tab.Settings')}</Tabs.Tab>}
         </Tabs.List>
 
         <LecturesPanel course={course} isCurrentUserCreator={isCurrentUserCreator} />
@@ -132,8 +130,8 @@ const LecturesPanel = (props: CoursePanelProps) => {
               {lecture.name}
             </Text>
             <Text size='xs' opacity={0.6}>
-              {t('App.Stamp.UpdatedBy')} {lecture.updatedBy.user}{' '}
-              {formatDistanceToNow(lecture.updatedBy.timestamp, { addSuffix: true })}
+              {/* {t('App.Stamp.UpdatedBy')} {lecture.updatedBy.user}{' '} */}
+              Updated {formatDistanceToNow(lecture.updatedBy.timestamp, { addSuffix: true })}
             </Text>
           </>
         ))}
