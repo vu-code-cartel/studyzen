@@ -40,5 +40,5 @@ const NewCourseForm = () => {
     navigate(AppRoutes.Courses);
   };
 
-  return <CourseForm onSubmit={onCourseCreateClick} />;
+  return <CourseForm isCreationMode={true} onSubmit={onCourseCreateClick} />;
 };

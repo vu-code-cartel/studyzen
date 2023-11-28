@@ -19,6 +19,7 @@ export const CoursesPage = () => {
   useDocumentTitle(t('Course.DocumentTitle.Courses'));
   usePageCategory('courses');
   const colorScheme = useAppStore((state) => state.colorScheme);
+  const userRole = useAppStore((state) => state.user?.role);
 
   if (!courses || isLoading) {
     return <CenteredLoader />;
@@ -28,9 +29,11 @@ export const CoursesPage = () => {
     <PageContainer>
       <PageHeader>
         <AppBreadcrumbs items={[{ title: t('Course.Title.Courses'), to: AppRoutes.Courses }]} />
-        <Button component={Link} to={AppRoutes.NewCourse} variant={buttonVariant}>
-          {t('Course.Action.NewCourse')}
-        </Button>
+        {userRole === 'Lecturer' && (
+          <Button component={Link} to={AppRoutes.NewCourse} variant={buttonVariant}>
+            {t('Course.Action.NewCourse')}
+          </Button>
+        )}
       </PageHeader>
 
       <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>

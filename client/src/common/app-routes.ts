@@ -1,6 +1,8 @@
 import urlSlug from 'url-slug';
 
 export class AppRoutes {
+  public static readonly SignIn = '/login';
+  public static readonly SignUp = '/register';
   public static readonly Home = '/';
   public static readonly Courses = '/courses';
   public static readonly Course = `${this.Courses}/:courseIdWithSlug`;

@@ -1,4 +1,4 @@
-import { Color } from './dtos';
+import { Color, Role } from './dtos';
 
 export type CreateCourseRequest = {
   name: string;
@@ -64,3 +64,17 @@ export type CreateQuizQuestionDto = {
   incorrectAnswers: string[];
   timeLimitInSeconds: number;
 };
+
+export type LoginRequest = {
+  email: string;
+  password: string;
+}
+
+export type RegisterRequest = {
+  username: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  role: Role;
+}

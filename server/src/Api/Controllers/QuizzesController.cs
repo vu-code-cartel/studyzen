@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
 using StudyZen.Application.Dtos;
 using StudyZen.Application.Services;
@@ -6,6 +7,7 @@ using StudyZen.Application.Services;
 namespace StudyZen.Api.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Lecturer, Student")]
 [Route("[controller]")]
 public sealed class QuizzesController : ControllerBase
 {

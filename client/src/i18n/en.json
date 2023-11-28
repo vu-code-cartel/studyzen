@@ -32,6 +32,7 @@
   },
   "Home": {
     "DocumentTitle": "StudyZen",
+    "WelcomeMessage": "Welcome to Studyzen, {{username}}!",
     "Title": "Welcome to StudyZen!"
   },
   "NotFound": {
@@ -256,6 +257,81 @@
       "FailedToJoinGame": "Failed to join game",
       "UsernameTaken": "Username taken",
       "FailedToConnect": "Failed to establish the game connection. Please consider refreshing the browser window."
+    }
+  },
+  "Authentication": {
+    "Prompt": {
+      "NewToStudyZen": "New to StudyZen?",
+      "AlreadyHaveAccount": "Already have an account?"
+    },
+    "Action": {
+      "SignUp": "Sign up",
+      "SignIn": "Sign in"
+    },
+    "Loading": "Loading...",
+    "Title": {
+      "SignIn": "Sign in to StudyZen",
+      "SignUp": "Sign up to StudyZen"
+    },
+    "Role": {
+      "Student": "Student",
+      "Lecturer": "Lecturer"
+    },
+    "Field": {
+      "Email": {
+        "Label": "Email",
+        "Error": {
+          "Required": "Email is required"
+        }
+      },
+      "Password": {
+        "Label": "Password",
+        "Error": {
+          "Required": "Password is required"
+        }
+      },
+      "Username": {
+        "Label": "Username",
+        "Error": {
+          "Required": "Username is required"
+        }
+      },
+      "FirstName": {
+        "Label": "First name",
+        "Error": {
+          "Required": "First name is required"
+        }
+      },
+      "LastName": {
+        "Label": "Last name",
+        "Error": {
+          "Required": "Last name is required"
+        }
+      },
+      "Role": {
+        "Label": "Role",
+        "Error": {
+          "Required": "Role is required"
+        }
+      }
+    },
+    "Button": {
+      "SignIn": "Sign in",
+      "SignUp": "Sign up",
+      "SigningIn": "Signing In...",
+      "SigningUp": "Signing up..."
+    },
+    "Notification": {
+      "SignInSuccessful": "Sign in was successful",
+      "SignOutSuccessful": "Sign out was successful",
+      "SignUpSuccessful": "Registration was successful"
+    },
+    "Error": {
+      "InvalidCredentials": "Wrong username or password",
+      "SignInFailed": "Cannot sign in. Please try again",
+      "SignOutFailed": "Cannot sign out. Please try again",
+      "UserExists": "User with the given email already exists",
+      "RegisterFailed": "Cannot register new user. Please try again"
     }
   },
   "RichTextEditor": {

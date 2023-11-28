@@ -52,11 +52,7 @@ export const JoinQuizGameModal = (props: JoinQuizGameModalProps) => {
     <Modal opened={opened} onClose={close} withCloseButton={false} closeOnClickOutside={false} closeOnEscape={false}>
       <form onSubmit={form.onSubmit(onJoinGameClick)}>
         <Stack>
-          <TextInput
-            placeholder={t('QuizGame.Field.Username.Label')}
-            data-autofocus
-            {...form.getInputProps('username')}
-          />
+          <TextInput label={t('QuizGame.Field.Username.Label')} data-autofocus {...form.getInputProps('username')} />
           <Button
             variant={buttonVariant}
             type='submit'
