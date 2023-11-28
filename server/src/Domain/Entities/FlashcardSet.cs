@@ -2,6 +2,7 @@ using StudyZen.Domain.Enums;
 using StudyZen.Domain.Constraints;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudyZen.Domain.Entities;
 
@@ -10,6 +11,7 @@ public sealed class FlashcardSet : AuditableEntity
     public int? LectureId { get; set; }
 
     [ForeignKey(nameof(LectureId))]
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public Lecture? Lecture { get; set; } = null;
 
     [Required]
