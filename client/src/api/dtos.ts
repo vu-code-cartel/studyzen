@@ -62,6 +62,7 @@ export type QuizQuestionDto = {
   id: number;
   question: string;
   choices: QuizAnswerDto[];
+  timeLimitInSeconds: number;
 };
 
 export type QuizAnswerDto = {

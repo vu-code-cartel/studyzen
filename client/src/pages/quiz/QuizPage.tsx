@@ -16,10 +16,10 @@ import {
   Stack,
   useMantineTheme,
   Text,
-  Group,
   TextInput,
   Divider,
-  NumberInput,
+  Grid,
+  Select,
 } from '@mantine/core';
 import { useButtonVariant } from '../../hooks/useButtonVariant';
 import { useCreateGame } from '../../hooks/api/quizGamesApi';
@@ -64,6 +64,7 @@ export const QuizPage = () => {
     },
   });
   const addQuestion = useAddQuestionToQuiz();
+  const isMobile = useAppStore((state) => state.isMobile);
 
   const onCreateGameClick = async (quiz: QuizDto) => {
     const game = await createGame.mutateAsync(quiz.id);
@@ -75,12 +76,13 @@ export const QuizPage = () => {
       return;
     }
 
-    const correctAnswers = choices.filter((c) => c.isCorrect).map((c) => c.answer);
-    const incorrectAnswers = choices.filter((c) => !c.isCorrect).map((c) => c.answer);
-
-    if (correctAnswers.length + incorrectAnswers.length <= 0) {
+    if (choices.length <= 0) {
+      form.setFieldError('choice', 'Please add at least one choice.');
       return;
     }
+
+    const correctAnswers = choices.filter((c) => c.isCorrect).map((c) => c.answer);
+    const incorrectAnswers = choices.filter((c) => !c.isCorrect).map((c) => c.answer);
 
     const dto: CreateQuizQuestionDto = {
       question: values.question,
@@ -101,6 +103,7 @@ export const QuizPage = () => {
       form.setFieldError('choice', 'Such choice already exists');
     } else {
       setChoices((prev) => [...prev, { answer: form.values.choice, isCorrect: false }]);
+      form.setFieldValue('choice', '');
     }
   };
 
@@ -130,29 +133,38 @@ export const QuizPage = () => {
                 { title: quiz.title, to: getQuizRoute(quiz.id, quiz.title) },
               ]}
             />
-            <Button variant={buttonVariant} onClick={() => onCreateGameClick(quiz)}>
+            <Button color='teal' variant={buttonVariant} onClick={() => onCreateGameClick(quiz)}>
               {t('QuizGame.Button.Create')}
             </Button>
           </PageHeader>
           <Card mb='md' withBorder>
             <form onSubmit={form.onSubmit(onAddQuestionClick)}>
               <Stack>
-                <Text>Add question</Text>
+                <Text fw={600}>Add question</Text>
                 <TextInput label='Question' {...form.getInputProps('question')} />
-                <NumberInput
-                  label='Time limit in seconds'
-                  min={3}
-                  max={600}
-                  {...form.getInputProps('timeLimitInSeconds')}
+                <Select
+                  label='Time limit'
+                  data={[
+                    { value: '10', label: '10 seconds' },
+                    { value: '15', label: '15 seconds' },
+                    { value: '30', label: '30 seconds' },
+                    { value: '45', label: '45 seconds' },
+                    { value: '60', label: '60 seconds' },
+                    { value: '120', label: '120 seconds' },
+                  ]}
+                  value={form.values.timeLimitInSeconds.toString()}
+                  onChange={(value) => form.setFieldValue('timeLimitInSeconds', Number(value))}
                 />
-                <Stack>
-                  <TextInput label='Choice' {...form.getInputProps('choice')} />
-                  <Group justify='end'>
-                    <Button variant={buttonVariant} onClick={onAddChoiceClick}>
-                      Add choice
+                <Grid align='flex-start'>
+                  <Grid.Col span={isMobile ? 9 : 10}>
+                    <TextInput label='Choice' {...form.getInputProps('choice')} />
+                  </Grid.Col>
+                  <Grid.Col span={isMobile ? 3 : 2}>
+                    <Button variant='light' onClick={onAddChoiceClick} mt='25px' fullWidth>
+                      Add
                     </Button>
-                  </Group>
-                </Stack>
+                  </Grid.Col>
+                </Grid>
                 {choices.length > 0 && <Divider />}
                 {choices.map((choice) => (
                   <Radio
@@ -180,7 +192,12 @@ export const QuizPage = () => {
                   value={question.question}
                   bg={colorScheme === 'dark' ? theme.colors.dark[6] : theme.white}
                 >
-                  <Accordion.Control>{question.question}</Accordion.Control>
+                  <Accordion.Control>
+                    {question.question}{' '}
+                    <Text component='span' opacity={0.4}>
+                      ({question.timeLimitInSeconds}s)
+                    </Text>
+                  </Accordion.Control>
                   <Accordion.Panel>
                     <Stack>
                       {question.choices.map((choice) => (
