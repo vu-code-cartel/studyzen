@@ -92,6 +92,7 @@ interface FlashcardSetPanelProps {
 }
 
 const ViewSetPanel = (props: FlashcardSetPanelProps) => {
+  const isLoggedIn = useAppStore((state) => state.user);
   const createFlashcard = useCreateFlashcard();
   const importFlashcards = useImportFlashcards();
   const isMobile = useAppStore((state) => state.isMobile);
@@ -135,54 +136,58 @@ const ViewSetPanel = (props: FlashcardSetPanelProps) => {
   return (
     <Stack>
       <Text fw={600}>{t('FlashcardSet.TermsInSet')}</Text>
-      <Fieldset m={0} p='md' legend='Add terms'>
-        <Stack>
-          <form onSubmit={createFlashcardForm.onSubmit(onCreateFlashcardClick)} autoComplete='off' spellCheck='false'>
-            <Stack gap='sm'>
-              <Grid>
-                <Grid.Col span={isMobile ? 12 : 6}>
-                  <TextInput
-                    label={t('Flashcard.Field.Front')}
-                    withAsterisk
-                    {...createFlashcardForm.getInputProps('front')}
-                  />
-                </Grid.Col>
-                <Grid.Col span={isMobile ? 12 : 6}>
-                  <TextInput
-                    label={t('Flashcard.Field.Back')}
-                    withAsterisk
-                    {...createFlashcardForm.getInputProps('back')}
-                  />
-                </Grid.Col>
-              </Grid>
+      {isLoggedIn && (
+        <Fieldset m={0} p='md' legend='Add terms'>
+          {/* ... form for adding terms ... */}
+          <Stack>
+            <form onSubmit={createFlashcardForm.onSubmit(onCreateFlashcardClick)} autoComplete='off' spellCheck='false'>
+              <Stack gap='sm'>
+                <Grid>
+                  <Grid.Col span={isMobile ? 12 : 6}>
+                    <TextInput
+                      label={t('Flashcard.Field.Front')}
+                      withAsterisk
+                      {...createFlashcardForm.getInputProps('front')}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={isMobile ? 12 : 6}>
+                    <TextInput
+                      label={t('Flashcard.Field.Back')}
+                      withAsterisk
+                      {...createFlashcardForm.getInputProps('back')}
+                    />
+                  </Grid.Col>
+                </Grid>
 
-              <Group justify='end'>
-                <Group gap='xs'>
-                  <ActionIcon variant='light' type='submit'>
-                    <IconPlus stroke={1.5} width='70%' height='70%' />
-                  </ActionIcon>
+                <Group justify='end'>
+                  <Group gap='xs'>
+                    <ActionIcon variant='light' type='submit'>
+                      <IconPlus stroke={1.5} width='70%' height='70%' />
+                    </ActionIcon>
+                  </Group>
                 </Group>
-              </Group>
-            </Stack>
-          </form>
-          <Divider />
-          <form onSubmit={importFlashcardsForm.onSubmit(onImportFlashcardsClick)}>
-            <Stack gap='sm'>
-              <FileInput
-                label={t('Flashcard.Field.ImportFromFile')}
-                placeholder={t('Flashcard.Placeholder.SelectFile')}
-                accept='.csv'
-                {...importFlashcardsForm.getInputProps('file')}
-              />
-              <Group justify='end'>
-                <Button variant={buttonVariant} fullWidth={isMobile} type='submit'>
-                  {t('Flashcard.Action.Import')}
-                </Button>
-              </Group>
-            </Stack>
-          </form>
-        </Stack>
-      </Fieldset>
+              </Stack>
+            </form>
+            <Divider />
+            <form onSubmit={importFlashcardsForm.onSubmit(onImportFlashcardsClick)}>
+              <Stack gap='sm'>
+                <FileInput
+                  label={t('Flashcard.Field.ImportFromFile')}
+                  placeholder={t('Flashcard.Placeholder.SelectFile')}
+                  accept='.csv'
+                  {...importFlashcardsForm.getInputProps('file')}
+                />
+                <Group justify='end'>
+                  <Button variant={buttonVariant} fullWidth={isMobile} type='submit'>
+                    {t('Flashcard.Action.Import')}
+                  </Button>
+                </Group>
+              </Stack>
+            </form>
+          </Stack>
+        </Fieldset>
+      )
+      }
 
       {props.flashcards.map((flashcard) => (
         <Card withBorder key={flashcard.id}>

@@ -27,6 +27,7 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Lecturer, Student")]
     public async Task<IActionResult> GetLecturesByCourseId(int courseId)
     {
         var courseLectures = await _lectureService.GetLecturesByCourseId(courseId);
@@ -34,6 +35,7 @@ public sealed class LecturesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Lecturer, Student")]
     [Route("{lectureId}")]
     public async Task<IActionResult> GetLecture(int lectureId)
     {

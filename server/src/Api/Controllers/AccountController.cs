@@ -1,4 +1,5 @@
 using System.Security.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyZen.Api.Extensions;
 using StudyZen.Application.Dtos;
@@ -21,7 +22,7 @@ public sealed class AccountController : ControllerBase
         {
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.Strict,
+            SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddDays(1)
         };
     }
@@ -32,9 +33,9 @@ public sealed class AccountController : ControllerBase
     {
         request.ThrowIfRequestArgumentNull(nameof(request));
 
-        var newApplicationUser = await _applicationUserService.CreateApplicationUser(request);
+        await _applicationUserService.CreateApplicationUser(request);
 
-        return Ok(newApplicationUser);
+        return Ok();
     }
 
     [HttpPost]
@@ -74,5 +75,13 @@ public sealed class AccountController : ControllerBase
         Response.Cookies.Delete("RefreshToken");
 
         return Ok();
+    }
+    [HttpGet]
+    [Route("user")]
+    [Authorize(Roles = "Lecturer, Student")]
+    public async Task<IActionResult> GetUser()
+    {
+        var applicationUser = await _applicationUserService.GetUser();
+        return Ok(applicationUser);
     }
 }

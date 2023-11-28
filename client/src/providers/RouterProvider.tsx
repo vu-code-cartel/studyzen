@@ -15,10 +15,50 @@ import { QuizzesPage } from '../pages/quiz/QuizzesPage';
 import { QuizPage } from '../pages/quiz/QuizPage';
 import { QuizRoomPage } from '../pages/quiz/QuizRoomPage';
 import { NewQuizPage } from '../pages/quiz/NewQuizPage';
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAppStore } from '../hooks/useAppStore';
+import { SignInPage } from '../pages/SignInPage';
+import { SignUpPage } from '../pages/SignUpPage';
+
+
+const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
+  const isLoggedIn = useAppStore((state) => state.user);
+  const location = useLocation();
+
+  if (!isLoggedIn) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
+};
+
+const RedirectToHomeIfLoggedIn: React.FC<{ children: JSX.Element }> = ({ children }) => {
+  const isLoggedIn = useAppStore((state) => state.user);
+  const location = useLocation();
+
+  if (isLoggedIn) {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+
+  return children;
+};
 
 const router = createBrowserRouter([
   {
-    element: <AppFrame />,
+    path: AppRoutes.SignIn,
+    element: <RedirectToHomeIfLoggedIn><SignInPage /></RedirectToHomeIfLoggedIn>,
+  },
+  {
+    path: AppRoutes.SignUp,
+    element: <RedirectToHomeIfLoggedIn><SignUpPage /></RedirectToHomeIfLoggedIn>,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+  },
+  {
+    element: <ProtectedRoute><AppFrame /></ProtectedRoute>,
     children: [
       {
         path: AppRoutes.Home,
@@ -71,10 +111,6 @@ const router = createBrowserRouter([
       {
         path: AppRoutes.QuizGameRoom,
         element: <QuizRoomPage />,
-      },
-      {
-        path: '*',
-        element: <NotFound />,
       },
     ],
   },
