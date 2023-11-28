@@ -17,7 +17,7 @@ export const getIdFromSlug = (idWithSlug?: string) => {
 
 export const formatUserActionStamp = (stamp: UserActionStamp): UserActionStamp => ({
   ...stamp,
-  timestamp: new Date(`${stamp.timestamp}`),
+  timestamp: new Date(`${stamp.timestamp}Z`),
 });
 
 export const buildHubConnection = (hubUrl: string): signalR.HubConnection =>
