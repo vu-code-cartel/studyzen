@@ -19,7 +19,7 @@ export const CoursesPage = () => {
   useDocumentTitle(t('Course.DocumentTitle.Courses'));
   usePageCategory('courses');
   const colorScheme = useAppStore((state) => state.colorScheme);
-  const userRole = useAppStore((state) => state.role);
+  const userRole = useAppStore((state) => state.user?.role);
 
   if (!courses || isLoading) {
     return <CenteredLoader />;

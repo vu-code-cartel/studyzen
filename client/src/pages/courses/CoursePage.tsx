@@ -29,7 +29,7 @@ class CourseTabs {
 }
 
 export const CoursePage = () => {
-  const currentUserId = useAppStore((state) => state.id);
+  const currentUserId = useAppStore((state) => state.user?.id);
   const { t } = useTranslation();
   const { courseIdWithSlug } = useParams();
   const { data: course, isLoading: isCourseLoading } = useGetCourse(getIdFromSlug(courseIdWithSlug));

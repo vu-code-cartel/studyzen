@@ -54,7 +54,6 @@ export const useLogin = (onSuccessCallback?: () => void) => {
 export const useLogout = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
-    const setIsLoggedIn = useAppStore((state) => state.setIsLoggedIn);
     const setUser = useAppStore((state) => state.setUser);
 
     const mutation = useMutation({
@@ -62,8 +61,7 @@ export const useLogout = () => {
             await axiosClient.post(`${ACCOUNTS_API_URL}/logout`, null,);
         },
         onSuccess() {
-            setUser('', '', '');
-            setIsLoggedIn(false);
+            setUser(null);
             queryClient.removeQueries();
 
             notifications.show({
@@ -137,21 +135,18 @@ export const useRegister = (onSuccessCallback?: () => void) => {
 
 export const useFetchUserInfo = () => {
     const setUser = useAppStore((state) => state.setUser);
-    const setIsLoggedIn = useAppStore((state) => state.setIsLoggedIn);
 
     const fetchUserInfo = async () => {
         try {
             const response = await axiosClient.get(`${ACCOUNTS_API_URL}/user`);
             if (response.status === 200) {
                 const { id, username, role } = response.data;
-                setUser(id, username, role);
-                setIsLoggedIn(true);
+                setUser({ id, username, role });
             }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 401) {
-                setUser('', '', '');
+                setUser(null);
             }
-            setIsLoggedIn(false);
         }
     };
 

@@ -92,7 +92,7 @@ interface FlashcardSetPanelProps {
 }
 
 const ViewSetPanel = (props: FlashcardSetPanelProps) => {
-  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
+  const isLoggedIn = useAppStore((state) => state.user);
   const createFlashcard = useCreateFlashcard();
   const importFlashcards = useImportFlashcards();
   const isMobile = useAppStore((state) => state.isMobile);

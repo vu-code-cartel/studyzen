@@ -3,6 +3,12 @@ import { PageCategory } from '../common/types';
 
 export type ColorScheme = 'light' | 'dark' | undefined;
 
+interface User {
+  id: string;
+  username: string;
+  role: string;
+}
+
 interface AppState {
   pageCategory: PageCategory;
   setPageCategory: (category: PageCategory) => void;
@@ -10,12 +16,8 @@ interface AppState {
   setIsMobile: (isMobile: boolean | undefined) => void;
   colorScheme: ColorScheme;
   setColorScheme: (scheme: ColorScheme) => void;
-  isLoggedIn: boolean;
-  setIsLoggedIn: (isLoggedIn: boolean) => void;
-  id: string;
-  username: string;
-  role: string;
-  setUser: (id: string, username: string, role: string) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -25,10 +27,6 @@ export const useAppStore = create<AppState>((set) => ({
   setIsMobile: (value) => set(() => ({ isMobile: value })),
   colorScheme: undefined,
   setColorScheme: (scheme) => set(() => ({ colorScheme: scheme })),
-  isLoggedIn: false,
-  setIsLoggedIn: (value) => set(() => ({ isLoggedIn: value })),
-  id: '',
-  username: '',
-  role: '',
-  setUser: (id, username, role) => set({ id, username, role }),
+  user: null,
+  setUser: (user) => set({ user }),
 }));

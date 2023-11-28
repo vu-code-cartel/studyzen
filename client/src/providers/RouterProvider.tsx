@@ -23,7 +23,7 @@ import { SignUpPage } from '../pages/SignUpPage';
 
 
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
-  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
+  const isLoggedIn = useAppStore((state) => state.user);
   const location = useLocation();
 
   if (!isLoggedIn) {
@@ -34,7 +34,7 @@ const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 };
 
 const RedirectToHomeIfLoggedIn: React.FC<{ children: JSX.Element }> = ({ children }) => {
-  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
+  const isLoggedIn = useAppStore((state) => state.user);
   const location = useLocation();
 
   if (isLoggedIn) {

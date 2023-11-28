@@ -1,25 +1,22 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Stack, TextInput, Text, Container, Title, Anchor } from '@mantine/core';
+import { Button, Stack, TextInput, Text, Container, Title, Anchor, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useLogin } from '../hooks/api/useAccountsApi';
 import { useButtonVariant } from '../hooks/useButtonVariant';
 import { useNavigate } from 'react-router-dom';
 import { PageContainer } from '../components/PageContainer';
 import { LoginRequest } from '../api/requests';
-import { useAppStore } from '../hooks/useAppStore';
 
 
 export const SignInPage = () => {
-    const setIsLoggedIn = useAppStore((state) => state.setIsLoggedIn);
     const { t } = useTranslation();
     const navigate = useNavigate();
     const buttonVariant = useButtonVariant();
 
-    // Validation logic
     const validateEmail = (value: any) => value ? null : t('Authentication.Field.Email.Error.Required');
     const validatePassword = (value: any) => value ? null : t('Authentication.Field.Password.Error.Required');
 
-    const form = useForm({
+    const form = useForm<LoginRequest>({
         initialValues: {
             email: '',
             password: '',
@@ -31,7 +28,6 @@ export const SignInPage = () => {
     });
 
     const loginSuccessCallback = () => {
-        setIsLoggedIn(true);
         navigate('/');
     };
 
@@ -44,8 +40,8 @@ export const SignInPage = () => {
     const handleSignUpClick = () => navigate('/register');
 
     return (
-        <PageContainer>
-            <Container size="xs" mt={30}>
+        <PageContainer style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', height: '100vh', paddingTop: '10vh' }}>
+            <Container size="md">
                 <Title order={1} style={{ textAlign: 'center' }}>
                     {t('Authentication.Title.SignIn')}
                 </Title>
@@ -56,9 +52,8 @@ export const SignInPage = () => {
                             placeholder={t('Authentication.Field.Email.Label')}
                             {...form.getInputProps('email')}
                         />
-                        <TextInput
+                        <PasswordInput
                             placeholder={t('Authentication.Field.Password.Label')}
-                            type='password'
                             {...form.getInputProps('password')}
                         />
                         <Button

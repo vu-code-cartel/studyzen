@@ -21,13 +21,13 @@ export const AppFrame = () => {
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const { colorScheme: mantineColorScheme, toggleColorScheme } = useMantineColorScheme();
   const mediaColorScheme = useColorScheme();
-  const setIsLoggedIn = useAppStore((state) => state.setIsLoggedIn);
+  const setUser = useAppStore((state) => state.setUser);
 
   const { logout } = useLogout();
 
   const handleLogout = () => {
     logout();
-    setIsLoggedIn(false);
+    setUser(null);
   };
 
   useEffect(() => {

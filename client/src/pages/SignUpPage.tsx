@@ -1,10 +1,12 @@
-import { TextInput, Button, Stack, Select, Container, Title } from '@mantine/core';
+import { TextInput, Text, Button, Stack, Select, Container, Title, PasswordInput, Anchor } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useTranslation } from 'react-i18next';
 import { useRegister } from '../hooks/api/useAccountsApi';
 import { useButtonVariant } from '../hooks/useButtonVariant';
 import { PageContainer } from '../components/PageContainer';
 import { useNavigate } from 'react-router-dom';
+import { RegisterRequest } from '../api/requests';
+import { Role } from '../api/dtos';
 
 
 export const SignUpPage = () => {
@@ -16,16 +18,18 @@ export const SignUpPage = () => {
         navigate('/login');
     };
 
+    const handleSignInClick = () => navigate('/login');
+
     const { mutate: register, isLoading } = useRegister(onRegisterSuccess);
 
-    const form = useForm({
+    const form = useForm<RegisterRequest>({
         initialValues: {
             username: '',
             email: '',
             password: '',
             firstName: '',
             lastName: '',
-            role: 'student',
+            role: Role.Student,
         },
         validate: {
             username: (value) => (value ? null : t('Authentication.Field.Username.Error.Required')),
@@ -36,13 +40,13 @@ export const SignUpPage = () => {
         },
     });
 
-    const onRegister = (values: any) => {
+    const onRegister = (values: RegisterRequest) => {
         register(values);
     };
 
     return (
-        <PageContainer>
-            <Container size="xs" mt={30}>
+        <PageContainer style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', height: '100vh', paddingTop: '10vh' }}>
+            <Container size="md">
                 <Title order={1} style={{ textAlign: 'center' }}>
                     {t('Authentication.Title.SignUp')}
                 </Title>
@@ -50,32 +54,31 @@ export const SignUpPage = () => {
                 <form onSubmit={form.onSubmit(onRegister)} autoComplete='off'>
                     <Stack>
                         <TextInput
-                            placeholder={t('Authentication.Field.Username.Label')}
+                            label={t('Authentication.Field.Username.Label')}
                             {...form.getInputProps('username')}
                         />
                         <TextInput
-                            placeholder={t('Authentication.Field.Email.Label')}
+                            label={t('Authentication.Field.Email.Label')}
                             {...form.getInputProps('email')}
                         />
-                        <TextInput
-                            placeholder={t('Authentication.Field.Password.Label')}
-                            type='password'
+                        <PasswordInput
+                            label={t('Authentication.Field.Password.Label')}
                             {...form.getInputProps('password')}
                         />
                         <TextInput
-                            placeholder={t('Authentication.Field.FirstName.Label')}
+                            label={t('Authentication.Field.FirstName.Label')}
                             {...form.getInputProps('firstName')}
                         />
                         <TextInput
-                            placeholder={t('Authentication.Field.LastName.Label')}
+                            label={t('Authentication.Field.LastName.Label')}
                             {...form.getInputProps('lastName')}
                         />
                         <Select
                             label={t('Authentication.Field.Role.Label')}
                             {...form.getInputProps('role')}
                             data={[
-                                { value: 'student', label: t('Authentication.Role.Student') },
-                                { value: 'lecturer', label: t('Authentication.Role.Lecturer') },
+                                { value: Role.Student, label: t('Authentication.Role.Student') },
+                                { value: Role.Lecturer, label: t('Authentication.Role.Lecturer') },
                             ]}
                         />
                         <Button
@@ -87,6 +90,12 @@ export const SignUpPage = () => {
                         </Button>
                     </Stack>
                 </form>
+                <Text style={{ textAlign: 'center' }} mt="md">
+                    {t('Authentication.Prompt.AlreadyHaveAccount')}{' '}
+                    <Anchor onClick={handleSignInClick} style={{ fontWeight: 500 }}>
+                        {t('Authentication.Action.SignIn')}
+                    </Anchor>
+                </Text>
             </Container>
         </PageContainer>
     );

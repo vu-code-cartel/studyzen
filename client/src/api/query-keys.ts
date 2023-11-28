@@ -12,4 +12,5 @@ export class QueryKeys {
   public static readonly GetQuizQuestions = 'getQuizQuestions';
   public static readonly GetQuizGame = 'getQuizGame';
   public static readonly Login = 'login';
+  public static readonly GetUserInfo = 'getUserInfo';
 }

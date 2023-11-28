@@ -11,8 +11,8 @@ export const HomePage = () => {
   useDocumentTitle(t('Home.DocumentTitle'));
   usePageCategory('unknown');
 
-  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
-  const username = useAppStore((state) => state.username);
+  const isLoggedIn = useAppStore((state) => state.user);
+  const username = useAppStore((state) => state.user?.username);
 
   return (
     <PageContainer>

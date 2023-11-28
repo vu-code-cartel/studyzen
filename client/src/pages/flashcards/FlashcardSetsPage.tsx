@@ -15,7 +15,7 @@ import { useDocumentTitle } from '@mantine/hooks';
 import { useAppStore } from '../../hooks/useAppStore';
 
 export const FlashcardSetsPage = () => {
-  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
+  const isLoggedIn = useAppStore((state) => state.user);
   const { t } = useTranslation();
   const buttonVariant = useButtonVariant();
   usePageCategory('flashcards');
