@@ -3,7 +3,7 @@ import { PageCategory } from '../common/types';
 
 export type ColorScheme = 'light' | 'dark' | undefined;
 
-interface User {
+export interface User {
   id: string;
   username: string;
   role: string;
